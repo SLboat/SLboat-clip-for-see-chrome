@@ -1,7 +1,8 @@
 var lastTime = new Date().getTime();
 var isInManage = false;
 var delayTime = 500;
-function add(seltxt,tab) {
+
+function add(seltxt,title,url,tab) {
     //var action_url = localStorage.instapaper; //本地存储
     //chrome.tabs.update(tab.id, {url: action_url});
 	//alert("hi");
@@ -13,7 +14,7 @@ function add(seltxt,tab) {
         return;
       }
 	  var ta = document.getElementById('ta');
-	  ta.value =seltxt; //req.text;
+	  ta.value =fixtxt(seltxt,title,url); //格式化文本
 	  ta.select();
 	  var rv = document.execCommand("copy");
 }
@@ -32,7 +33,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
             // check if is in manage now
             if (isInManage) return;
 			  chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
-				 add(response.data,tab);
+				 add(response.data,response.title,response.url,tab);
 			  }); //注入事件申请
         }, 500);
     } else {
