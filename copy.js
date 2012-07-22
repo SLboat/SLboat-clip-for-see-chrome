@@ -10,9 +10,10 @@ function add(seltxt,title,url,tab) {
       // 如果没有选择内容，那么什么也不做
       //-----------------------------------------------------------------------
       if (seltxt.length <= 0) {
-   	    alert ("没有发现任何见识")
+   	    chrome.browserAction.setIcon({path: "icon_32.png"}) // 关闭墨水
         return;
       }
+	   chrome.browserAction.setIcon({path: "icon_open_32.png"}) //打开墨水
 	  var ta = document.getElementById('ta');
 	  ta.value =fixtxt(seltxt,title,url); //格式化文本
 	  ta.select();
