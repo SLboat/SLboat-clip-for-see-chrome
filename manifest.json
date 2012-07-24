@@ -1,6 +1,7 @@
 {
    "permissions": [ "clipboardWrite" ],
    "background_page":"maketxt.html",
+   "options_page": "set.html",
    "browser_action":{
       "default_icon":"/img/icon_32.png",
       "default_title":"森亮见识墨水"
@@ -23,5 +24,5 @@
       "http://*/*",
       "https://*/*"
    ],
-   "version":"1.1"
+   "version":"1.2"
 }

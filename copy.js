@@ -3,9 +3,10 @@ var isInManage = false;
 var delayTime = 500;
 
 var   delayID=0; 
-var  paly_dealy=50;
+var  paly_dealy=50; //动画每帧延时
 var   Num=0; 
-var   _images   =   new   Array   ( "pen_shape_1.png ", 
+var   _images   =   new   Array   ( "icon_32.png",
+ "pen_shape_1.png ", 
 	"pen_shape_2.png ", 
 		"pen_shape_3.png ",  
 			"pen_shape_4.png "); 
@@ -31,6 +32,7 @@ function add(seltxt,title,url,tab) {
       }
 	  //chrome.browserAction.setIcon({path: "icon_open_32.png"}); //打开墨水
 	  Num=0;//播放精心设置的动画，这动画有着alex的心血
+	  paly_dealy=localStorage.see_ink;//动态赋值动画参数
 	  ink_open_animateGraph(); //播放动画由这里开始
 	  var ta = document.getElementById('ta');
 	  ta.value =fixtxt(seltxt,title,url); //格式化文本
