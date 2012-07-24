@@ -2,7 +2,7 @@
    "permissions": [ "clipboardWrite" ],
    "background_page":"maketxt.html",
    "browser_action":{
-      "default_icon":"icon_32.png",
+      "default_icon":"/img/icon_32.png",
       "default_title":"森亮见识墨水"
    },
     "content_scripts": [
@@ -14,8 +14,8 @@
     ],
    "description":"添加选定的内容到你的剪贴板",
    "icons":{
-      "128":"icon_128.png",
-      "48":"icon_48.png"
+      "128":"/img/icon_128.png",
+      "48":"/img/icon_48.png"
    },
    "name":"森亮见识墨水",
    "permissions":[
@@ -23,5 +23,5 @@
       "http://*/*",
       "https://*/*"
    ],
-   "version":"1.0"
+   "version":"1.1"
 }

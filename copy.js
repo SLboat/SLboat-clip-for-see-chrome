@@ -2,6 +2,22 @@ var lastTime = new Date().getTime();
 var isInManage = false;
 var delayTime = 500;
 
+var   delayID=0; 
+var  paly_dealy=50;
+var   Num=0; 
+var   _images   =   new   Array   ( "pen_shape_1.png ", 
+	"pen_shape_2.png ", 
+		"pen_shape_3.png ",  
+			"pen_shape_4.png "); 
+
+function   ink_open_animateGraph() 
+{ 
+    Num++; 
+    if (Num >= _images.length) return; 
+    chrome.browserAction.setIcon({path: "/img/" + _images[Num]}); 
+    delayID=setTimeout( "ink_open_animateGraph() ",   paly_dealy); 
+} 
+
 function add(seltxt,title,url,tab) {
     //var action_url = localStorage.instapaper; //本地存储
     //chrome.tabs.update(tab.id, {url: action_url});
@@ -10,10 +26,12 @@ function add(seltxt,title,url,tab) {
       // 如果没有选择内容，那么什么也不做
       //-----------------------------------------------------------------------
       if (seltxt.length <= 0) {
-   	    chrome.browserAction.setIcon({path: "icon_32.png"}) // 关闭墨水
+   	    chrome.browserAction.setIcon({path: "/img/icon_32.png"}); // 关闭墨水
         return;
       }
-	   chrome.browserAction.setIcon({path: "icon_open_32.png"}) //打开墨水
+	  //chrome.browserAction.setIcon({path: "icon_open_32.png"}); //打开墨水
+	  Num=0;//播放精心设置的动画，这动画有着alex的心血
+	  ink_open_animateGraph(); //播放动画由这里开始
 	  var ta = document.getElementById('ta');
 	  ta.value =fixtxt(seltxt,title,url); //格式化文本
 	  ta.select();
