@@ -34,9 +34,13 @@ function add(seltxt,title,url,tab) {
 	  Num=0;//播放精心设置的动画，这动画有着alex的心血
 	  paly_dealy=localStorage.see_ink;//动态赋值动画参数
 	  ink_open_animateGraph(); //播放动画由这里开始
+	  var result =fixtxt(seltxt,title,url); //格式化文本
+	  //给本地保存一份
+	  localStorage.content = result;
 	  var ta = document.getElementById('ta');
-	  ta.value =fixtxt(seltxt,title,url); //格式化文本
+	  ta.value = result;
 	  ta.select();
+	  //执行复制到这里
 	  var rv = document.execCommand("copy");
 }
 function go_see() {
