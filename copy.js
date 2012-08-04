@@ -16,7 +16,7 @@ function   ink_open_animateGraph()
     Num++; 
     if (Num >= _images.length) return; 
     chrome.browserAction.setIcon({path: "/img/" + _images[Num]}); 
-    delayID=setTimeout( "ink_open_animateGraph() ",   paly_dealy); 
+    delayID=setTimeout( ink_open_animateGraph,   paly_dealy); 
 } 
 
 function add(seltxt,title,url,tab) {

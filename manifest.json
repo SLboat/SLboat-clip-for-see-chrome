@@ -1,6 +1,6 @@
 {
    "permissions": [ "clipboardWrite" ],
-   "background_page":"maketxt.html",
+   "background":{"page":"maketxt.html"},
    "options_page": "set.html",
    "browser_action":{
       "default_icon":"/img/icon_32.png",
@@ -24,5 +24,7 @@
       "http://*/*",
       "https://*/*"
    ],
+   "homepage_url":"http://see.sl088.com",
+   "manifest_version": 2,
    "version":"1.21"
 }
