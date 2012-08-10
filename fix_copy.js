@@ -16,10 +16,10 @@ var funGetSelectTxt = function() {
 //--------------------------
 //传入了soure，title，url，在这里处理
 function fixtxt (source,title,url){
-	source = source.replace(/(\n|\r|\r\n)/g,"<br\\>$1");
+	source = source.replace(/(\n|\r|\r\n)/g,"<br />$1");
 	//处理标题加上标志
 	title+="<sup> 沿途见识</sup>"
 	var textout = "===" +title + "<ref>"+url+"</ref>===\r\n"+source;
-	textout=textout+"<br\\>\r\n";
+	textout=textout+"<br />\r\n";
 	return textout;
 }
