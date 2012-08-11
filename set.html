@@ -2,6 +2,7 @@
 <head>
 <meta http-equiv= "Content-Type " content= "text/html; charset=utf-8 " />
 <title>森亮见识墨水-设置</title>
+<script src="set.js"></script>
 <style>
 #instructions p{margin-bottom: 1em; font-size: 75%;}
 li {margin-bottom: 1em; font-size: 75%;}
@@ -26,7 +27,7 @@ body {
   padding-bottom:43px;
   padding-left:75px;
   padding-top:40px;
-  background:url(/img/icon_48.png) no-repeat;
+  background:url(./img/icon_48.png) no-repeat;
   background-size:48px;
   background-position:1px 33px;
   font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
@@ -68,6 +69,7 @@ text-decoration: none;
 a {color: #d54e21;}
 </style>
 </head>
+
 <body>
 <div id="container">
 <div id="header">
@@ -78,44 +80,16 @@ a {color: #d54e21;}
 <p>森亮见识墨水提供了动态的图标动画，你可以设置它的动画间隔来体验它！</p>
 
 <div id="instructions">
-<p>设置一个毫秒单位的间隔，默认我们想的是50。</p>
+<p>设置一个毫秒单位的间隔，默认我们想的是80。</p>
 </div>
 <p>
-<input type="text" id="insta" value="50" size="55" oninput="markDirty()">
+<input type="text" id="insta" value="80" size="55" >
 </p>
 <div id="footer">
-<button id="save-button" style="font-weight:bold" onClick="save()">保存</button>
-<button onClick="init()">取消</button>
+<button id="save-button" style="font-weight:bold">保存</button>
+<button id="cancel-button">取消</button>
 </div>
 </div>
-<script>
-var customDomainsTextbox;
-var saveButton;
 
-init();
-
-function init() {
-  customDomainsTextbox = document.getElementById("insta");
-  saveButton = document.getElementById("save-button");
-
-  customDomainsTextbox.value = localStorage.see_ink || "80";
-  markClean();
-}
-
-function save() {
-  localStorage.see_ink = customDomainsTextbox.value;
-  markClean();
-
-  chrome.extension.getBackgroundPage().init();
-}
-
-function markDirty() {
-  saveButton.disabled = false;
-}
-
-function markClean() {
-  saveButton.disabled = true;
-}
-</script>
 </body>
 </html>
