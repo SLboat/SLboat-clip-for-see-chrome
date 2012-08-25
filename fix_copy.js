@@ -20,7 +20,7 @@ function fixtxt (source,title,url){
 	//source = source.replace(/(\n|\r|\r\n)/g,"<br />$1"); 
 	//处理标题加上标志
 	title+="<sup> 沿途见识</sup>"
-	source="<poem>"+source+"</poem>"
+	source="<poem>\r\n"+source+"\r\n</poem>"
 	var textout = "===" +title + "<ref>"+url+"</ref>===\r\n"+source;
 	textout=textout+"\r\n";
 	return textout;
