@@ -9,7 +9,7 @@
     "content_scripts": [
     {
       "matches": [ "http://*/*", "https://*/*" ],
-      "js": ["getsel.js"],
+      "js": ["/script/getsel.js"],
       // "all_frames": true,
       "run_at": "document_end"
     }
@@ -27,5 +27,5 @@
    ],
    "homepage_url":"http://see.sl088.com",
    "manifest_version": 2,
-   "version":"1.238"
+   "version":"1.301"
 }
