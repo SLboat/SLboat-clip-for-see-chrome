@@ -1,89 +1,107 @@
 <html>
-	<head>
-		<meta content="text/html; charset=utf-8 " http-equiv="Content-Type " />
-		<title>森亮见识墨水-设置</title>
-<script src="/script/set.js"></script>		<style type="text/css">
+   
+   <head>
+      <meta content="text/html; charset=utf-8 " http-equiv="Content-Type " />
+      <title>森亮见识墨水-设置</title>
+	  <link rel="icon" type="image/png" href="./img/icon_32.png" />
+      <script src="./script/set.js"></script>
+      <style type="text/css">
+
 #instructions p {
-	margin-bottom: 1em;
-	font-size: 75%;
+   margin-bottom: 1em;
+   font-size: 75%;
 }
 li {
-	margin-bottom: 1em;
-	font-size: 75%;
+   margin-bottom: 1em;
+   font-size: 75%;
 }
 body {
-	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
-	font-size:100%;
-	background: #f5f5f5;
-	color: #404040;
-	text-align: center;
-	width: 500px;
-	margin: 0 auto;
-	margin-top: 50px;
+   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+   font-size:100%;
+   background: #f5f5f5;
+   color: #404040;
+   text-align: center;
+   width: 500px;
+   margin: 0 auto;
+   margin-top: 50px;
 }
 #header {
-	padding-bottom:1.5em;
-	padding-top:1.5em;
+   padding-bottom:1.5em;
+   padding-top:1.5em;
 }
 #header h1 {
-	font-size: 156%;
-	display:inline;
-	padding-bottom:43px;
-	padding-left:75px;
-	padding-top:40px;
-	background:url(./img/icon_48.png) no-repeat;
-	background-size:48px;
-	background-position:1px 33px;
-	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+   font-size: 156%;
+   display:inline;
+   padding-bottom:43px;
+   padding-left:75px;
+   padding-top:40px;
+   background:url(./img/icon_48.png) no-repeat;
+   background-size:48px;
+   background-position:1px 33px;
+   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
 }
 .section-header {
-	font-size:99%;
-	font-weight:bold;
-	margin-bottom:1em;
-	margin-top:4em;
+   font-size:99%;
+   font-weight:bold;
+   margin-bottom:1em;
+   margin-top:4em;
 }
 .section-header.first {
-	margin-top:1em;
+   margin-top:1em;
 }
 #custom-domain {
-	width:300px;
-	margin-left:2px;
+   width:300px;
+   margin-left:2px;
 }
 #footer {
-	margin-top:2em;
+   margin-top:2em;
 }
 p#sig {
-	font-size: 100%;
-	text-transform:uppercase;
-	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
-	position: fixed;
-	right: 75px;
-	bottom: 1em;
-	display: block;
-	text-indent: 0em;
-	text-decoration: none;
+   font-size: 100%;
+   text-transform:uppercase;
+   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+   position: fixed;
+   right: 75px;
+   bottom: 1em;
+   display: block;
+   text-indent: 0em;
+   text-decoration: none;
 }
 a {
-	color: #d54e21;
-}		</style>
-	</head>
-	<body>
-		<div id="container">
-			<div id="header">
-				<h1>
+   color: #d54e21;
+}
+      </style>
+   </head>
+   
+   <body>
+      <div id="container">
+         <div id="header">
+            	<h1>
 					森亮号见识墨水-设置</h1>
-			</div>
-			<div class="section-header first" style="text-align: left;">
-				动画间隔</div>
-			<p style="text-align: left;">
-				森亮见识墨水提供了动态的图标动画，你可以设置它的动画间隔来体验它！<br />
-				<span style="font-size: 12px;">设置一个毫秒单位的间隔，默认我们想的是80。</span></p>
-			<p style="text-align: left;">
-				<input id="insta" size="55" type="text" value="80" /></p>
-			<p style="text-align: left;">
-				墨水用于：<select name="墨水类型"><option selected="selected" value="">森亮号航海见识</option><option selected="selected" value="">乐城网</option></select></p>
-			<div id="footer">
-				<button id="save-button" style="font-weight:bold">保存</button><button id="cancel-button">取消</button></div>
-		</div>
-	</body>
+
+         </div>
+         <div class="section-header first" style="text-align: left;">动画间隔</div>
+         <p style="text-align: left;">森亮见识墨水提供了动态的图标动画，你可以设置它的动画间隔来体验它！
+            <br />	<span style="font-size: 12px;">设置一个毫秒单位的间隔，默认我们想的是80：</span>
+
+            <input id="play_time" size="55" type="text" value="80" style="width: 100px;">
+         </p>
+         <div class="section-header first" style="text-align: left;">墨水类型</div>
+         <p style="text-align: left;">墨水用于：
+            <select name="墨水类型" id="ink_for">
+               <option selected="selected" value="slboat">森亮号航海见识</option>
+               <option value="alex">乐城网-BBCode</option>
+            </select>
+         </p>
+         <div class="section-header first" style="text-align: left;">Flickr API Key</div>
+         <p style="text-align: left;">	<span style="font-size: 12px;">当需要获取一大堆的Tag的时候，没有比API更适合的了</span>
+            <br />Flickr的API Key：
+			<input id="api_key" size="55" type="text" value="" style="width: 200px;">         </p>
+         <div id="footer">
+            <button id="save-button" style="font-weight:bold;margin-right: 10px;">保存</button>
+            <button id="cancel-button">取消</button>
+         </div>
+      </div>
+   </body>
+
 </html>

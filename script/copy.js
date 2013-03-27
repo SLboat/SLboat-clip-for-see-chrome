@@ -49,7 +49,7 @@ function add(ink, title, url, copy_type, tab) {
    play_dealy = localStorage.see_ink; //动态赋值动画参数
 
    /* 处理传入的玩意 */
-   if (copy_type = "flickr") {
+   if (copy_type == "flickr") {
       //没有传入任何内容，判断是否为Flickr
       if (ink.length > 0) // 看看有没有墨水在里面
       {
@@ -100,7 +100,9 @@ chrome.browserAction.onClicked.addListener(function (tab) {
          if (isInManage) return;
          //发送事件请求
          chrome.tabs.sendRequest(tab.id, {
-            method: "getSelection"
+            method: "getSelection",
+			//用于墨水的作用
+			ink_for: localStorage.ink_for || "slboat"
          }, function (response) {
             add(response.data, response.title, response.url, response
                .copy_type,
