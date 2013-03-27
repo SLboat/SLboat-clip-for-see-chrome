@@ -1,61 +1,65 @@
-//Ìæ»»×îÖÕµÄÍ¼Æ¬URL
+//æ›¿æ¢æœ€ç»ˆçš„å›¾ç‰‡URL
 function mov_flickr_url(org_url){
-	//Ìæ»»ÖĞÍ¼£¬Ìæ»»Ğ¡Í¼
-	//todo£º¿ÉÑ¡µÄ»ñµÃ×îÖÕÍ¼Æ¬³ß´çÑùÊ½
+	//æ›¿æ¢ä¸­å›¾ï¼Œæ›¿æ¢å°å›¾
+	//todoï¼šå¯é€‰çš„è·å¾—æœ€ç»ˆå›¾ç‰‡å°ºå¯¸æ ·å¼
 	var return_url;
 	return_url=org_url.replace("_t","_c");
 	return_url=return_url.replace("_s","_c");
 	return return_url;
 }
 
-//¼ÓÔØÈë½Å±¾
+//åŠ è½½å…¥è„šæœ¬
 function load_jquery_script(){
-	//³¢ÊÔÔØÈëĞÂµÄJQuery£¬ÅĞ¶ÏjQuery£¬×ÜÊÇÄÜ¹»¹¤×÷µÄ¸üºÃ
+	//å°è¯•è½½å…¥æ–°çš„JQueryï¼Œåˆ¤æ–­jQueryï¼Œæ€»æ˜¯èƒ½å¤Ÿå·¥ä½œçš„æ›´å¥½
 	if (typeof(jQuery)=="undefined")
 	{
-		//×¢ÈëjQuery½Å±¾
+		//æ³¨å…¥jQueryè„šæœ¬
 		var script = document.createElement("script")
 		script.type = "text/javascript"
-		//todo:ÒÆµ½±¾µØÈ¥
+		//todo:ç§»åˆ°æœ¬åœ°å»
 		script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
 		script.onload = get_flickr_link
 		document.body.appendChild(script)
 	}else
-		//Ö±½Ó¿ªÊ¼¹¤×÷
+		//ç›´æ¥å¼€å§‹å·¥ä½œ
 		get_flickr_link();	
 }
 
-//³õ´ÎÔØÈëÍê±ÏµÄ»Øµ÷
+//åˆæ¬¡è½½å…¥å®Œæ¯•çš„å›è°ƒ
 function first_load_callback(){
-	console.log("jQuery"+$.fn.jquery +"ÒÑ¾­ÔØÈëÍê±Ï£¡×¼±¸¾ÍĞ÷!");
-	//Ò²Ğí¿ÉÒÔÕ¹Ê¾¸öµÈ´ıÉ¶×ÓµÄ
+	console.log("jQuery"+$.fn.jquery +"å·²ç»è½½å…¥å®Œæ¯•ï¼å‡†å¤‡å°±ç»ª!");
+	//ä¹Ÿè®¸å¯ä»¥å±•ç¤ºä¸ªç­‰å¾…å•¥å­çš„
 	get_flickr_link();
 }
 
-//µÃµ½FlickrµÄÁ¬½Ó
+//å¾—åˆ°Flickrçš„è¿æ¥
 function get_flickr_link(){
-	//»ñµÃ±êÌâ
+	/* è‡ªåŠ¨è·å¾—ï¼Œçœ‹èµ·æ¥ä¸å†éœ€è¦ */
+	//è·å¾—æ ‡é¢˜
 	var txtTitle = document.title
-	//»ñµÃURL
+	//è·å¾—URL
 	var txtUrl = window.location.href
 
-	//³õÊ¼»¯Í¼Æ¬ÊıÁ¿
+	//åˆå§‹åŒ–å›¾ç‰‡æ•°é‡
 	var pic_num=0
-	//È¡µÃÍ¼Æ¬×Ö´®
+	//å–å¾—å›¾ç‰‡å­—ä¸²
 	var txtCont=""
+	//æœ€ç»ˆå­—ä¸²ï¼Œåˆå§‹åŒ–ä¸ºç©º
+	var flickr_txt=""
 
-	//×î³õ±êÍ·
-	var str_start="<!-- À´×ÔFlickrÏà²á£º[" + txtTitle + "] -->\r\n"
-	//Ò»¸öÁ´½Ó¼ÇÂ¼ÏÂÀ´
-	str_start+="<!-- À´×ÔÁ´½Ó£º["+txtUrl+ "]) -->\r\n"
+
+	//æœ€åˆæ ‡å¤´
+	var str_start="<!-- æ¥è‡ªFlickrç›¸å†Œï¼š[" + txtTitle + "] -->\r\n"
+	//ä¸€ä¸ªé“¾æ¥è®°å½•ä¸‹æ¥
+	str_start+="<!-- æ¥è‡ªé“¾æ¥ï¼š["+txtUrl+ "]) -->\r\n"
 	str_start+="<div id=\"slboat_flickr_pics\">\r\n"
 
-	/* ´¦Àí±êÇ©Ò³£¬´¦ÀíÏà²áÒ³ */
-	//todo:È¡µÃµ¥Ò³Í¼Æ¬
+	/* å¤„ç†æ ‡ç­¾é¡µï¼Œå¤„ç†ç›¸å†Œé¡µ */
+	//todo:å–å¾—å•é¡µå›¾ç‰‡
 
-	//±êÇ©Ò³±ê¼Ç
+	//æ ‡ç­¾é¡µæ ‡è®°
 	var Ident_tag_page=".pc_t .pc_img"
-	//Ïà²áÒ³±ê¼Ç
+	//ç›¸å†Œé¡µæ ‡è®°
 	var Ident_set_page=".pc_s .pc_img"
 
 	if ($(Ident_set_page).length==0){
@@ -63,43 +67,44 @@ function get_flickr_link(){
 	}else
 		catch_them=$(Ident_set_page);
 
-	//¿´¿´ÊÇ·ñ×¥µ½ÁËÒ»Ğ©¿ÉÒÔ²¶»ñµÄÍæÒâ
+	//çœ‹çœ‹æ˜¯å¦æŠ“åˆ°äº†ä¸€äº›å¯ä»¥æ•è·çš„ç©æ„
 	if (catch_them.length>0){
 		catch_them.each(function(){ 
-			//µ±Ç°µÄÍ¼Æ¬µØÖ·Á´½Ó
-			txtCont+=mov_flickr_url($(this).prop("src"));
-			//´¦ÀíµÚÒ»¸öÖĞÀ¨ºÅ£¬ÒÑ¾­¸³¸øµÚÒ»¸ö¿Õ¸ñ
+			//å½“å‰çš„å›¾ç‰‡åœ°å€é“¾æ¥
+			//å¸¦ä¸Šç¼©è¿›å¤„ç†
+			txtCont+=": "+mov_flickr_url($(this).prop("src"));
+			//å¤„ç†ç¬¬ä¸€ä¸ªä¸­æ‹¬å·ï¼Œå·²ç»èµ‹ç»™ç¬¬ä¸€ä¸ªç©ºæ ¼
 			txtCont+=" "+"["
-			//¸³ÓèÁ´½ÓÄ¿±ê
+			//èµ‹äºˆé“¾æ¥ç›®æ ‡
 			txtCont+=$(this).parent().prop("href");
-			//¸³Óè½áÎ²·âËøÖĞÀ¨ºÅ
+			//èµ‹äºˆç»“å°¾å°é”ä¸­æ‹¬å·
 			txtCont+=" Link]\r\n";
-			//µİ¼ÓÍ¼Æ¬ÊıÁ¿1
+			//é€’åŠ å›¾ç‰‡æ•°é‡1
 			pic_num+=1;
 		})
 	}
 
-	//´î½¨Æ¨¹É²¿·Ö
+	//æ­å»ºå±è‚¡éƒ¨åˆ†
 	str_end="</div>\r\n"
-	str_end+="<!-- ÒÔÉÏ¹²¼Æ²¶»ñ"+pic_num+"ÕÅÍ¼Æ¬ -->\r\n"
-	str_end+="<!-- À´×ÔFlickrµÄÏà²á¸æÒ»¶ÎÂä -->\r\n"
+	str_end+="<!-- ä»¥ä¸Šå…±è®¡æ•è·"+pic_num+"å¼ å›¾ç‰‡ -->\r\n"
+	str_end+="<!-- æ¥è‡ªFlickrçš„ç›¸å†Œå‘Šä¸€æ®µè½ -->\r\n"
 
-	//Èç¹ûµÃµ½ÁËÒ»Ğ©¶«Î÷
+	//å¦‚æœå¾—åˆ°äº†ä¸€äº›ä¸œè¥¿
 	if (txtCont != "")
 	{
-		//Æ´ºÏÒ»ÇĞ
+		//æ‹¼åˆä¸€åˆ‡
 		flickr_txt=str_start+txtCont+str_end
 	}
 
-	console.log("Õâ´ÎµÃµ½ÁË\n"+flickr_txt)
+	console.log("è¿™æ¬¡å¾—åˆ°äº†\n"+flickr_txt)
 
 	return flickr_txt;
 
-	//todo:´¦Àí¼ôÌù°åÊÂÒË£¬Í¼±ê±ä¶¯µÈ
+	//todo:å¤„ç†å‰ªè´´æ¿äº‹å®œï¼Œå›¾æ ‡å˜åŠ¨ç­‰
 }
 
 
-/* ¿ªÊ¼²âÊÔÖ´ĞĞ */
-//µ÷Èë¿©
+/* å¼€å§‹æµ‹è¯•æ‰§è¡Œ */
+//è°ƒå…¥å’¯
 load_jquery_script()
-//console.log("Õâ´ÎµÃµ½ÁË\n"+get_flickr_link())
+//console.log("è¿™æ¬¡å¾—åˆ°äº†\n"+get_flickr_link())

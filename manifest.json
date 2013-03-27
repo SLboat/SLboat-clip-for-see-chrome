@@ -1,4 +1,4 @@
-﻿{
+{
    "permissions": [ "clipboardWrite" ],
    "background":{"page":"maketxt.html"},
    "options_page": "set.html",
@@ -7,12 +7,18 @@
       "default_title":"航海见识墨水"
    },
     "content_scripts": [
-    {
-      "matches": [ "http://*/*", "https://*/*" ],
-      "js": ["/script/getsel.js"],
-      // "all_frames": true,
-      "run_at": "document_end"
-    }
+	    {
+	      "matches": [ "http://*/*", "https://*/*" ],
+	      "js": ["/script/get_sel.js"],
+	      // "all_frames": true,
+	      "run_at": "document_end"
+	    },
+	    // 这里是匹配给Flickr的 -- 这个注释是被允许的
+	    {
+	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
+	      "js": ["/script/get_flickr.js"],
+	      "run_at": "document_end"
+	    }
     ],
    "description":"添加选定的内容到你的剪贴板",
    "icons":{
