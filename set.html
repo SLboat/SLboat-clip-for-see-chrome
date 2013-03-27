@@ -1,95 +1,94 @@
 <html>
-<head>
-<meta http-equiv= "Content-Type " content= "text/html; charset=utf-8 " />
-<title>森亮见识墨水-设置</title>
-<script src="/script/set.js"></script>
-<style>
-#instructions p{margin-bottom: 1em; font-size: 75%;}
-li {margin-bottom: 1em; font-size: 75%;}
+	<head>
+		<meta http-equiv="Content-Type " content="text/html; charset=utf-8 " />
+		<title>森亮见识墨水-设置</title>
+		<script src="/script/set.js"></script>
+		<style>
+#instructions p {
+	margin-bottom: 1em;
+	font-size: 75%;
+}
+li {
+	margin-bottom: 1em;
+	font-size: 75%;
+}
 body {
-  font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
-  font-size:100%;
-  background: #f5f5f5;
-  color: #404040;
-  text-align: center;
-  width: 500px;
-  margin: 0 auto;
-  margin-top: 50px;
+	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+	font-size:100%;
+	background: #f5f5f5;
+	color: #404040;
+	text-align: center;
+	width: 500px;
+	margin: 0 auto;
+	margin-top: 50px;
 }
 #header {
-  padding-bottom:1.5em;
-  padding-top:1.5em;
+	padding-bottom:1.5em;
+	padding-top:1.5em;
 }
-
 #header h1 {
-  font-size: 156%;
-  display:inline;
-  padding-bottom:43px;
-  padding-left:75px;
-  padding-top:40px;
-  background:url(./img/icon_48.png) no-repeat;
-  background-size:48px;
-  background-position:1px 33px;
-  font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+	font-size: 156%;
+	display:inline;
+	padding-bottom:43px;
+	padding-left:75px;
+	padding-top:40px;
+	background:url(./img/icon_48.png) no-repeat;
+	background-size:48px;
+	background-position:1px 33px;
+	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
 }
-
 .section-header {
-  font-size:99%;
-  padding:3px 0 2px 5px;
-  font-weight:bold;
-  margin-bottom:1em;
-  margin-top:4em;
+	font-size:99%;
+	padding:3px 0 2px 5px;
+	font-weight:bold;
+	margin-bottom:1em;
+	margin-top:4em;
 }
-
 .section-header.first {
-  margin-top:1em;
+	margin-top:1em;
 }
-
 #custom-domain {
-  width:300px;
-  margin-left:2px;
+	width:300px;
+	margin-left:2px;
 }
-
 #footer {
-  margin-top:2em;
+	margin-top:2em;
 }
-
 p#sig {
-  font-size: 100%;
-text-transform:uppercase;
-font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
-position: fixed;
-right: 75px;
-bottom: 1em;
-display: block;
-text-indent: 0em;
-text-decoration: none;
+	font-size: 100%;
+	text-transform:uppercase;
+	font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
+	position: fixed;
+	right: 75px;
+	bottom: 1em;
+	display: block;
+	text-indent: 0em;
+	text-decoration: none;
 }
+a {
+	color: #d54e21;
+}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				 <h1>森亮见识墨水-设置</h1>
 
-a {color: #d54e21;}
-</style>
-</head>
+			</div>
+			<div class="section-header first">动画间隔</div>
+			<p>森亮见识墨水提供了动态的图标动画，你可以设置它的动画间隔来体验它！</p>
+			<div id="instructions">
+				<p>设置一个毫秒单位的间隔，默认我们想的是80。</p>
+			</div>
+			<p>
+				<input type="text" id="insta" value="80" size="55">
+			</p>
+			<div id="footer">
+				<button id="save-button" style="font-weight:bold">保存</button>
+				<button id="cancel-button">取消</button>
+			</div>
+		</div>
+	</body>
 
-<body>
-<div id="container">
-<div id="header">
-  <h1>森亮见识墨水-设置</h1>
-</div>
-
-<div class="section-header first">动画间隔</div>
-<p>森亮见识墨水提供了动态的图标动画，你可以设置它的动画间隔来体验它！</p>
-
-<div id="instructions">
-<p>设置一个毫秒单位的间隔，默认我们想的是80。</p>
-</div>
-<p>
-<input type="text" id="insta" value="80" size="55" >
-</p>
-<div id="footer">
-<button id="save-button" style="font-weight:bold">保存</button>
-<button id="cancel-button">取消</button>
-</div>
-</div>
-
-</body>
 </html>

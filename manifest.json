@@ -9,6 +9,8 @@
     "content_scripts": [
 	    {
 	      "matches": [ "http://*/*", "https://*/*" ],
+	      // 排除flickr，它单干
+	      "exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      "js": ["/script/get_sel.js"],
 	      // "all_frames": true,
 	      "run_at": "document_end"
@@ -16,11 +18,12 @@
 	    // 这里是匹配给Flickr的 -- 这个注释是被允许的
 	    {
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
-	      "js": ["/script/get_flickr.js"],
+			// 载入私有的jQuery:)，这里是一个隔离环境
+	      "js": ["/script/jquery.min.js","/script/get_flickr.js"],
 	      "run_at": "document_end"
 	    }
     ],
-   "description":"添加选定的内容到你的剪贴板",
+   "description":"森亮号航海见识墨水！吸取Web和Flick，一种微妙的墨水！",
    "icons":{
       "128":"/img/icon_128.png",
       "48":"/img/icon_48.png"
