@@ -11,7 +11,7 @@ var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 
 var flickr_images = new Array("flickr_pen_shape_1.png ",
    "flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
-   "flickr_pen_shape_4.png ",  "flickr_pen_shape_5.png ",
+   "flickr_pen_shape_4.png ", "flickr_pen_shape_5.png ",
    "flickr_pen_shape_6.png ");
 
 //默认墨水风格
@@ -43,25 +43,25 @@ function add(ink, title, url, copy_type, tab) {
 
    var result = ""; //返回结果的玩意
 
-	//播放动画有关的初始化
+   //播放动画有关的初始化
    ink_type = copy_type; //直接用传入的墨水类型进行赋值
    Num = 0; //播放精心设置的动画，这动画有着alex的心血
    play_dealy = localStorage.see_ink; //动态赋值动画参数
 
+   if (ink.length == 0) { // 看看有没有墨水在里面
+      // 全部否定，彻底终止
+      chrome.browserAction.setIcon({
+         path: "/img/icon_32.png"
+      }); // 关闭墨水
+      //走人
+      return false;
+   }
+
    /* 处理传入的玩意 */
    if (copy_type == "flickr") {
       //没有传入任何内容，判断是否为Flickr
-      if (ink.length > 0) // 看看有没有墨水在里面
-      {
-		 ink_open_animateGraph(); //播放动画由这里开始，开始吸取墨水
-         result = ink; //墨水里已有了一切
-      } else {
-         // 全部否定，彻底终止
-         chrome.browserAction.setIcon({
-            path: "/img/icon_32.png"
-         }); // 关闭墨水
-         return false;
-      }
+      ink_open_animateGraph(); //播放动画由这里开始，开始吸取墨水
+      result = ink; //墨水里已有了一切
    } else { //作为默认的墨水情况
       ink_open_animateGraph(); //播放动画由这里开始
 
@@ -101,8 +101,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
          //发送事件请求
          chrome.tabs.sendRequest(tab.id, {
             method: "getSelection",
-			//用于墨水的作用
-			ink_for: localStorage.ink_for || "slboat"
+            //用于墨水的作用
+            ink_for: localStorage.ink_for || "slboat"
          }, function (response) {
             add(response.data, response.title, response.url, response
                .copy_type,
