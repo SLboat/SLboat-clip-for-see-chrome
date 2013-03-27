@@ -1,17 +1,18 @@
 var debug_get_flickr = false; //调试标志
 
-var ink_for = "slboat"; //墨水类型，默认森亮号大船
+var ink_for = "alex"; //墨水类型，默认森亮号大船
 
 /* 主函数们 */
 
 //得到Flickr的连接
 function get_flickr_link() {
    /* 自动获得，看起来很有需要 */
+   //th1nk:用一个object来代替，会不会更酷一些
    //获得标题
    var txtTitle = document.title
    //获得URL
    var txtUrl = window.location.href
-
+	
    //初始化图片数量
    var pic_num = 0
    //取得图片字串
@@ -33,27 +34,41 @@ function get_flickr_link() {
    var Ident_tag_page = ".pc_t .pc_img"
    //相册页标记
    var Ident_set_page = ".pc_s .pc_img"
+   //群组页标记
+	var Ident_groups_page = ".pc_n .pc_img"
+   //单页标记
+	var Ident_single_page = "#liquid-photo"
 
    if ($(Ident_set_page).length == 0) {
-      catch_them = $(Ident_tag_page);
+      catch_them = $(Ident_tag_page); //尝试标签页
+	  if ($(Ident_set_page).length == 0) { //如果标签页没戏
+		catch_them = $(Ident_groups_page); //尝试群组页
+	  }
    } else
-      catch_them = $(Ident_set_page);
+      catch_them = $(Ident_set_page); //为相片集页
 
    //看看是否抓到了一些可以捕获的玩意
    if (catch_them.length > 0) {
       catch_them.each(function () {
-		  var str_alt = $(this).prop("alt") || "Slboat seeing" ; //尝试获得替换文本
+		  var str_alt = $(this).prop("alt") || "Slboat Seeing..." ; //尝试获得替换文本
          //渲染得到单条的最终连接情况
          txtCont += render_per_link($(this).prop("src"), $(this).parent().prop("href"), str_alt);
          //递加图片数量1
          pic_num ++;
       })
-   }
+   }else{
+		//不属于标签页、不属于相册页
+		if ($(Ident_single_page).length>0) //有至少一个单页标签，一般也只有一个
+		{
+			var str_alt =  $(Ident_single_page).prop("alt") || "Slboat Seeing..." ; //尝试获得替换文本
+			txtCont += render_per_link($(Ident_single_page).prop("src"), txtUrl, str_alt);
+		}
+	  }
 
    //搭建屁股部分
    str_end = "</div>\r\n"
    str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"
-   str_end += "<!-- 来自Flickr的相册告一段落 -->\r\n"
+   str_end += "<!-- 来自Flickr相册告一段落 -->\r\n"
 
    //如果得到了一些东西
    if (txtCont != "") {
