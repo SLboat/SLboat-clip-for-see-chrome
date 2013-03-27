@@ -11,7 +11,8 @@ var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 
 var flickr_images = new Array("flickr_pen_shape_1.png ",
    "flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
-   "flickr_pen_shape_4.png ",  "flickr_pen_shape_5.png ");
+   "flickr_pen_shape_4.png ",  "flickr_pen_shape_5.png ",
+   "flickr_pen_shape_6.png ");
 
 //默认墨水风格
 var ink_type = "ink";
