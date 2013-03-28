@@ -73,6 +73,11 @@ a {
    color: gray;
 }
 
+#auth_token{
+	background: #5A5A5A;
+	color: white;
+}
+
 #mini_token{
 	border-radius: 5px;
 }

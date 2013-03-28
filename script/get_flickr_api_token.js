@@ -24,6 +24,8 @@ function call_flickr_api_get_fulltoekn(api_key, secret_key, mini_token, callback
 		if (Json_Token.stat=="ok")
 		{
 			console.log ("获得token完毕!");
+			var auth_token=Json_Token.auth.token._content || ""; //写入到全局token里去
+
 		}else{
 			console.log ("获得token失败!");
 			console.log("返回的是:"+xhr.responseText);

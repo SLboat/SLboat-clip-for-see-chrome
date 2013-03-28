@@ -69,10 +69,10 @@ function get_token_back(Json_Token){
 	console.log("获得了一些东西");
 	if (Json_Token.stat=="ok")
 	{
-		console.log ("获得token完毕!");
+		tips ("获得token成功!已填入授权密匙处，请记得保存！");
+		$("#auth_token").val(Json_Token.auth.token._content); //写入到全局token里去
 	}else{
-		console.log ("获得token失败!");
-		console.log("返回的是:"+xhr.responseText);
+		tips ("尝试获取token失败，原因："+Json_Token.message);
 	}
 
 }
