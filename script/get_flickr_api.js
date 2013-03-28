@@ -8,6 +8,11 @@ var api_key=""; //api密匙，用来获得访问请求
 var secret_key="";
 var auth_token=""; //自己去获得token，保存到本地
 
+//获取本地的所有存储信息
+function get_all_token(){
+
+}
+
 //传入搜索tag，传入页面信息，仅获取自己的
 //todo:用户名未来也加进去给予考虑
 //todo:api_key 尽快加入到考虑范围里，虽然这里也是作为app使用的。。。
