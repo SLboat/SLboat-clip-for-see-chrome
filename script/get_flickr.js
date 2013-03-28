@@ -129,7 +129,7 @@ chrome.extension.onRequest.addListener(function (request, sender,
             get_type = "flickr"; //新的获取类型
          }
       }
-      //遣送回去数据，保留选择文字？
+      //遣送回去数据，保留选择文字？这是一个callback
       sendResponse({
          data: copystr,
          title: titlestr,
