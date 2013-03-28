@@ -3,8 +3,10 @@
 */
 
 /* 授权需要 - 一般信息 */
-var api_key="efd70e945516b4251a6d16f6bb538ee2"; //api密匙，用来获得访问请求
+var api_key=""; //api密匙，用来获得访问请求
 /* 授权需要 - 特别授权 */
+var secret_key="";
+var auth_token=""; //自己去获得token，保存到本地
 
 //传入搜索tag，传入页面信息，仅获取自己的
 //todo:用户名未来也加进去给予考虑
@@ -39,42 +41,6 @@ function call_flickr_api_search(search_tag){
 		pics_json=JSON.parse(xhr.responseText);//临时调试用，一个全局变量
 
 		get_json_pics(JSON.parse(xhr.responseText)); //传入到解析器里去
-	  }
-	}
-	xhr.send();
-}
-
-/* 获得token用来取得剩下的一切 */
-//森亮号航海见识墨水的认证URL是：http://www.flickr.com/auth-72157633098872233
-function call_flickr_api_get_fulltoekn(mini_token){
-
-	var base_url="http://api.flickr.com/services/rest/";
-
-	var Requst_url = "?method=flickr.auth.getFullToken" ;//基础搭建
-	Requst_url+="&api_key="+api_key; //这样拼看起来好看点
-	Requst_url+="&mini_token="+mini_token; //迷你的token
-	Requst_url+="&format=json&nojsoncallback=1"; //再加上反馈json信息
-
-	//看起来还需要公共密匙用来计算MD5
-	Requst_url+="&api_sig="+get_api_sig(secret_key,Requst_url); //算出来这该死的玩意
-
-
-	Requst_url=base_url+Requst_url; //组合成呼叫url
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", Requst_url, true);
-	xhr.onreadystatechange = function() {
-	  if (xhr.readyState == 4) {
-		//获得完毕了
-		Json_Token=(JSON.parse(xhr.responseText)); //传入到解析器里去
-		if (Json_Token.stat="ok")
-		{
-			console.log ("获得token完毕!");
-			auth_token=Json_Token.auth.token._content; //写入到全局token里去
-		}else{
-			console.log ("获得token失败!");
-			console.log("返回的是:"+xhr.responseText);
-		}
 	  }
 	}
 	xhr.send();

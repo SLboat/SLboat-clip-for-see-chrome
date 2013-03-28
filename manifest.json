@@ -29,6 +29,7 @@
    },
    "name":"见识墨水",
    "permissions":[
+	"storage",
       "tabs",
       "http://*/*",
       "https://*/*"
