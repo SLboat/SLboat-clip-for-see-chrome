@@ -1,89 +1,77 @@
 #instructions p {
-   margin-bottom: 1em;
-   font-size: 75%;
+    margin-bottom: 1em;
+    font-size: 75%;
 }
 li {
-   margin-bottom: 1em;
-   font-size: 75%;
+    margin-bottom: 1em;
+    font-size: 75%;
 }
 body {
-   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
-   font-size:100%;
-   background: #f5f5f5;
-   color: #404040;
-   text-align: center;
-   width: 500px;
-   margin: 0 auto;
-   margin-top: 50px;
-
+    font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+    font-size: 100%;
+    background: #f5f5f5;
+    color: #404040;
+    text-align: center;
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 50px;
 }
-#sett_here{
-  text-align: left;
+#sett_here { text-align: left }
+body p {
+    font-size: 80%;
+    text-align: left;
 }
-
-body p{
-  font-size:80%;
-  text-align: left;
-}
-
 #header {
-   padding-bottom:1.5em;
-   padding-top:1.5em;
+    padding-bottom: 1.5em;
+    padding-top: 1.5em;
 }
 #header h1 {
-   font-size: 156%;
-   display:inline;
-   padding-bottom:43px;
-   padding-left:75px;
-   padding-top:40px;
-   background:url(./img/icon_48.png) no-repeat;
-   background-size:48px;
-   background-position:1px 33px;
-   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
-
+    font-size: 156%;
+    display: inline;
+    padding-bottom: 43px;
+    padding-left: 75px;
+    padding-top: 40px;
+    background: url(./img/icon_48.png) no-repeat;
+    background-size: 48px;
+    background-position: 1px 33px;
+    font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
 }
 .section-header {
-   font-size:99%;
-   font-weight:bold;
-   margin-bottom:1em;
-   margin-top:4em;
+    font-size: 99%;
+    font-weight: bold;
+    margin-bottom: 1em;
+    margin-top: 4em;
 }
-.section-header.first {
-   margin-top:1em;
-}
+.section-header.first { margin-top: 1em }
 #custom-domain {
-   width:300px;
-   margin-left:2px;
+    width: 300px;
+    margin-left: 2px;
 }
-#footer {
-   margin-top:2em;
-}
+#footer { margin-top: 2em }
 p#sig {
-   font-size: 100%;
-   text-transform:uppercase;
-   font-family:"Myriad Pro", Arial, Helvetica, sans-serif;
-   position: fixed;
-   right: 75px;
-   bottom: 1em;
-   display: block;
-   text-indent: 0em;
-   text-decoration: none;
+    font-size: 100%;
+    text-transform: uppercase;
+    font-family: "Myriad Pro", Arial, Helvetica, sans-serif;
+    position: fixed;
+    right: 75px;
+    bottom: 1em;
+    display: block;
+    text-indent: 0em;
+    text-decoration: none;
 }
-a {
-   color: gray;
+a { color: gray }
+#auth_token {
+    background: #5A5A5A;
+    color: white;
+}
+#mini_token { border-radius: 5px }
+#tips {
+    font-size: 70%;
+    margin-bottom: 10px;
+    color: #A07266;
 }
 
-#auth_token{
-	background: #5A5A5A;
-	color: white;
-}
-
-#mini_token{
-	border-radius: 5px;
-}
-
-#tips{
-	font-size: 70%;
-	margin-bottom: 10px;
-	color: #A07266;
+#see_ink{
+	width: 50px;
+	text-align: center;
 }

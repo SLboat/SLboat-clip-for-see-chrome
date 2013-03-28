@@ -30,9 +30,7 @@
    "name":"见识墨水",
    "permissions":[
 	"storage",
-      "tabs",
-      "http://*/*",
-      "https://*/*"
+      "tabs"
    ],
    "homepage_url":"http://see.sl088.com",
    "manifest_version": 2,
