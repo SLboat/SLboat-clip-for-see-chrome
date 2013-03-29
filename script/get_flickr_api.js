@@ -1,22 +1,13 @@
 /* 当前计划 
-* 仅仅针对森亮号相册里的超过20张的tag图片处理
+* 仅仅针对自己相册里的超过20张的tag图片处理
 */
 
-/* 授权需要 - 一般信息 */
-// 有点重复多余了，这些玩意，直接使用flickr_api_key或许更好
-var api_key=""; //api密匙，用来获得访问请求
-/* 授权需要 - 特别授权 */
-var secret_key="";
-var auth_token=""; //自己去获得token，保存到本地
-
-/* 提取授权信息 */
-//获取本地的所有存储信息
+/* 效验授权信息 */
+//效验是否都是有效效验信息
+//user_name暂且抛弃
 function get_all_token(){
-	api_key=flickr_api_key.api_key || "";
-	secret_key=flickr_api_key.secret_key || "";
-	auth_token=flickr_api_key.auth_token || "";
 	//检查有效性
-	if (api_key=="" || secret_key=="" || auth_token=="")
+	if (flickr_api_key.api_key=="" || flickr_api_key.secret_key=="" || flickr_api_key.auth_token=="")
 	{
 		//有任何一个不存在，抛出异常
 		return false;
@@ -31,10 +22,10 @@ function call_flickr_api_search(search_tag){
 	if (!get_all_token())
 	{
 		//遗憾，啥都没得到
+		// 放置变身图标
+		chrome.extension.sendMessage({command: "ink_api_finish", have_ink: false, ink: ""});
 		return false;
 	}
-	// 放置变身图标
-	chrome.extension.sendMessage({command: "ink_api_start"})
 
 	/* 基本常量 */
 	var per_page = "500"; //一次返回最多数量
@@ -45,15 +36,15 @@ function call_flickr_api_search(search_tag){
 	var base_url="http://api.flickr.com/services/rest/";
 
 	var Requst_url = "?method=flickr.photos.search" ;//基础搭建
-	Requst_url+="&api_key="+api_key; //这样拼看起来好看点
+	Requst_url+="&api_key="+flickr_api_key.api_key; //这样拼看起来好看点
 	Requst_url+="&user_id="+user_id; //用户ID，减少数量
-	Requst_url+="&tags="+search_tag; //搜索标签，将来要变成utf8的
+	Requst_url+="&tags="+ search_tag; //搜索标签，将来要变成utf8的
 	Requst_url+="&extras=url_c,owner_name&per_page="+per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
 
 	//加个签名信息试试
-	Requst_url+= "&auth_token="+auth_token
+	Requst_url+= "&auth_token="+flickr_api_key.auth_token
 	//看起来还需要公共密匙用来计算MD5
-	Requst_url+="&api_sig="+get_api_sig(secret_key,Requst_url); //算出来这该死的玩意
+	Requst_url+="&api_sig="+get_api_sig(flickr_api_key.secret_key,Requst_url); //算出来这该死的玩意
 
 	Requst_url=base_url+Requst_url; //组合成呼叫url
 
@@ -139,7 +130,7 @@ function get_json_pics(pics_json){
 	if (is_debug_ink)console.log("这次得到了\n" + flickr_txt);
 
 	//呼叫API弄到剪贴板里去，检查是否得到了东西
-	chrome.extension.sendMessage({command: "ink_api_finish", ink: flickr_txt, have_ink: have_ink});
+	chrome.extension.sendMessage({command: "ink_api_finish", have_ink: have_ink, ink: flickr_txt});
 
 	//提取到此完毕
 	return flickr_txt;
