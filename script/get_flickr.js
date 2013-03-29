@@ -83,7 +83,7 @@ function get_flickr_link() {
 			var str_alt = $(this).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
 			//渲染得到单条的最终连接情况
 			txtCont += render_per_link($(this).prop("src"), $(this).parent().prop(
-				"href"), str_alt);
+				"href"), str_alt, false); //要处理后面那个
 			//递加图片数量1
 			pic_num++;
 		})
@@ -96,7 +96,7 @@ function get_flickr_link() {
 			var img_src = $(Ident_single_page).prop("src");
 			txtCont += render_per_link(img_src, page_info
 				.txtUrl,
-				str_alt);
+				str_alt, false);
 			if (typeof (img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去
 			}
@@ -199,10 +199,9 @@ function get_start_html() {
 //传入pic_num捕获张数，useapi，是否使用了api
 
 function get_end_html(pic_num, useapi) {
-	pic_num = pic_num || 0;
+	pic_num = pic_num || "0";
 	useapi = useapi || "no"; //初始值假
 
-	pic_num = pic_num || 0;
 	//搭建屁股部分
 	var str_end = "</div>\r\n"
 	if (useapi == "yes") //使用了API，这是最后的大石头啊，最初只考虑森亮号的相册
@@ -262,9 +261,12 @@ function mov_flickr_url(org_url, org_link) {
 //渲染得到单条的图片的连接
 //传入图片地址，和点击链接，以及替换文字（都会搞到有的）
 
-function render_per_link(urlimg, urllink, str_alt) {
+function render_per_link(urlimg, urllink, str_alt, no_url_work) {
 	var txt_out = ""; //输出的临时变量
-	urlimg = mov_flickr_url(urlimg, urllink); //通用的处理图片
+	if (!no_url_work)	//如果指定不处理，那就不处理了
+	{
+		urlimg = mov_flickr_url(urlimg, urllink); //通用的处理图片
+	}
 	if (isAlex()) {
 		//alex论坛风格
 		txt_out += "[img]" + urlimg + "[/img]" + "\r\n";

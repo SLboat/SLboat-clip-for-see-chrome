@@ -5,13 +5,15 @@ var click_double_wait_time = 400; //双击等待毫秒时间
 var has_ink = false; //是否有墨水
 var has_api = false; //是否有api请求
 
-var delayID; //全局的定时器ID
+var delayID; //全局的定时器ID，虽然没啥用
 
 //基本赋值的玩意
 var play_dealy = 50; //动画每帧延时
 var image_play_now = 0; //播放当前帧
 var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 	"pen_shape_2.png ", "pen_shape_3.png ", "pen_shape_4.png "); //正常墨水
+
+var ink_images_start = "./img/icon_32.png"; // 初始墨水
 
 var flickr_images = new Array("flickr_pen_shape_1.png ",
 	"flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
@@ -20,7 +22,7 @@ var flickr_images = new Array("flickr_pen_shape_1.png ",
 
 var flickr_images_ink_done = "./img/" + flickr_images[flickr_images.length - 1]; //最后一帧正常
 var flickr_images_api_wait = "./img/flickr_pen_api_wait.png"; //API_等待
-var flickr_images_api_done = "./img/flickr_pen_api_wait.png"; //API_完成
+var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
 
 //默认墨水风格
 var ink_type = "ink";
@@ -78,7 +80,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 	if (ink.length == 0) { // 看看有没有墨水在里面
 		// 全部否定，彻底终止
 		chrome.browserAction.setIcon({
-			path: "/img/icon_32.png"
+			path: ink_images_start
 		}); // 关闭墨水
 		//走人
 		return false;
@@ -169,6 +171,13 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 	sendResponse({}); // snub them.
 });
 
+/* 每次启动的时候初始化 */
+chrome.runtime.onStartup.addListener(function() {
+		chrome.browserAction.setIcon({
+			path: ink_images_start
+		}); // 关闭墨水
+});
+
 /* Flickr API有关的处理在这里 */
 
 //开始API处理
@@ -248,7 +257,7 @@ function clear_ink() {
 
 /* 是否没有墨水 */
 function is_empty_ink() {
-	return has_ink;
+	return !has_ink; //反置是否有墨水
 }
 
 /* 是否为API */

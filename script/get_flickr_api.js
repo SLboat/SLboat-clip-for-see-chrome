@@ -39,7 +39,7 @@ function call_flickr_api_search(search_tag){
 	Requst_url+="&api_key="+flickr_api_key.api_key; //这样拼看起来好看点
 	Requst_url+="&user_id="+user_id; //用户ID，减少数量
 	Requst_url+="&tags="+ search_tag; //搜索标签，将来要变成utf8的
-	Requst_url+="&extras=url_c,owner_name&per_page="+per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
+	Requst_url+="&extras=url_c,url_z,owner_name&per_page="+per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
 
 	//加个签名信息试试
 	Requst_url+= "&auth_token="+flickr_api_key.auth_token
@@ -108,10 +108,14 @@ function get_json_pics(pics_json){
 	for (var pics_num in pics_json.photos.photo) { //这遍历真是作用不大
 		var pics=pics_json.photos.photo[pics_num];
 		var img_link=pics.url_c; //自动生成的图片链接，这里就先考虑c
+		if (typeof(url_link)=="undefined")
+		{
+			var img_link=pics.url_z; //没有大尺寸的时候，就用z好了
+		}
 		var url_link= "http://www.flickr.com/photos/"+pics.ownername.toLowerCase()+"/"+pics.id; //获得点击的连接，用户名和ID拼凑
 		var alt_str=pics.title || "SLboat Seeing..."; //获得标签作为alt
 		//遍历中的任何一项
-		txtCont += render_per_link(img_link, url_link, alt_str);
+		txtCont += render_per_link(img_link, url_link, alt_str, true);
 	}
 
 	//处理开头和结尾
