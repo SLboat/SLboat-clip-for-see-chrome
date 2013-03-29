@@ -9,15 +9,12 @@
     "content_scripts": [
 	    {
 	      "matches": [ "http://*/*", "https://*/*" ],
-	      // 排除flickr，它单干
 	      "exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      "js": ["/script/get_sel.js"],
-	      // "all_frames": true,
 	      "run_at": "document_end"
 	    },
 	    {
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
-	      //jquery and stuff
 	      "js": ["/script/jquery.min.js","/script/get_flickr.js","/script/get_flickr_api.js","/script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
 	    }
@@ -34,5 +31,5 @@
    ],
    "homepage_url":"http://see.sl088.com",
    "manifest_version": 2,
-   "version":"2.013"
+   "version":"2.14.10"
 }
