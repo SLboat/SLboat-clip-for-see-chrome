@@ -59,6 +59,7 @@ $(document).ready(function(){
 			tips ("抱歉，你没有输入一个mini-token呢，先进入认证页面吧！");
 			return false;
 		}
+		tips("正在为你获取...")
 		//传给匿名函数，来得到一整个的访问
 		call_flickr_api_get_fulltoekn($("#api_key").val(),$("#secret_key").val(), $("#mini_token").val(),get_token_back);
 
@@ -66,7 +67,7 @@ $(document).ready(function(){
 })
 
 function get_token_back(Json_Token){
-	console.log("获得了一些东西");
+	console.log("获得了一些东西回来");
 	if (Json_Token.stat=="ok")
 	{
 		tips ("获得token成功!已填入授权密匙处，请记得保存！");

@@ -99,7 +99,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
          // check if is in manage now
          if (isInManage) return;
          //发送事件请求
-         chrome.tabs.sendRequest(tab.id, {
+         chrome.tabs.sendMessage(tab.id, {
             method: "getSelection",
             //用于墨水的作用
             ink_for: localStorage.ink_for || "slboat"
@@ -120,7 +120,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 });
 
 /* 处理得到的事件 */
-chrome.extension.onRequest.addListener(function (request, sender,
+chrome.extension.onMessage.addListener(function (request, sender,
    sendResponse) {
    if (request.command == "add") {
       chrome.tabs.getSelected(null, add);

@@ -36,8 +36,8 @@ function get_flickr_link() {
    var Ident_groups_page = ".pc_n .pc_img"
    //照片流页标记-Photostream
    var Ident_photostream_page = ".pc_m .pc_img"
-   //单页标记
-   var Ident_single_page = "#liquid-photo"
+   //单页标记，会优先得到buffer缓冲，很奇怪
+   var Ident_single_page = "#liquid-photo-buffer"
 	/* 标记处理完毕 */
 
    catch_them = $(Ident_tag_page); //先试试是不是来到了标签页里
@@ -83,9 +83,14 @@ function get_flickr_link() {
       if ($(Ident_single_page).length > 0)		//有至少一个单页标签，一般也只有一个
       {
          var str_alt = $(Ident_single_page).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
-         txtCont += render_per_link($(Ident_single_page).prop("src"), page_info
+		 var img_src = $(Ident_single_page).prop("src");
+         txtCont += render_per_link(img_src, page_info
             .txtUrl,
             str_alt);
+			 if (typeof(img_src)=="undefined" || img_src.length==0)
+			 {
+				return ""; //返回一些破玩意回去
+			 }
          pic_num++;          //递加图片数量1
       }
    }
@@ -111,7 +116,7 @@ function get_flickr_link() {
 
 /* 处理事件钩子 */
 //添加事件钩子，当服务端请求的时候响应
-chrome.extension.onRequest.addListener(function (request, sender,
+chrome.extension.onMessage.addListener(function (request, sender,
    sendResponse) {
    if (request.method == "getSelection") {
       var titlestr = (document.title == "") ? "无标题见识" : document.title; //检测是否为空一起都在这里
