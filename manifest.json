@@ -18,7 +18,7 @@
 	    {
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      //jquery and stuff
-	      "js": ["/script/jquery.min.js","/script/get_flickr.js","/script/get_flickr_api.js"],
+	      "js": ["/script/jquery.min.js","/script/get_flickr.js","/script/get_flickr_api.js","/script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
 	    }
     ],

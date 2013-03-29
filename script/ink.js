@@ -1,3 +1,5 @@
+/* 主核心后台脚本 */
+
 var lastTime = new Date().getTime();
 var isInManage = false;
 var delayTime = 500;
@@ -72,19 +74,14 @@ function add(ink, title, url, copy_type, tab) {
    //给本地保存一份，作用是啥子呢-将来注入墨水
    localStorage.content = result;
 
-   var inkstand = document.getElementById('inkstand');
-   inkstand.value = result;
-   inkstand.select();
-
-   //执行复制到这里
-   var rv = document.execCommand("copy");
-   return rv; //返回这玩意的执行
+   return copy_text(result); //复制，结束
 }
 
+//打开森亮号页面
 function go_see() {
    chrome.tabs.create({
       url: "http://see.sl088.com"
-   }); //打开管理页面
+   }); 
 }
 
 /* 添加按钮点击事件 */
@@ -100,7 +97,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
          if (isInManage) return;
          //发送事件请求
          chrome.tabs.sendMessage(tab.id, {
-            method: "getSelection",
+			// 传递方法，传递api_key
+            method: "getSelection", flickr_api_key: get_api_key(),
             //用于墨水的作用
             ink_for: localStorage.ink_for || "slboat"
          }, function (response) {
@@ -126,9 +124,46 @@ chrome.extension.onMessage.addListener(function (request, sender,
       chrome.tabs.getSelected(null, add);
    } else if (request.command == "manage") {
       go_see();
+	// 从API回来的事情
+    } else if (request.command == "ink_api_start") {
+      flickr_api_start();
+    } else if (request.command == "ink_api_finish") {
+      flick_api_end(request); //把呼叫体传回去得了
    }
    sendResponse({}); // snub them.
 });
+
+/* Flickr API有关的处理在这里 */
+
+//开始API处理
+function flickr_api_start(){
+	//播放等待图标
+	chrome.browserAction.setIcon({path: "/img/flickr_pen_api_wait.png"});
+}
+
+//API完成处理
+function flick_api_end(request){
+	if (request.have_ink) {		//有墨水了
+		//API完成图标
+		chrome.browserAction.setIcon({path: "/img/flickr_pen_api_done.png"});
+		
+		copy_text(request.ink); //复制墨水
+		//todo:处理是否重复获取了
+	}else
+		chrome.browserAction.setIcon({path: "/img/flickr_pen_shape_6.png"});
+
+}
+
+//获得API的KEY
+function get_api_key(){
+	// 赋值给它
+	var api_key ={api_key: localStorage.api_key || "",
+	secret_key: localStorage.secret_key || "",
+	auth_token: localStorage.auth_token || ""};
+	// 放回去
+	return api_key;
+
+}
 
 /* 一些子函数-小专将 */
 /* 小函数 - 提取URL的域名 */
@@ -140,4 +175,15 @@ var getHost = function (url) {
    if (typeof match != "undefined" && null != match)
       host = match[1];
    return host;
+}
+
+/* 复制文本到剪贴板里-就是一切的终结 */
+function copy_text(text){
+	//todo：检查些之前内容啥的
+   var inkstand = document.getElementById('inkstand'); //不需要使用jQuery
+   inkstand.value = text;
+   inkstand.select();
+
+   var rv = document.execCommand("copy");   //执行复制到这里
+   return rv; //返回这玩意的执行
 }

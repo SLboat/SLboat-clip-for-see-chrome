@@ -75,3 +75,14 @@ a { color: gray }
 	width: 50px;
 	text-align: center;
 }
+
+#save_info{
+	color: #A29696;
+	font-size: 50%;
+	margin-bottom: 10px;
+	display: none;
+}
+
+.auto_tip{
+	margin-left: 20px;
+}

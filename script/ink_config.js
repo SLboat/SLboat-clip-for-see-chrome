@@ -6,6 +6,7 @@ function init() {
 	$("#api_key").val(localStorage.api_key || ""); //默认值为空
 	$("#secret_key").val(localStorage.secret_key || ""); //默认值为空
 	$("#auth_token").val(localStorage.auth_token || ""); //默认值为空
+	$("#user_name").val(localStorage.user_name || ""); //默认值为空
 
 
    Disabled_Save_Button();
@@ -18,9 +19,12 @@ function Save_Setting() {
 	localStorage.api_key = $("#api_key").val();
 	localStorage.secret_key = $("#secret_key").val();
 	localStorage.auth_token = $("#auth_token").val();
+	localStorage.user_name = $("#user_name").val(); //用户名这玩意
+
 
     Disabled_Save_Button();
-
+	$("#save_info").show();
+	$("#save_info").fadeOut(5000);
    // chrome.extension.getBackgroundPage().init();
 }
 
@@ -60,7 +64,7 @@ $(document).ready(function(){
 			return false;
 		}
 		tips("正在为你获取...")
-		//传给匿名函数，来得到一整个的访问
+		//传给匿名函数，来得到一整个的访问，取得的是当页的
 		call_flickr_api_get_fulltoekn($("#api_key").val(),$("#secret_key").val(), $("#mini_token").val(),get_token_back);
 
 	})
@@ -71,7 +75,8 @@ function get_token_back(Json_Token){
 	if (Json_Token.stat=="ok")
 	{
 		tips ("获得token成功!已填入授权密匙处，请记得保存！");
-		$("#auth_token").val(Json_Token.auth.token._content); //写入到全局token里去
+		$("#auth_token").val(Json_Token.auth.token._content); //写入到token里去
+		$("#user_name").val(Json_Token.auth.user.username.toLowerCase()); //写入到token里去
 	}else{
 		tips ("尝试获取token失败，原因："+Json_Token.message);
 	}

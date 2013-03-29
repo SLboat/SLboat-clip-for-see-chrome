@@ -1,6 +1,6 @@
 var is_debug_ink = false; //调试标志
-
 var ink_for = "slboat"; //墨水类型，默认森亮号大船
+var flickr_api_key = new Object ; //api key
 
 /* 主函数们 */
 
@@ -108,6 +108,9 @@ function get_flickr_link() {
    if (is_debug_ink) {
       console.log("这次得到了\n" + flickr_txt)
    }
+	
+	//只是测试--临时的
+   call_flickr_api_search("iphone获取");
 
    return flickr_txt;
 
@@ -122,7 +125,7 @@ chrome.extension.onMessage.addListener(function (request, sender,
       var titlestr = (document.title == "") ? "无标题见识" : document.title; //检测是否为空一起都在这里
       var copystr = window.getSelection().toString(); //选中的玩意
       var get_type = "ink"; //获取的类型
-
+	  flickr_api_key = request.flickr_api_key; //放到全局去，API_Key
       ink_for = request.ink_for; //墨水类型
 
       //处理是否有复制文本

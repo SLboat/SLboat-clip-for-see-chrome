@@ -20,16 +20,19 @@ function call_flickr_api_get_fulltoekn(api_key, secret_key, mini_token, callback
 	xhr.onreadystatechange = function() {
 	  if (xhr.readyState == 4) {
 		//获得完毕了
-		Json_Token=(JSON.parse(xhr.responseText)); //传入到解析器里去
-		if (Json_Token.stat=="ok")
-		{
-			console.log ("获得token完毕!");
-			var auth_token=Json_Token.auth.token._content || ""; //写入到全局token里去
+		var Json_Token=(JSON.parse(xhr.responseText)); //传入到解析器里去
+		/* 不太紧要的输出一些东西 
+			if (Json_Token.stat=="ok")
+			{
+				console.log ("获得token完毕!");
+				var auth_token=Json_Token.auth.token._content || ""; //写入到全局token里去
 
-		}else{
-			console.log ("获得token失败!");
-			console.log("返回的是:"+xhr.responseText);
-		}
+			}else{
+				console.log ("获得token失败!");
+				console.log("返回的是:"+xhr.responseText);
+			}
+			//调试中先注销 
+		*/
 			if (typeof(callback)=="function")	return callback(Json_Token); //函数回调结束
 
 	  }
