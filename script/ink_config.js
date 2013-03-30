@@ -1,6 +1,7 @@
 var link_for_token = "http://www.flickr.com/auth-72157633098872233"; //API KEY的对应获取地址
 
 function init() {
+	// 利用遍历一次性保存-听起来如何
     $("#see_ink").val(localStorage.see_ink || "80");
 	$("#ink_for").val(localStorage.ink_for || "slboat"); //默认值
 	$("#api_key").val(localStorage.api_key || ""); //默认值为空
