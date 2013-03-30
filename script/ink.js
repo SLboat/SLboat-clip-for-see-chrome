@@ -101,7 +101,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 		ink_open_animateGraph(); //播放动画由这里开始
 
 		//格式化文本-得到最终玩意
-		result = fixtxt(ink, title, url);
+		result = ink_color({text: ink, title: title, url: url});
 	}
 
 	//给本地保存一份，作用是啥子呢-将来注入墨水
@@ -140,7 +140,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 				method: "getSelection",
 				flickr_api_key: get_api_key(),
 				//用于墨水的作用
-				ink_for: localStorage.ink_for || "slboat"
+				ink_for: get_ink_for()
 			}, function (response) {
 				ink_add(response.data, response.title, response.url, response
 					.copy_type,
@@ -263,4 +263,9 @@ function is_empty_ink() {
 /* 是否为API */
 function is_api() {
 	return has_api;
+}
+
+//获得墨水用于谁
+function get_ink_for(){
+	return localStorage.ink_for || "slboat";
 }
