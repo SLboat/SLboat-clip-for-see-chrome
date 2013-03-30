@@ -5,39 +5,57 @@
 //--------------------------
 //传入了ink，title，url，在这里处理
 
-function ink_color(ink)
-{
+function ink_color(ink) {
 	var textout; //输出变量
 	var style_txt; //风格字串
-	if (get_ink_for()=="alex")
-	{
-		style_txt="[color=grey]沿途见识：[/color]\r\n"
-		style_txt+="[quote]%ink%[/quote]\r\n"
-		style_txt+="[align=right][color=grey]见识来源: [url=%url%]%title%[/url][/color][/align]\r\n"
+
+	if (get_ink_for() == "alex") {
+		style_txt = "[color=grey]沿途见识：[/color]%br%";
+		style_txt += "[quote]%ink%[/quote]%br%"; //无法避免不换行
+		style_txt += "[align=right][color=grey]见识来源: [url=%url%]%title%[/url][/color][/align]%br%"; //结尾完毕
 
 		/* 保守风格
 		// 一种保守风格-用于不支持对齐代码的地方 
-		var style_txt_classic = "[color=grey]沿途见识[/color][color=Grey](见识原始来源: [url=%url%][/url][/color])\r\n"
+		var style_txt_classic = "[color=grey]沿途见识[/color][color=Grey](见识原始来源: [url=%url%][/url][/color])%br%"
 		style_txt_classic += "[quote]%ink%[/quote]"
 		*/
 
 		textout = randerink(style_txt, ink);
 
-	}else{
+	} else {
+		//todo: 考虑太长标题带来的麻烦？
+
+		// 没有回头的路，是的
 		//处理标题加上标志 -- 这玩意是如此的简单
-		title += "<sup> 沿途见识</sup>"
-		ink = "<poem>\r\n" + ink.text + "\r\n</poem>"
-		textout = "===" + ink.title + "<ref>" + ink.url + "</ref>===\r\n" +
-			ink;
-		textout += "\r\n";
+		style_txt = "===%title%<sup> 沿途见识</sup><ref>[%url% %title%], 见识于" + get_time_str() + "</ref>===";
+		style_txt += "%br%"; //先换一行
+		style_txt += "<poem>%br%%ink%%br%</poem>";
+		style_txt += "%br%"; //再一个换行
+		textout = randerink(style_txt, ink);
+		
 	}
-		return textout;
+	return textout;
 }
 
-//渲染墨水-染色
-function randerink(perink,ink){
-	perink=perink.replace("%ink%",ink.text);
-	perink=perink.replace("%title%",ink.title);
-	perink=perink.replace("%url%",ink.url);
+//渲染墨水-染色，渲染文字、标题、url、新行
+
+function randerink(perink, ink) {
+	//todo：考虑如果替换原始内容有特殊玩意的处理，目前考虑的是模式符号\1
+	perink = perink.replace(/%ink%/g, ink.text); //文字
+	perink = perink.replace(/%title%/g, ink.title); //标题
+	perink = perink.replace(/%url%/g, ink.url); //地址
+	perink = perink.replace(/%br%/g, "\r\n"); //新行也支持了，是的
+
 	return perink;
+}
+
+/* 返回一个当前时间 */
+// 格式就像是"2013-3-30 14:20"
+function get_time_str(){
+		var now = new Date(); 
+		//获得日期串
+		var datastr = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate(); 
+		//获得时间串
+		var timestr = now.getHours() + ":" + now.getMinutes(); 
+		return datastr + " " + timestr; // 最后得到的玩意
 }
