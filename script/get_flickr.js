@@ -287,7 +287,7 @@ function render_final_text(txtstart, txtcont, txtend) {
 	if (isAlex()) {
 		return txtcont; //输出本次临时的
 	}
-	return txtstart + txtcont + txtend; //输出本次临时的
+	return "\r\n" + txtstart + txtcont + txtend; // 多一个换行没啥不好的
 }
 
 //返回是否设置为BBCODE

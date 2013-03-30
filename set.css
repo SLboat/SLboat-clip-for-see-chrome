@@ -65,10 +65,16 @@ a { color: gray }
     color: white;
 }
 #mini_token { border-radius: 5px }
-#tips {
+/* 获得密匙的提示信息 */
+.tipsinfo {
     font-size: 70%;
     margin-bottom: 10px;
     color: #A07266;
+}
+/* 普通的提示信息 */
+.tip{
+	color: grey;
+	font-size: 60%;
 }
 
 #see_ink{
