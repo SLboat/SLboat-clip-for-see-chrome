@@ -8,7 +8,7 @@ var has_api = false; //是否有api请求
 var delayID; //全局的定时器ID，虽然没啥用
 
 //基本赋值的玩意
-var play_dealy = 50; //动画每帧延时
+var play_dealy = 80; //动画每帧延时
 var image_play_now = 0; //播放当前帧
 var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 	"pen_shape_2.png ", "pen_shape_3.png ", "pen_shape_4.png "); //正常墨水
