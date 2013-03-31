@@ -58,6 +58,8 @@ $(document).ready(function(){
 	$("#save-button").click(Save_Setting); //所有保存
 	$("#cancel-button").click(Load_Setting); //所有保存
 
+	$("#flickr_order").change(Save_Setting); //所有保存
+
 	$("#link_get_token").prop("href",link_for_token); //赋予链接
 	//绑定获得token的玩意
 	$("#get-token-button").click(function(){

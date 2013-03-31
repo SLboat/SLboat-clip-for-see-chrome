@@ -17,6 +17,11 @@
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      "js": ["/script/jquery.min.js","/script/get_flickr.js","/script/get_flickr_api.js","/script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
+	    },
+	    {
+	      "matches": [ "http://see.sl088.com/w/*", "https://see.sl088.com/w/*"],
+	      "js": ["/script/jquery.min.js","/script/jquery.textSelection.js"],
+	      "run_at": "document_end"
 	    }
     ],
    "description":"森亮号航海见识墨水！吸取Web和Flickr，一种微妙的墨水！",
