@@ -145,6 +145,10 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 				get_type.type = "flickr"; //新的获取类型
 			}
 		}
+		if (typeof(copystr)=="undefined")
+		{
+			return false;	//无效而归
+		}
 		//遣送回去数据，保留选择文字？这是一个callback
 		sendResponse({
 			data: copystr,
