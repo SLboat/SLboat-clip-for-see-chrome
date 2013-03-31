@@ -1,12 +1,7 @@
 var link_for_token = "http://www.flickr.com/auth-72157633098872233"; //API KEY的对应获取地址
 
 function init() {
-	chrome.storage.sync.get(["ink_config"],function(date){
-		//载入成功
-		//console.log(date); //回显存储数据
-		localStorage=date.ink_config ; //传到本地
-		Load_Setting(); //载入数据
-	}) //可以工作
+	//可以工作
 	Load_Setting()
 }
 
@@ -27,25 +22,6 @@ function Load_Setting(){
 	Disabled_Save_Button();
 }
 
-//监控变更
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-  for (key in changes) {
-		//提取一个改变的对象
-		if (typeof(changes.ink_config) != "undefined") //只扑捉想要的键值
-		{
-			var remoteStorage = changes.ink_config.newValue; //新的临时变量
-			if (localStorage.seeds != remoteStorage.seeds) //检查种子是否一样
-			{
-				localStorage=remoteStorage ; //载入本地去管它呢
-				Load_Setting(); //一大堆重复的逻辑。。
-				console.log("服务器数据变更！已经同步！");
-			}else
-				console.log("你的服务器同步有回音咯！");
-		}
-		//todo:反应到界面上去？
-	  }
-})
-
 //保存设置
 function Save_Setting() {
 	localStorage.clear(); //清空抛弃不必要的
@@ -60,9 +36,6 @@ function Save_Setting() {
 
 	Disabled_Save_Button();	//黑按钮
 	save_tips("应该保存进去了！不然为啥按钮都黑了！");	//保存提醒
-
-	//chrome.storage.sync.clear(); //清除远程，有必要吗？
-	chrome.storage.sync.set({'ink_config': localStorage},function(){save_tips("保存完毕了！保存数据已经同步到你的账号！现在换机器也没事了！");})
 
    // chrome.extension.getBackgroundPage().init();
 }

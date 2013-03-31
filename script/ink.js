@@ -127,7 +127,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 		//提取一个改变的对象
 		if (typeof(changes.ink_config)!="undefined") //只扑捉想要的键值
 		{
-			localStorage=changes.ink_config; //载入本地去管它呢
+			localStorage=changes.ink_config.newValue; //载入本地去管它呢
 		}
 		console.log("服务器的配置数据变动！已同步！");
 	  }
@@ -151,7 +151,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 				method: "getSelection",
 				flickr_api_key: get_api_key(),
 				//用于墨水的作用
-				ink_for: get_ink_for()
+				ink_option: {ink_for: get_ink_for(), flickr_order: localStorage.flickr_order || ""}	//传入选项
 			}, function (response) {
 				ink_add(response.data, response.title, response.url, response
 					.copy_type,

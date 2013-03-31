@@ -1,8 +1,12 @@
 /* 所有与HTML相关部分标记为：于目标HTML相关联代码 */
 /* 基本变量配置 */
 var is_debug_ink = false; //调试标志
-var ink_for = "slboat"; //墨水类型，默认森亮号大船
 var flickr_api_key = new Object; //api key
+
+var ink_option = {
+	ink_for: "slboat",
+	flickr_order: "pos"
+}; //墨水选项
 
 /* 主函数们 */
 
@@ -18,8 +22,10 @@ function get_flickr_link() {
 
 	//初始化图片数量
 	var pic_num = 0;
+	//单条图片字串
+	var imgcont = "";
 	//取得图片字串
-	var txtCont = "";
+	var txtcont = "";
 	//最终字串，初始化为空
 	var flickr_txt = "";
 	//不使用API默认
@@ -53,11 +59,11 @@ function get_flickr_link() {
 		if ($(Ident_tag_page_more_than_one).length > 0) {
 			//超过了一页，不太好办，召唤API，同时这里让它继续去
 			if (is_debug_ink) console.log("超过一页了！将使用API进行处理");
-			useapi="notmine"; //不管它，就是没用到api
+			useapi = "notmine"; //不管它，就是没用到api
 			// 获得自己相册页面的tag
 			tag = get_my_tag_name(page_info.txtTitle);
 			if (tag.length > 0) {
-				useapi="notyet"; //还没准备好
+				useapi = "notyet"; //还没准备好
 				//赋值给未来的人
 				flickr_return.need_api = true;
 				flickr_return.tag = tag; //传回去似乎也没啥用
@@ -82,8 +88,9 @@ function get_flickr_link() {
 		catch_them.each(function () {
 			var str_alt = $(this).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
 			//渲染得到单条的最终连接情况
-			txtCont += render_per_link($(this).prop("src"), $(this).parent().prop(
-				"href"), str_alt, false); //要处理后面那个
+			var imgcont = render_per_link($(this).prop("src"), $(this).parent().prop(
+				"href"), str_alt, false); //单条
+			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
 			//递加图片数量1
 			pic_num++;
 		})
@@ -94,9 +101,10 @@ function get_flickr_link() {
 		{
 			var str_alt = $(Ident_single_page).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
 			var img_src = $(Ident_single_page).prop("src");
-			txtCont += render_per_link(img_src, page_info
+			imgcont = render_per_link(img_src, page_info
 				.txtUrl,
 				str_alt, false);
+			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
 			if (typeof (img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去
 			}
@@ -105,12 +113,12 @@ function get_flickr_link() {
 	}
 
 	//搭建屁股部分
-	var str_end = get_end_html(pic_num, useapi );
+	var str_end = get_end_html(pic_num, useapi);
 
 	//如果得到了一些东西
-	if (txtCont != "") {
+	if (txtcont != "") {
 		//拼合一切
-		flickr_txt = render_final_text(str_start, txtCont, str_end)
+		flickr_txt = render_final_text(str_start, txtcont, str_end)
 	}
 
 	//返回一个调试信息
@@ -131,23 +139,24 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 	if (request.method == "getSelection") {
 		var titlestr = (document.title == "") ? "无标题见识" : document.title; //检测是否为空一起都在这里
 		var copystr = window.getSelection().toString(); //选中的玩意
-		var get_type = {type: "ink"}; //获取的类型
+		var get_type = {
+			type: "ink"
+		}; //获取的类型
 		flickr_api_key = request.flickr_api_key; //放到全局去，API_Key
-		ink_for = request.ink_for; //墨水类型
+		ink_option = request.ink_option; //墨水类型
 
 		//处理是否有复制文本
 		if (copystr.length == 0) {
 			//转为尝试获取flickr图片
 			get_type.api = get_flickr_link(); // api都丢在这里了
-			copystr=get_type.api.txt; // 赋值给基本文本
+			copystr = get_type.api.txt; // 赋值给基本文本
 			//判断是否有获得
 			if (copystr.length > 0) {
 				get_type.type = "flickr"; //新的获取类型
 			}
 		}
-		if (typeof(copystr)=="undefined")
-		{
-			return false;	//无效而归
+		if (typeof (copystr) == "undefined") {
+			return false; //无效而归
 		}
 		//遣送回去数据，保留选择文字？这是一个callback
 		sendResponse({
@@ -225,6 +234,18 @@ function get_end_html(pic_num, useapi) {
 	return str_end
 }
 
+//排序图片队列
+
+function flickr_order_pics(txtcont, txtnow) {
+	//获得顺序
+	if (get_flickr_order_pos())
+	//正序
+		return txtcont + txtnow;
+	else
+	//逆序
+		return txtnow + txtcont;
+}
+
 //获得标签页的标签名称，仅仅获得自己的标签
 //如果获得别人的需要它的用户ID，暂时不去考虑
 
@@ -267,7 +288,7 @@ function mov_flickr_url(org_url, org_link) {
 
 function render_per_link(urlimg, urllink, str_alt, no_url_work) {
 	var txt_out = ""; //输出的临时变量
-	if (!no_url_work)	//如果指定不处理，那就不处理了
+	if (!no_url_work) //如果指定不处理，那就不处理了
 	{
 		urlimg = mov_flickr_url(urlimg, urllink); //通用的处理图片
 	}
@@ -297,9 +318,13 @@ function render_final_text(txtstart, txtcont, txtend) {
 //返回是否设置为BBCODE
 
 function isAlex() {
-	return ink_for == "alex";
+	return ink_option.ink_for == "alex";
 }
 
+//获得排序选项，这些真该直接丢在object里，是否是正序的
+function get_flickr_order_pos() {
+	return ink_option.flickr_order == "pos";
+}
 /* 额外的测试执行 */
 
 /*
