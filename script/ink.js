@@ -10,6 +10,7 @@ var delayID; //全局的定时器ID，虽然没啥用
 //基本赋值的玩意
 var play_dealy = 80; //动画每帧延时
 var image_play_now = 0; //播放当前帧
+var image_stay_ink = 0; //墨水剩余量
 var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 	"pen_shape_2.png ", "pen_shape_3.png ", "pen_shape_4.png "); //正常墨水
 
@@ -28,8 +29,11 @@ var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
 var ink_type = "ink";
 
 /* 播放运作动画 */
-function ink_open_animateGraph() {
-	image_play_now++;
+function ink_open_animateGraph(begin) {
+	if (typeof (begin) != "undefined" && begin)
+	{
+		image_play_now=0; //初始化
+	}
 	//播放完毕退出
 	if (typeof (ink_type) != "undefined" && ink_type == "flickr") {
 		// 播放flickr的玩意
@@ -60,8 +64,71 @@ function ink_open_animateGraph() {
 			path: "./img/" + ink_images[image_play_now]
 		});
 	}
+	//墨水量保存
+	image_stay_ink=image_play_now;
+	//动画加1
+	image_play_now++;
 
 	delayID = setTimeout(ink_open_animateGraph, play_dealy); //这是一直播放吗？真疯狂
+}
+
+/* 播放运作动画 */
+function ink_close_animateGraph(begin) {
+	if (typeof (begin) != "undefined" && begin) //初始化的标记
+	{
+			if (typeof (ink_type) != "undefined" && ink_type == "flickr") 
+				image_play_now = flickr_images.length-1; //最大大小
+			else
+				image_play_now = ink_images.length-1; //最大大小
+	}
+	if (image_stay_ink<0)	//没有剩余墨水-罢工
+	{
+		return;
+	}
+	//播放完毕退出
+	if (typeof (ink_type) != "undefined" && ink_type == "flickr") {
+		// 播放flickr的玩意
+		if (image_play_now <0 ) { //结束了玩完了
+			//处理一些最后帧
+			if (is_api() && image_stay_ink>0) {
+				if (is_empty_ink()) {
+					//播放等待图标
+					chrome.browserAction.setIcon({
+						path: flickr_images_api_wait
+					});
+				} else {
+					//播放结束图标
+					chrome.browserAction.setIcon({
+						path: flickr_images_api_done
+					});
+				}
+
+			}else{
+				//设置剩余墨水
+				chrome.browserAction.setIcon({
+					path: "./img/" + flickr_images[image_stay_ink]
+				});
+			}
+			return; //返回的时候终止了
+		}
+		//放置动画
+		chrome.browserAction.setIcon({
+			path: "./img/" + flickr_images[image_play_now]
+		});
+	} else {
+		if (image_play_now < 0 ) {
+			chrome.browserAction.setIcon({
+				path: "./img/" + ink_images[image_stay_ink]
+			}); // 关闭墨水
+			return; //返回的时候结束了
+		}
+		chrome.browserAction.setIcon({
+			path: "./img/" + ink_images[image_play_now]
+		});
+	}
+	//动画-1
+	image_play_now--;
+	delayID = setTimeout(ink_close_animateGraph, play_dealy); //这是一直播放吗？真疯狂
 }
 
 /* 添加基本文字 */
@@ -89,7 +156,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 	/* 处理传入的玩意 */
 	if (ink_type == "flickr") {
 		//没有传入任何内容，判断是否为Flickr
-		ink_open_animateGraph(); //播放动画由这里开始，开始吸取墨水
+		ink_open_animateGraph(true); //播放动画由这里开始，开始吸取墨水
 		result = ink; //墨水里已有了一切
 
 		//检查是否需要api来处理
@@ -98,7 +165,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 			has_api = true; //放个画面给人家看看
 		}
 	} else { //作为默认的墨水情况
-		ink_open_animateGraph(); //播放动画由这里开始
+		ink_open_animateGraph(true); //播放动画由这里开始
 
 		//格式化文本-得到最终玩意
 		result = ink_color({text: ink, title: title, url: url});
@@ -136,28 +203,59 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 /* 添加按钮点击事件 */
 chrome.browserAction.onClicked.addListener(function (tab) {
 	var currentTime = new Date().getTime();
+	/*一个连接就像是：
+	* http://see.sl088.com/wiki/Mediawiki_%E7%BC%96%E8%BE%91%E6%A1%86#.E5.9C.A8.E5.85.89.E6.A0.87.E4.B8.8B.E5.86.99.E5.85.A5.E5.86.85.E5.AE.B9
+	*/
+	var slboat_edit_patern = /\/see\.sl088\.com\/w\/index\.php.+action=edit/; //森亮号大船编辑模式
 	//点击事件
 	if (currentTime - lastTime > click_double_wait_time) { // 间隔大于500毫秒就是无关
 		// 第一次点击-作为添加事件
 		// set manage flag
 		isInManage = false;
-		setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
-			if (isInManage) return; //返回去啥子的。。难道在中间
-			//清空墨水
-			clear_ink();
-			//发送事件请求
-			chrome.tabs.sendMessage(tab.id, {
-				// 传递方法，传递api_key
-				method: "getSelection",
-				flickr_api_key: get_api_key(),
-				//用于墨水的作用
-				ink_option: {ink_for: get_ink_for(), flickr_order: localStorage.flickr_order || ""}	//传入选项
-			}, function (response) {
-				ink_add(response.data, response.title, response.url, response
-					.copy_type,
-					tab);
-			}); //注入事件申请
-		}, 50); //等待页面间隔
+		//判断是否为森亮号页面
+		if (tab.url.match(slboat_edit_patern)!=null)
+		{
+			if (get_ink().length>0)
+			{
+					if (image_stay_ink<0)//需要准备图标吗？
+					{
+						clear_ink();
+						return;
+					}
+					//墨水减少一粒
+					image_stay_ink--;
+					//放置动画
+					ink_close_animateGraph(true);
+					//定时器看起来可以提前播放个动画啥子的-但是没啥必要呢
+					setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
+					//播放动画啥子的。。。
+					chrome.tabs.sendMessage(tab.id, {
+						// 传递方法，传递api_key
+						method: "putInk",
+						ink: get_ink(), //墨水内容
+						ink_type: ink_type //墨水类型
+					}); //注入事件申请
+				}, 50); //等待页面间隔
+			}
+		}else{
+			setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
+				if (isInManage) return; //返回去啥子的。。难道在中间
+				//清空墨水
+				clear_ink();
+				//发送事件请求
+				chrome.tabs.sendMessage(tab.id, {
+					// 传递方法，传递api_key
+					method: "getSelection",
+					flickr_api_key: get_api_key(),
+					//用于墨水的作用
+					ink_option: {ink_for: get_ink_for(), flickr_order: localStorage.flickr_order || ""}	//传入选项
+				}, function (response) {
+					ink_add(response.data, response.title, response.url, response
+						.copy_type,
+						tab);
+				}); //注入事件申请
+			}, 50); //等待页面间隔
+		}
 	} else {
 		//双击的话，进入主站好了
 		// set manage flag
@@ -252,6 +350,11 @@ function copy_text(text) {
 	inkstand.select();
 	var rv = document.execCommand("copy"); //执行复制到这里
 	return rv; //返回这玩意的执行
+}
+
+/* 提出来墨水 */
+function get_ink(){
+	return 	document.getElementById('inkstand').value; //不需要使用jQuery
 }
 
 /* 封装成一个墨水类？ */

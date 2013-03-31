@@ -19,8 +19,8 @@
 	      "run_at": "document_end"
 	    },
 	    {
-	      "matches": [ "http://see.sl088.com/w/*", "https://see.sl088.com/w/*"],
-	      "js": ["/script/jquery.min.js","/script/jquery.textSelection.js"],
+	      "matches": [ "http://see.sl088.com/w/*"],
+	      "js": ["/script/ink_inject.js"],
 	      "run_at": "document_end"
 	    }
     ],
