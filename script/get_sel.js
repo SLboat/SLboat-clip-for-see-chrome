@@ -9,6 +9,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             url: window.location.href,
             copy_type: {type: "ink"}
         });
-    } else
+    } else if (request.method == "putInk") {
+		//释放墨水
+		ink_go(request.ink, request.ink_type);
+	}else
         sendResponse({}); // snub them. should dead?
 });

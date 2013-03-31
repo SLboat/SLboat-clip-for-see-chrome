@@ -134,11 +134,4 @@ function ink_inject(ink, curr_pos){
                 //editor.scrollTop = textScroll;
  }
 
-//添加事件钩子，当服务端请求的时候响应
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.method == "putInk") {
-		//测试玩意
-		ink_go(request.ink, request.ink_type);
-    } else
-        sendResponse({}); // snub them. should dead?
-});
+//交给主脚本去处理事件钩子，到这里结束
