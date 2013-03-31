@@ -1,31 +1,69 @@
 var link_for_token = "http://www.flickr.com/auth-72157633098872233"; //API KEY的对应获取地址
 
 function init() {
-	// 利用遍历一次性保存-听起来如何
-    $("#see_ink").val(localStorage.see_ink || "80");
-	$("#ink_for").val(localStorage.ink_for || "slboat"); //默认值
+	chrome.storage.sync.get(["ink_config"],function(date){
+		//载入成功
+		//console.log(date); //回显存储数据
+		localStorage=date.ink_config ; //传到本地
+		Load_Setting(); //载入数据
+	}) //可以工作
+	Load_Setting()
+}
+
+//载入设置
+function Load_Setting(){
+	// th1nk: 利用遍历一次性保存-听起来如何，匹配ID来操作，这样可以直接读取改变的值来变更哪里变了，不用全局变动
+
+    $("#see_ink").val(localStorage.see_ink || "80"); //默认80
+	$("#ink_for").val(localStorage.ink_for || "slboat"); //默认值slboat
 	$("#api_key").val(localStorage.api_key || ""); //默认值为空
 	$("#secret_key").val(localStorage.secret_key || ""); //默认值为空
 	$("#auth_token").val(localStorage.auth_token || ""); //默认值为空
 	$("#user_name").val(localStorage.user_name || ""); //默认值为空
+	$("#flickr_order").val(localStorage.flickr_order || ""); //默认值为空
 
+	//种子不用动
 
-   Disabled_Save_Button();
+	Disabled_Save_Button();
 }
 
-// 保存
+//监控变更
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  for (key in changes) {
+		//提取一个改变的对象
+		if (typeof(changes.ink_config) != "undefined") //只扑捉想要的键值
+		{
+			var remoteStorage = changes.ink_config.newValue; //新的临时变量
+			if (localStorage.seeds != remoteStorage.seeds) //检查种子是否一样
+			{
+				localStorage=remoteStorage ; //载入本地去管它呢
+				Load_Setting(); //一大堆重复的逻辑。。
+				console.log("服务器数据变更！已经同步！");
+			}else
+				console.log("你的服务器同步有回音咯！");
+		}
+		//todo:反应到界面上去？
+	  }
+})
+
+//保存设置
 function Save_Setting() {
+	localStorage.clear(); //清空抛弃不必要的
 	localStorage.see_ink = $("#see_ink").val();
 	localStorage.ink_for = $("#ink_for").val();
 	localStorage.api_key = $("#api_key").val();
 	localStorage.secret_key = $("#secret_key").val();
 	localStorage.auth_token = $("#auth_token").val();
 	localStorage.user_name = $("#user_name").val(); //用户名这玩意
+	localStorage.flickr_order = $("#flickr_order").val(); //排序这玩意
+	localStorage.seeds= random_int(0,500); //生成一个种子
 
+	Disabled_Save_Button();	//黑按钮
+	save_tips("应该保存进去了！不然为啥按钮都黑了！");	//保存提醒
 
-    Disabled_Save_Button();
-	$("#save_info").show();
-	$("#save_info").fadeOut(5000);
+	//chrome.storage.sync.clear(); //清除远程，有必要吗？
+	chrome.storage.sync.set({'ink_config': localStorage},function(){save_tips("保存完毕了！保存数据已经同步到你的账号！现在换机器也没事了！");})
+
    // chrome.extension.getBackgroundPage().init();
 }
 
@@ -41,10 +79,11 @@ function Disabled_Save_Button() {
 
 $(document).ready(function(){
 	init(); //载入默认
+
 	$("input").bind("input",Enable_Save_Button); //所有输入框
 	$("select").bind("change",Enable_Save_Button); //所有选择框
 	$("#save-button").click(Save_Setting); //所有保存
-	$("#cancel-button").click(init); //所有保存
+	$("#cancel-button").click(Load_Setting); //所有保存
 
 	$("#link_get_token").prop("href",link_for_token); //赋予链接
 	//绑定获得token的玩意
@@ -87,4 +126,16 @@ function get_token_back(Json_Token){
 //直接输入提示给token
 function tips(text){
 		$("#tips").text(text); //不返回直接操作
+}
+
+function save_tips(text){
+	$("#save_info").text(text); //传入内容
+	$("#save_info").show();
+	$("#save_info").fadeOut(5000);
+
+}
+
+// 生成min-max之间的随机数整数
+function random_int(min,max){
+	return parseInt(Math.random()*(min-max)+max)
 }

@@ -121,6 +121,17 @@ function go_see() {
 		url: "http://see.sl088.com"
 	});
 }
+//监控变更
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  for (key in changes) {
+		//提取一个改变的对象
+		if (typeof(changes.ink_config)!="undefined") //只扑捉想要的键值
+		{
+			localStorage=changes.ink_config; //载入本地去管它呢
+		}
+		console.log("服务器的配置数据变动！已同步！");
+	  }
+})
 
 /* 添加按钮点击事件 */
 chrome.browserAction.onClicked.addListener(function (tab) {
