@@ -48,7 +48,7 @@ function ink_go(ink, ink_type){
 	var footer_tag = /{{脚注}}/ ; //搜索脚注的模式
 	var br="\r\n"; //换行标记
 	
-	var curr_pos = 1; //光标坐标
+	var curr_pos = 0; //光标坐标
 	var js_str = br + "==见识==" + br;
 	var footer_str = br + br + "{{脚注}}" + br; //多一个换行呗
 
@@ -69,13 +69,15 @@ function ink_go(ink, ink_type){
 	{
 		//自动加上见识
 		ink = js_str + ink;		
-		curr_pos = 0; //位置回到开始位置
+		curr_pos = 0; //位置回到开始位置，作为一般性情况-不过这何必呢
 
 	}
 	/* 在来考虑换行好吧 */
 	if (!ink_is_in_newline())
 	{
 		ink= br + ink;
+		var curr_pos = 1; //光标坐标，换行了，第一个开始
+
 	}
 	/* 处理脚注标签 */
 	if (ink_all_text().search(footer_tag)==-1 && ink_after_text().search(js_tag)==-1)
