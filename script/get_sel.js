@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             url: window.location.href,
             copy_type: {type: "ink"}
         });
-    } else if (request.method == "putInk") {
+    } else if (request.method == "putInk" and typeof(ink_go)=="function") { //确保已定义函数
 		//释放墨水
 		ink_go(request.ink, request.ink_type);
 	}else

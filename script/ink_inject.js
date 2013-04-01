@@ -48,8 +48,8 @@ function ink_go(ink, ink_type){
 	var footer_tag = /{{脚注}}/ ; //搜索脚注的模式
 	var br="\r\n"; //换行标记
 	
-	var curr_pos = -1; //光标坐标
-	var js_str = "==见识==" + br;
+	var curr_pos = 1; //光标坐标
+	var js_str = br + "==见识==" + br;
 	var footer_str = br + br + "{{脚注}}" + br; //多一个换行呗
 
 	ink_type = ink_type || "slboat"; //一个默认值好了
@@ -69,7 +69,7 @@ function ink_go(ink, ink_type){
 	{
 		//自动加上见识
 		ink = js_str + ink;		
-		curr_pos = ink.length; //截取当前的墨水位置
+		curr_pos = 0; //位置回到开始位置
 
 	}
 	/* 在来考虑换行好吧 */
@@ -104,7 +104,7 @@ function ink_inject(ink, curr_pos){
                 var startPos = editor.selectionStart;
                 var endPos = editor.selectionEnd;
 
-				if (curr_pos>0)
+				if (curr_pos>-1)
 				{
 					console.log("漂移位置:",curr_pos);
 					mousePos=startPos + curr_pos; //传入位置+漂移
