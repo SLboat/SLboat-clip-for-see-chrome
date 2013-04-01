@@ -106,10 +106,10 @@ function ink_inject(ink, curr_pos){
 
 				if (curr_pos>-1)
 				{
-					console.log("漂移位置:",curr_pos);
+					console.log("一些小信息：漂移位置:",curr_pos);
 					mousePos=startPos + curr_pos; //传入位置+漂移
 				}else{
-					console.log("默认位置:",ink.length)
+					console.log("一些小信息：默认位置:",ink.length)
 					mousePos = startPos+ ink.length; //初始化位置+长度
 				}
 
