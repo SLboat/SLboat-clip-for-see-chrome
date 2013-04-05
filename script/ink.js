@@ -366,6 +366,7 @@ function full_ink() {
 /* 清空墨水 */
 function clear_ink() {
 	//todo：检查些之前内容啥的
+	has_api = false; //清空
 	has_ink = false;
 }
 
