@@ -216,7 +216,7 @@ function get_end_html(pic_num, useapi) {
 	useapi = useapi || "no"; //初始值假
 
 	//搭建屁股部分
-	var str_end = "</div>\r\n"
+	var str_end = "\r\n</div>\r\n"; //多加个换行
 	if (useapi == "yes") //使用了API，这是最后的大石头啊，最初只考虑森亮号的相册
 	{
 		str_end += "<!-- 以上使用API共计捕获" + pic_num + "张图片 -->\r\n"
@@ -297,6 +297,16 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work) {
 		txt_out += "[img]" + urlimg + "[/img]" + "\r\n";
 	} else {
 		//森亮号航海见识风格
+		//增加注释ID
+		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
+		var flickr_id=urlimg.match(patern_url_id) 
+		if (flickr_id!=null)	//检测是否有ID
+		{
+			txt_out += "\r\n"; //多个换行
+			txt_out += "<!-- 此Flickr图片的ID: "+ flickr_id[1] + " -->"; //注入图片ID
+			txt_out += "\r\n"; //多个换行
+		}
+		//后面部分
 		txt_out += ": <img src=\"" + urlimg + "\" alt=\"" + str_alt + "\" />"; //带上缩进处理，赋值于完整图片
 		txt_out += " " + "["; //处理第一个中括号，已经赋给第一个空格
 		txt_out += urllink; //赋予链接目标
