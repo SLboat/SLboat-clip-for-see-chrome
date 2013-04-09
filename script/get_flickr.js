@@ -200,10 +200,10 @@ function get_start_html() {
 	}
 
 	//最初标头
-	var str_start = "<!-- 来自Flickr相册：[" + page_info.txtTitle + "] -->\r\n"
+	var str_start = "<!-- 来自Flickr相册：[" + page_info.txtTitle + "] -->\r\n";
 	//一个链接记录下来
-	str_start += "<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n"
-	str_start += "<div id=\"slboat_flickr_pics\">\r\n"
+	str_start += "<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
+	str_start += "<div id=\"slboat_flickr_pics\">\r\n"; //以后可以废除这里
 
 	return str_start
 }
@@ -286,31 +286,36 @@ function mov_flickr_url(org_url, org_link) {
 //渲染得到单条的图片的连接
 //传入图片地址，和点击链接，以及替换文字（都会搞到有的）
 
-function render_per_link(urlimg, urllink, str_alt, no_url_work) {
+function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 	var txt_out = ""; //输出的临时变量
-	if (!no_url_work) //如果指定不处理，那就不处理了
+	if (!no_url_work) //如果指定不处理，那就不处理了，转录图片大小
 	{
 		urlimg = mov_flickr_url(urlimg, urllink); //通用的处理图片
 	}
 	if (isAlex()) {
-		//alex论坛风格
+		/* alex论坛风格 */
 		txt_out += "[img]" + urlimg + "[/img]" + "\r\n";
 	} else {
-		//森亮号航海见识风格
-		//增加注释ID
-		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
-		var flickr_id=urlimg.match(patern_url_id) 
-		if (flickr_id!=null)	//检测是否有ID
+		/* 森亮号航海见识风格 */
+		//处理描述信息
+		var descstr = ""; //临时标记
+		
+		if (typeof(desc) != "undefined" && desc != "" ) //有备注
 		{
-			txt_out += "\r\n"; //多个换行
-			txt_out += "<!-- 此Flickr图片的ID: "+ flickr_id[1] + " -->"; //注入图片ID
-			txt_out += "\r\n"; //多个换行
+			descstr = ' desc=\"' + desc + '\" ';
 		}
 		//后面部分
-		txt_out += ": <img src=\"" + urlimg + "\" alt=\"" + str_alt + "\" />"; //带上缩进处理，赋值于完整图片
-		txt_out += " " + "["; //处理第一个中括号，已经赋给第一个空格
-		txt_out += urllink; //赋予链接目标
-		txt_out += " Link]\r\n"; //赋予结尾封锁中括号
+		txt_out += '\r\n<flickr alt=\"' + str_alt + '\" img=\"' + urlimg + '\" link=\"' + urllink + '\"' + descstr + '>'; //标记所有的一切
+		//看看是否增加ID
+		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
+		var flickr_id=urlimg.match(patern_url_id) 
+		if (flickr_id!=null)	//检测是否有ID，最好必须有个这样的玩意
+		{
+			txt_out += flickr_id[1] ; //加入图片ID
+		}
+		//标签合并
+		txt_out += "</flickr>\r\n";
+	
 	}
 	return txt_out; //输出本次临时的
 }
