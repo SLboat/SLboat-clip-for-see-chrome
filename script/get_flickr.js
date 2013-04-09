@@ -36,6 +36,8 @@ function get_flickr_link() {
 		tag: ""
 	}; //返回的一个组件
 
+	var tag=""; //默认的标记获得物
+
 	//获得标头
 	var str_start = get_start_html();
 
@@ -64,6 +66,18 @@ function get_flickr_link() {
 			tag = get_my_tag_name(page_info.txtTitle);
 			if (tag.length > 0) {
 				useapi = "notyet"; //还没准备好
+				//赋值给未来的人
+				flickr_return.need_api = true;
+				flickr_return.tag = tag; //传回去似乎也没啥用
+				//不管了呼叫API去
+				call_flickr_api_search(tag);
+			}
+		}else{
+			//依然使用API因为可以获得附注
+			// 获得自己相册页面的tag
+			tag = get_my_tag_name(page_info.txtTitle);
+			if (tag.length > 0) {
+				useapi = "notdesc"; //还没获得desc信息
 				//赋值给未来的人
 				flickr_return.need_api = true;
 				flickr_return.tag = tag; //传回去似乎也没啥用
@@ -227,10 +241,15 @@ function get_end_html(pic_num, useapi) {
 	} else if (useapi == "notmine") {
 		str_end += "<!-- 以上只捕获" + pic_num + "张图片 -->\r\n"
 		str_end += "<!-- 非自己相册而不使用API捕获 -->\r\n"
-	} else
-		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"
+	} else if (useapi == "notdesc"){
+		//还没有获得描述信息
+		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"	
+		str_end += "<!-- 尚未使用API获得备注信息 -->\r\n"
+	}else
+		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"; //只跟了一句哦
 
-		str_end += "<!-- 来自Flickr相册告一段落 -->\r\n"
+	//最后的结尾
+	str_end += "<!-- 来自Flickr相册告一段落 -->\r\n"
 	return str_end
 }
 
