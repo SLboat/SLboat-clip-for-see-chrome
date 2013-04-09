@@ -204,7 +204,7 @@ function load_jquery_script() {
 /* 小函数们 */
 //森亮号大船的标记头玩意
 function get_start_html() {
-
+	var need_div = false; //关闭需要div标签
 	//提取页面信息，是的就在页面里
 	//todo:置换为全局变量
 	var page_info = {
@@ -217,7 +217,11 @@ function get_start_html() {
 	var str_start = "<!-- 来自Flickr相册：[" + page_info.txtTitle + "] -->\r\n";
 	//一个链接记录下来
 	str_start += "<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
-	str_start += "<div id=\"slboat_flickr_pics\">\r\n"; //以后可以废除这里
+	if (need_div) //如果需要div
+	{
+		str_start += "<div id=\"slboat_flickr_pics\">"; //默认关闭div
+	}
+	str_start += "\r\n"; //换行多一个
 
 	return str_start
 }
@@ -226,11 +230,16 @@ function get_start_html() {
 //传入pic_num捕获张数，useapi，是否使用了api
 
 function get_end_html(pic_num, useapi) {
+	var need_div = false; //关闭需要div标签
 	pic_num = pic_num || "0";
 	useapi = useapi || "no"; //初始值假
 
 	//搭建屁股部分
-	var str_end = "\r\n</div>\r\n"; //多加个换行
+	if (need_div)
+	{
+		var str_end = "\r\n</div>"; //多加个换行
+	}
+	var str_end = "\r\n"; //多加个换行
 	if (useapi == "yes") //使用了API，这是最后的大石头啊，最初只考虑森亮号的相册
 	{
 		str_end += "<!-- 以上使用API共计捕获" + pic_num + "张图片 -->\r\n"
@@ -324,7 +333,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 			descstr = ' desc=\"' + desc + '\" ';
 		}
 		//后面部分
-		txt_out += '\r\n<flickr alt=\"' + str_alt + '\" img=\"' + urlimg + '\" link=\"' + urllink + '\"' + descstr + '>'; //标记所有的一切
+		txt_out += '<flickr alt=\"' + str_alt + '\" img=\"' + urlimg + '\" link=\"' + urllink + '\"' + descstr + '>'; //标记所有的一切
 		//看看是否增加ID
 		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
 		var flickr_id=urlimg.match(patern_url_id) 

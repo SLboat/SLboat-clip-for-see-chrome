@@ -88,26 +88,12 @@ function ink_close_animateGraph(begin) {
 	if (typeof (ink_type) != "undefined" && ink_type == "flickr") {
 		// 播放flickr的玩意
 		if (image_play_now < 0) { //结束了玩完了
-			//处理一些最后帧
-			if (is_api() && image_stay_ink > 0) {
-				if (is_empty_ink()) {
-					//播放等待图标
-					chrome.browserAction.setIcon({
-                                                 path: flickr_images_api_wait
-                                                 });
-				} else {
-					//播放结束图标
-					chrome.browserAction.setIcon({
-                                                 path: flickr_images_api_done
-                                                 });
-				}
-                
-			} else {
-				//设置剩余墨水
-				chrome.browserAction.setIcon({
-                                             path: "./img/" + flickr_images[image_stay_ink]
-                                             });
-			}
+			//todo： 或许动画不用太夸张了			
+			//设置剩余墨水
+			chrome.browserAction.setIcon({
+										 path: "./img/" + flickr_images[image_stay_ink]
+										 });
+
 			return; //返回的时候终止了
 		}
 		//放置动画
