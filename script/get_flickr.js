@@ -333,7 +333,8 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 			descstr = ' desc=\"' + desc + '\" ';
 		}
 		//后面部分
-		txt_out += '<flickr alt=\"' + str_alt + '\" img=\"' + urlimg + '\" link=\"' + urllink + '\"' + descstr + '>'; //标记所有的一切
+		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">
+		txt_out += '<flickr alt=\"' + str_alt + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
 		//看看是否增加ID
 		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
 		var flickr_id=urlimg.match(patern_url_id) 
