@@ -36,7 +36,7 @@ function get_flickr_link() {
 		tag: ""
 	}; //返回的一个组件
 
-	var tag=""; //默认的标记获得物
+	var tag = ""; //默认的标记获得物
 
 	//获得标头
 	var str_start = get_start_html();
@@ -49,7 +49,13 @@ function get_flickr_link() {
 	var Ident_groups_page = ".pc_n .pc_img"; //群组页标记
 	var Ident_photostream_page = ".pc_m .pc_img"; //照片流页标记-Photostream
 	var Ident_single_page = "#liquid-photo-buffer"; //单页标记，会优先得到buffer缓冲，很奇怪
-
+	//单页的标题和描述
+	var Ident_single_page_info = {
+		title_div: "#title_div",	//标题div
+		desc_div: "#description_div",	//描述div
+		class_none: "insitu-hint",	//没有文字的class，默认提醒标记
+		text_none: "按一下這裡以增加"	//没有文字的开头提醒字符，第一个算起
+	};
 	/* 标记处理完毕 */
 
 	catch_them = $(Ident_tag_page); //先试试是不是来到了标签页里
@@ -72,7 +78,7 @@ function get_flickr_link() {
 				//不管了呼叫API去
 				call_flickr_api_search(tag);
 			}
-		}else{
+		} else {
 			//依然使用API因为可以获得附注
 			// 获得自己相册页面的tag
 			tag = get_my_tag_name(page_info.txtTitle);
@@ -113,15 +119,31 @@ function get_flickr_link() {
 		//尝试单页
 		if ($(Ident_single_page).length > 0) //有至少一个单页标签，一般也只有一个
 		{
-			var str_alt = $(Ident_single_page).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
 			var img_src = $(Ident_single_page).prop("src");
-			imgcont = render_per_link(img_src, page_info
-				.txtUrl,
-				str_alt, false);
-			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
 			if (typeof (img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去
 			}
+			var str_alt = "Slboat Seeing..."; //默认值
+			/* 效验单页标题和特征 */
+			//获得alt标题，太重复使用var了
+			if (!$(Ident_single_page_info.title_div).hasClass(Ident_single_page_info.class_none) && 
+					$(Ident_single_page_info.title_div).text().search(Ident_single_page_info.text_none) != 0) {
+				//有标题文字
+				str_alt = $(Ident_single_page_info.title_div).text();
+			}
+			//获得描述信息
+			var str_desc = ""; //空字串
+			if (!$(Ident_single_page_info.desc_div).hasClass(Ident_single_page_info.class_none) && 
+					$(Ident_single_page_info.class_none).text().search(Ident_single_page_info.text_none) != 0) {
+				//有标题文字
+				str_desc = $(Ident_single_page_info.desc_div).text();
+			}
+
+			imgcont = render_per_link(img_src, page_info
+				.txtUrl, str_alt, false, str_desc);
+
+			//最后渲染
+			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
 			pic_num++; //递加图片数量1
 		}
 	}
@@ -235,8 +257,7 @@ function get_end_html(pic_num, useapi) {
 	useapi = useapi || "no"; //初始值假
 
 	//搭建屁股部分
-	if (need_div)
-	{
+	if (need_div) {
 		var str_end = "\r\n</div>"; //多加个换行
 	}
 	var str_end = "\r\n"; //多加个换行
@@ -250,11 +271,11 @@ function get_end_html(pic_num, useapi) {
 	} else if (useapi == "notmine") {
 		str_end += "<!-- 以上只捕获" + pic_num + "张图片 -->\r\n"
 		str_end += "<!-- 非自己相册而不使用API捕获 -->\r\n"
-	} else if (useapi == "notdesc"){
+	} else if (useapi == "notdesc") {
 		//还没有获得描述信息
-		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"	
+		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"
 		str_end += "<!-- 尚未使用API获得备注信息 -->\r\n"
-	}else
+	} else
 		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"; //只跟了一句哦
 
 	//最后的结尾
@@ -327,8 +348,8 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		/* 森亮号航海见识风格 */
 		//处理描述信息
 		var descstr = ""; //临时标记
-		
-		if (typeof(desc) != "undefined" && desc != "" ) //有备注
+
+		if (typeof (desc) != "undefined" && desc != "") //有备注
 		{
 			descstr = ' desc=\"' + desc + '\" ';
 		}
@@ -336,15 +357,15 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">
 		txt_out += '<flickr alt=\"' + str_alt + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
 		//看看是否增加ID
-		var patern_url_id = /.+\/(.+?)_.+_.+\./ ; //匹配的URL ID
-		var flickr_id=urlimg.match(patern_url_id) 
-		if (flickr_id!=null)	//检测是否有ID，最好必须有个这样的玩意
+		var patern_url_id = /.+\/(.+?)_.+_.+\./; //匹配的URL ID
+		var flickr_id = urlimg.match(patern_url_id)
+		if (flickr_id != null) //检测是否有ID，最好必须有个这样的玩意
 		{
-			txt_out += flickr_id[1] ; //加入图片ID
+			txt_out += flickr_id[1]; //加入图片ID
 		}
 		//标签合并
 		txt_out += "</flickr>\r\n";
-	
+
 	}
 	return txt_out; //输出本次临时的
 }
@@ -366,6 +387,7 @@ function isAlex() {
 }
 
 //获得排序选项，这些真该直接丢在object里，是否是正序的
+
 function get_flickr_order_pos() {
 	return ink_option.flickr_order == "pos";
 }
