@@ -203,7 +203,7 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 			copy_type: get_type, //多配置一些东西在里面
 		});
 	} else
-		sendResponse({}); // snub them. should dead?
+		return false;
 });
 
 /* 作为目标页面直接运行的注入式脚本 */
@@ -236,9 +236,9 @@ function get_start_html() {
 	}
 
 	//最初标头
-	var str_start = "<!-- 来自Flickr相册：[" + page_info.txtTitle + "] -->\r\n";
+	var str_start = "<!-- 来自：[" + page_info.txtTitle + "] -->\r\n";
 	//一个链接记录下来
-	str_start += "<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
+	str_start += ":<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
 	if (need_div) //如果需要div
 	{
 		str_start += "<div id=\"slboat_flickr_pics\">"; //默认关闭div
@@ -258,7 +258,7 @@ function get_end_html(pic_num, useapi) {
 
 	//搭建屁股部分
 	if (need_div) {
-		var str_end = "\r\n</div>"; //多加个换行
+		var str_end = "\r\n</div>"; //多加div，需要的话
 	}
 	var str_end = "\r\n"; //多加个换行
 	if (useapi == "yes") //使用了API，这是最后的大石头啊，最初只考虑森亮号的相册
@@ -377,7 +377,8 @@ function render_final_text(txtstart, txtcont, txtend) {
 	if (isAlex()) {
 		return txtcont; //输出本次临时的
 	}
-	return "\r\n" + txtstart + txtcont + txtend; // 多一个换行没啥不好的
+	// 如果前面多换行，必须处理中间内容，否则那么最后会有大换行
+	return "\r\n" + txtstart + txtcont + txtend;  //最终返回拼合
 }
 
 //返回是否设置为BBCODE

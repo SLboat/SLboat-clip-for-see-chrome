@@ -156,6 +156,4 @@ function get_json_pics(pics_json) {
 }
 
 
-
-
 /* 以下代码仅仅临时调试用 */
