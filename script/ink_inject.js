@@ -44,12 +44,12 @@ function ink_is_in_newline(){
 
 //开始摆弄墨水，逻辑简单化，这里只处理普通墨水，其他的自己折腾去
 function ink_go(ink, ink_type){
-	var js_tag = /=={{见识}}==/ ; //搜索见识的模式
+	var js_tag = /==见识==/ ; //搜索见识的模式
 	var footer_tag = /{{脚注}}/ ; //搜索脚注的模式
 	var br="\r\n"; //换行标记
 	
 	var curr_pos = 0; //光标坐标
-	var js_str = br + "=={{见识}}==" + br;
+	var js_str = br + "==见识==" + br;
 	var footer_str = br + br + "{{脚注}}" + br; //多一个换行呗
 
 	ink_type = ink_type || "slboat"; //一个默认值好了
