@@ -44,7 +44,8 @@ function ink_is_in_newline(){
 
 //开始摆弄墨水，逻辑简单化，这里只处理普通墨水，其他的自己折腾去
 function ink_go(ink, ink_type){
-	var js_tag = /==见识==/ ; //搜索见识的模式
+	var js_tag = /==见识==/ ; //搜索见识的模式，将来废除
+	var js_i8ln_tag = /=={{int:见识}}==/; //i8ln的tag方式
 	var footer_tag = /{{脚注}}/ ; //搜索脚注的模式
 	var br="\r\n"; //换行标记
 	
@@ -65,7 +66,7 @@ function ink_go(ink, ink_type){
 	}
 
 	/* 处理见识标签 */
-	if (ink_all_text().search(js_tag)==-1 && ink_before_text().search(js_tag)==-1)
+	if (ink_all_text().search(js_tag)==-1 && ink_all_text().search(js_i8ln_tag)==-1 && ink_before_text().search(js_tag)==-1)
 	{
 		//自动加上见识
 		ink = js_str + ink;		
@@ -80,7 +81,7 @@ function ink_go(ink, ink_type){
 
 	}
 	/* 处理脚注标签 */
-	if (ink_all_text().search(footer_tag)==-1 && ink_after_text().search(js_tag)==-1)
+	if (ink_all_text().search(footer_tag)==-1 && ink_after_text().search(js_tag)==-1 && ink_after_text().search(js_i8ln_tag)==-1)
 	{
 		//自动加上见识
 		ink += footer_str;	//多点换行
