@@ -1,7 +1,7 @@
 //添加事件钩子，当服务端请求的时候响应
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method == "getSelection") {
-        var titlestr = (document.title == "") ? "无标题见识" : document.title; //检测是否为空一起都在这里
+        var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
 		var copystr = window.getSelection().toString();
 		// 框架里会重复非常多次这样的问题
 		if (copystr=="") //无内容跳出

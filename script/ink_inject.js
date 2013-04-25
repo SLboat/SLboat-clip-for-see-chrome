@@ -49,7 +49,7 @@ function ink_go(ink, ink_type){
 	var br="\r\n"; //换行标记
 	
 	var curr_pos = 0; //光标坐标
-	var js_str = br + "==见识==" + br;
+	var js_str = br + "=={{int:见识}}==" + br;
 	var footer_str = br + br + "{{脚注}}" + br; //多一个换行呗
 
 	ink_type = ink_type || "slboat"; //一个默认值好了
