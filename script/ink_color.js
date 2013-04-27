@@ -5,7 +5,7 @@
 //--------------------------
 //传入了ink，title，url，在这里处理
 
-function ink_color(ink) {
+function ink_color(ink_box) {
 	var textout; //输出变量
 	var style_txt; //风格字串
 
@@ -20,18 +20,21 @@ function ink_color(ink) {
 		style_txt_classic += "[quote]%ink%[/quote]"
 		*/
 
-		textout = randerink(style_txt, ink);
+		textout = randerink(style_txt, ink_box);
 
 	} else {
 		//todo: 考虑太长标题带来的麻烦？
-
+		if (ink_box.title=="" || ink_box.url=="") //如果只有墨水
+		{
+			return ink_box.text; //只返回一些玩意
+		}
 		// 没有回头的路，是的
 		//处理标题加上标志 -- 这玩意是如此的简单
 		style_txt = "===%title%<sup> 沿途见识</sup><ref>[%url% %title%], 见识于" + get_time_str() + "</ref>===";
 		style_txt += "%br%"; //先换一行
 		style_txt += "<poem>%br%%ink%%br%</poem>";
 		style_txt += "%br%"; //再一个换行
-		textout = randerink(style_txt, ink);
+		textout = randerink(style_txt, ink_box);
 		
 	}
 	return textout;
@@ -39,11 +42,11 @@ function ink_color(ink) {
 
 //渲染墨水-染色，渲染文字、标题、url、新行
 
-function randerink(perink, ink) {
+function randerink(perink, ink_box) {
 	//todo：考虑如果替换原始内容有特殊玩意的处理，目前考虑的是模式符号\1
-	perink = perink.replace(/%ink%/g, ink.text); //文字
-	perink = perink.replace(/%title%/g, ink.title); //标题
-	perink = perink.replace(/%url%/g, ink.url); //地址
+	perink = perink.replace(/%ink%/g, ink_box.text); //文字
+	perink = perink.replace(/%title%/g, ink_box.title); //标题
+	perink = perink.replace(/%url%/g, ink_box.url); //地址
 	perink = perink.replace(/%br%/g, "\r\n"); //新行也支持了，是的
 
 	return perink;

@@ -60,7 +60,7 @@ function ink_go(ink, ink_type){
 		return false; //回家
 	}
 
-	if (ink_type=="flickr")
+	if (ink_type != "ink") //非标准墨水，自力更生
 	{
 		return 	ink_inject(ink, -1); //直接注入收工
 	}

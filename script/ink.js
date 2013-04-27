@@ -29,7 +29,7 @@ var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
 var ink_type = "ink";
 
 /* 播放运作动画 */
-function ink_open_animateGraph(begin) {
+function ink_box_Play(begin) {
 	if (typeof (begin) != "undefined" && begin) {
 		image_play_now = 0; //初始化
 	}
@@ -68,7 +68,7 @@ function ink_open_animateGraph(begin) {
 	//动画加1
 	image_play_now++;
     
-	delayID = setTimeout(ink_open_animateGraph, play_dealy); //这是一直播放吗？真疯狂
+	delayID = setTimeout(ink_box_Play, play_dealy); //这是一直播放吗？真疯狂
 }
 
 /* 播放运作动画 */
@@ -141,7 +141,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 	/* 处理传入的玩意 */
 	if (ink_type == "flickr") {
 		//没有传入任何内容，判断是否为Flickr
-		ink_open_animateGraph(true); //播放动画由这里开始，开始吸取墨水
+		ink_box_Play(true); //播放动画由这里开始，开始吸取墨水
 		result = ink; //墨水里已有了一切
         
 		//检查是否需要api来处理
@@ -149,8 +149,8 @@ function ink_add(ink, title, url, copy_type, tab) {
 		{
 			has_api = true; //放个画面给人家看看
 		}
-	} else { //作为默认的墨水情况
-		ink_open_animateGraph(true); //播放动画由这里开始
+	} else if  (ink_type == "ink"){ //作为默认的墨水情况
+		ink_box_Play(true); //播放动画由这里开始
         
 		//格式化文本-得到最终玩意
 		result = ink_color({
@@ -158,6 +158,11 @@ function ink_add(ink, title, url, copy_type, tab) {
                            title: title,
                            url: url
                            });
+	} else  if  (ink_type == "ink_slboat"){
+		ink_box_Play(true); //播放动画由这里开始
+
+		//森亮号墨水，只有文本
+		result = ink;
 	}
     
 	//给本地保存一份，作用是啥子呢-将来注入墨水
