@@ -1,5 +1,4 @@
 {
-   "permissions": [ "clipboardWrite" ],
    "background":{"page":"maketxt.html"},
    "options_page": "set.html",
    "browser_action":{
@@ -42,6 +41,7 @@
    },
    "name":"见识墨水",
    "permissions":[
+	"clipboardWrite",
 	"storage",
       "tabs"
    ],
