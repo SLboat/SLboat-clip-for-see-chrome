@@ -127,8 +127,8 @@ function ink_add(ink, title, url, copy_type, tab) {
 	//播放动画有关的初始化
 	ink_type = copy_type.type; //直接用传入的墨水类型进行赋值
 	image_play_now = 0; //播放精心设置的动画，这动画有着alex的心血
-	play_dealy = localStorage.see_ink; //动态赋值动画参数
-    
+	play_dealy = localStorage.see_ink || play_dealy; //动态赋值动画参数
+
 	if (ink.length == 0) { // 看看有没有墨水在里面
 		// 全部否定，彻底终止
 		chrome.browserAction.setIcon({
