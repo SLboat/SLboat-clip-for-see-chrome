@@ -2,42 +2,47 @@
    "background":{"page":"maketxt.html"},
    "options_page": "set.html",
    "browser_action":{
-      "default_icon":"/img/icon_32.png",
+      "default_icon":"./img/icon_32.png",
       "default_title":"航海见识墨水"
    },
     "content_scripts": [
 	    {
 	      "matches": [ "http://*/*", "https://*/*" ],
 	      "exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*"],
-	      "js": ["/script/get_sel.js"],
+	      "js": ["./script/get_sel.js"],
 	      "run_at": "document_end"
 	    },
 	    {
 	      "matches": [ "http://developer.apple.com/*", "https://developer.apple.com/*" ],
-	      "js": ["/script/get_sel.js"],
+	      "js": ["./script/get_sel.js"],
       	      "all_frames": true,
 	      "run_at": "document_end"
 	    },
 	    {
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
-	      "js": ["/script/jquery.min.js","/script/get_flickr.js","/script/get_flickr_api.js","/script/webtoolkit.md5.js"],
+	      "js": ["./script/jquery.min.js","./script/get_flickr.js","./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
 	    },
 	    {
 	      "matches": [ "http://see.sl088.com/w/*"],
-	      "js": ["/script/ink_inject.js"],
+	      "js": ["./script/ink_inject.js"],
 	      "run_at": "document_end"
 	    },
 	    {
 	      "matches": [ "http://see.sl088.com/wiki/*"],
-	      "js": ["/script/jquery.min.js", "/script/get_sel_slboat.js"],
+	      "js": ["./script/jquery.min.js", "./script/get_sel_slboat.js"],
 	      "run_at": "document_start"
+	    },
+	    {
+	      "matches": [ "http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
+	      "js": ["./script/jquery.min.js", "./script/ink_inject_ebay.js"],
+	      "run_at": "document_end"
 	    }
     ],
    "description":"森亮号航海见识墨水！吸取Web和Flickr，一种微妙的墨水！",
    "icons":{
-      "128":"/img/icon_128.png",
-      "48":"/img/icon_48.png"
+      "128":"./img/icon_128.png",
+      "48":"./img/icon_48.png"
    },
    "name":"见识墨水",
    "permissions":[

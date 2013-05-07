@@ -18,6 +18,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     } else if (request.method == "putInk" && typeof(ink_go)=="function") { //确保已定义函数
 		//释放墨水
 		ink_go(request.ink, request.ink_type);
+    } else if (request.method == "putInk_ebay" && typeof(ink_go_ebay)=="function") { //确保已定义函数
+		//释放墨水
+		ink_go_ebay(request.ink, request.ink_type);
 	}else
 		return false;
 });
