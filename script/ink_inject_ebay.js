@@ -4,7 +4,8 @@ function ink_go_ebay(ink, curr_pos){
 		jQuery("#trackingTable .boxtext[id^='carrierName']").val("Hong Kong Post"); //香港小包看起来，要拆开来
 		if (jQuery("#trackingTable .boxtext[id^='trackingNumber']:first").val() != "") //如果第一个不是空白的
 		{
-				jQuery("#update1 .btn").click(); //点击下去，看起来是的
+				//eBay 更新后看起来只有一个按钮了
+				jQuery("#update1 input").click(); //点击下去，看起来是的
 		}
 
  }
