@@ -47,7 +47,7 @@ function get_flickr_link() {
 	var Ident_tag_page_more_than_one = ".pages" //不止一页的标签页，有页面点击框
 	var Ident_set_page = ".pc_s .pc_img"; //相册页标记 
 	var Ident_groups_page = ".pc_n .pc_img"; //群组页标记
-	var Ident_photostream_page = ".pc_m .pc_img"; //照片流页标记-Photostream
+	var Ident_photostream_page = ".pc_ju .pc_img"; //照片流页标记-Photostream，新的相册看起来也在这里了，看起来旧时代离开了
 	var Ident_single_page = "#liquid-photo-buffer"; //单页标记，会优先得到buffer缓冲，很奇怪
 	//单页的标题和描述
 	var Ident_single_page_info = {
@@ -93,12 +93,12 @@ function get_flickr_link() {
 		}
 	}
 
-	//上面是检测相册页有没戏
+	//上面是检测相册页有没戏-都是批量检测
 	if (catch_them.length == 0) {
 		catch_them = $(Ident_groups_page); //疯狂点-尝试群组页
 	}
 
-	//排到照片流页了
+	//排到照片流页了-递归检测
 	if (catch_them.length == 0) { //如果相册页没戏
 		catch_them = $(Ident_photostream_page); //疯狂点-尝试群组页
 	}
