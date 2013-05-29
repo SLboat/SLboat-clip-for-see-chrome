@@ -436,7 +436,8 @@ function get_ink_for() {
 //设置墨水文字
 
 function set_inkicon_text(str){
-    chrome.browserAction.setBadgeText({text: str});
+    //todo:检查是否str为未定义，或者null啥子的
+    chrome.browserAction.setBadgeText({text: str.toString()});
 }
 
 //清除墨水文字

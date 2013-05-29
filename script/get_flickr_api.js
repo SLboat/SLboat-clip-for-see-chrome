@@ -64,6 +64,7 @@ function call_flickr_api_search(search_tag) {
 }
 
 //获得签名信息
+//主要有趣的是重新排序请求参数们
 //来自 http://josephj.com/prototype/JosephJiang/Presentation/OpenAPI_Workshop/flickr-auth-api.html
 
 function get_api_sig(sSecretKey, sParameter) {
