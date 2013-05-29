@@ -118,7 +118,7 @@ function ink_close_animateGraph(begin) {
 	delayID = setTimeout(ink_close_animateGraph, play_dealy); //这是一直播放吗？真疯狂
 }
 
-/* 添加基本文字 */
+/* 墨水在这里处理着 */
 
 function ink_add(ink, title, url, copy_type, tab) {
 	//-----------------------------------------------------------------------
@@ -145,6 +145,9 @@ function ink_add(ink, title, url, copy_type, tab) {
 	if (ink_type == "flickr") {
 		//没有传入任何内容，判断是否为Flickr
 		ink_box_Play(true); //播放动画由这里开始，开始吸取墨水
+        //显示一个小角标玩意,看起来穿回来的都在api里面
+        set_inkicon_text(copy_type.api.pic_num.toString());
+        //送入墨水
 		result = ink; //墨水里已有了一切
 
 		//检查是否需要api来处理
@@ -302,9 +305,15 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 
 /* 每次启动的时候初始化 */
 chrome.runtime.onStartup.addListener(function () {
+    //关闭魔术图标
 	chrome.browserAction.setIcon({
 		path: ink_images_start
 	}); // 关闭墨水
+     //清理所有标记文字
+     clear_inkicon_text();
+     //自动设置背景透明色
+     init_inkicon_color();
+                                     
 });
 
 /* Flickr API有关的处理在这里 */
@@ -318,7 +327,7 @@ function flickr_api_start() {
 	});
 }
 
-//API完成处理
+//API完成处理，只是动动图标啥的
 
 function flick_api_end(request) {
 	if (request.have_ink) { //有墨水了
@@ -328,11 +337,14 @@ function flick_api_end(request) {
 		});
 		full_ink(); //填满墨水
 		copy_text(request.ink); //复制墨水
+        set_inkicon_text(request.pic_num); //显示个小玩意
 		//todo:处理是否重复获取了
-	} else
+	} else{
 		chrome.browserAction.setIcon({
 			path: flickr_images_ink_done
 		});
+        clear_inkicon_text();// 清理现场
+    }
 
 }
 
@@ -399,6 +411,8 @@ function clear_ink() {
 	chrome.browserAction.setIcon({
 		path: ink_images_start
 	});
+    //清理标记
+    clear_inkicon_text();
 }
 
 /* 是否没有墨水 */
@@ -417,4 +431,20 @@ function is_api() {
 
 function get_ink_for() {
 	return localStorage.ink_for || "slboat";
+}
+
+//设置墨水文字
+
+function set_inkicon_text(str){
+    chrome.browserAction.setBadgeText({text: str});
+}
+
+//清除墨水文字
+function clear_inkicon_text(str){
+    chrome.browserAction.setBadgeText({text: ""});
+}
+
+//设置透明一些的背景
+function init_inkicon_color(str){
+    chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 200]});
 }

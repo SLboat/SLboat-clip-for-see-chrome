@@ -33,7 +33,8 @@ function get_flickr_link() {
 	var flickr_return = {
 		txt: "",
 		need_api: false,
-		tag: ""
+		tag: "",
+        pic_num: 0
 	}; //返回的一个组件
 
 	var tag = ""; //默认的标记获得物
@@ -150,7 +151,9 @@ function get_flickr_link() {
 
 	//搭建屁股部分
 	var str_end = get_end_html(pic_num, useapi);
-
+    //传回得到了多少的数量玩意
+    flickr_return.pic_num = pic_num;
+    
 	//如果得到了一些东西
 	if (txtcont != "") {
 		//拼合一切
@@ -163,7 +166,7 @@ function get_flickr_link() {
 	}
 
 	flickr_return.txt = flickr_txt; //赋给最终的那玩意
-	return flickr_return;
+	return flickr_return; //返回的是一个类呢
 
 	//交回给原来去处理
 }
@@ -185,7 +188,7 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 		if (copystr.length == 0) {
 			//转为尝试获取flickr图片
 			get_type.api = get_flickr_link(); // api都丢在这里了
-			copystr = get_type.api.txt; // 赋值给基本文本
+			copystr = get_type.api.txt; // 赋值给基本文本，只是兼容一下啥子的
 			//判断是否有获得
 			if (copystr.length > 0) {
 				get_type.type = "flickr"; //新的获取类型

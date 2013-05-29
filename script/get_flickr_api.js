@@ -108,8 +108,8 @@ function get_json_pics(pics_json) {
 	pic_num = pics_json.photos.total; //总共获得的图片，不用一张张去遍历数啦
 
 	//开始提取照片
-	for (var pics_num in pics_json.photos.photo) { //这遍历真是作用不大
-		var pics = pics_json.photos.photo[pics_num];
+	for (var pics_check in pics_json.photos.photo) { //这遍历真是作用不大
+		var pics = pics_json.photos.photo[pics_check];
 		var img_link = pics.url_c; //自动生成的图片链接，这里就先考虑c
 		var desc = "";
 		if (typeof (url_link) == "undefined") {
@@ -146,7 +146,8 @@ function get_json_pics(pics_json) {
 	chrome.extension.sendMessage({
 		command: "ink_api_finish",
 		have_ink: have_ink,
-		ink: flickr_txt
+		ink: flickr_txt,
+        pic_num: pic_num
 	});
 
 	//提取到此完毕
