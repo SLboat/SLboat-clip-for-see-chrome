@@ -206,9 +206,17 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 			//获取类型，分别一种特殊的情况
 			copy_type: get_type, //多配置一些东西在里面
 		});
-	} else if (request.method == "get_flickr_tag_pic")
+	} else if (request.method == "get_flickr_organize_tag")
 	{
-		
+		//获得选中内容
+		var selctstr = window.getSelection().toString(); 
+
+		//处理原料工具
+		flickr_api_key = request.flickr_api_key; 
+		ink_option = request.ink_option; 
+
+		//送去检测真实tag
+		get_flickr_organize_tag(selctstr);
 		//不传回去了，去它的
 	}
 	

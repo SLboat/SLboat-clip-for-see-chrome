@@ -19,15 +19,15 @@
 	      "run_at": "document_end"
 	    },
 	    {
+	     "matches": [ "http://www.flickr.com/photos/*"],
+	     "js": ["./script/jquery.min.js", "./script/get_flikcr_org.js" ,"./script/get_flickr.js" , "./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
+	     "run_at": "document_end"
+	     },
+	    {
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      "js": ["./script/jquery.min.js","./script/get_flickr.js","./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
 	    },
-	    {
-	    "matches": [ "http://www.flickr.com/photos/organize"],
-	    "js": ["./script/jquery.min.js", "./script/get_flikcr_organize_tag.js" ,"./script/get_flickr.js" , "./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
-	    "run_at": "document_end"
-	     },
 	    {
 	      "matches": [ "http://see.sl088.com/w/*"],
 	      "js": ["./script/ink_inject.js"],
@@ -57,7 +57,7 @@
    ],
    "homepage_url":"http://see.sl088.com",
    "manifest_version": 2,
-   "version":"2.25.29",
+   "version":"2.25.30",
    "minimum_chrome_version":"20",
    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 

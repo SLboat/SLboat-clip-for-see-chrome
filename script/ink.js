@@ -269,9 +269,16 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 					setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
 					//播放动画啥子的。。。
 					chrome.tabs.sendMessage(tab.id, {
-						// 传递方法，传递api_key
-						method: "get_flickr_tag_pic"
-					}); //注入事件申请
+						//告知要获得tag
+						method: "get_flickr_organize_tag",
+						//传入原料API
+						flickr_api_key: get_api_key(), //API，这是需要的
+						//传入要求：墨水的作用
+						ink_option: {
+							ink_for: get_ink_for(),
+							flickr_order: localStorage.flickr_order || ""
+						} 
+					});
 				}, 50); //等待页面间隔
 
 		} else { //正常的吸取墨水
