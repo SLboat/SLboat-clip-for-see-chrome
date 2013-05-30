@@ -34,9 +34,6 @@ function get_flickr_organize_tag(selct_tag_str){
 			//选中文字不匹配，试试唯一性的匹配
 			tag_to_found = get_only_tags(tags);
 		}
-		else{
-			return false; //返回死去
-		}
 	}
 	//如果无匹配
 	if (!tag_to_found)
