@@ -176,6 +176,7 @@ function get_flickr_link() {
 chrome.runtime.onMessage.addListener(function (request, sender,
 	sendResponse) {
 	if (request.method == "getSelection") {
+        //todo:处理是否为组织管理的页面。。。
 		var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
 		var copystr = window.getSelection().toString(); //选中的玩意
 		var get_type = {

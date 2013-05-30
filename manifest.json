@@ -22,7 +22,12 @@
 	      "matches": [ "http://www.flickr.com/*", "https://www.flickr.com/*"],
 	      "js": ["./script/jquery.min.js","./script/get_flickr.js","./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
 	      "run_at": "document_end"
-	    },
+        },
+        {
+        "matches": [ "http://www.flickr.com/photos/organize"],
+        "js": ["./script/jquery.min.js", "./script/get_organize_tag.js" ,"./script/get_flickr.js" , "./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
+        "run_at": "document_end"
+        },
 	    {
 	      "matches": [ "http://see.sl088.com/w/*"],
 	      "js": ["./script/ink_inject.js"],
@@ -37,7 +42,7 @@
 	      "matches": [ "http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
 	      "js": ["./script/jquery.min.js", "./script/ink_inject_ebay.js"],
 	      "run_at": "document_end"
-	    }
+        }
     ],
    "description":"森亮号航海见识墨水！吸取Web和Flickr，一种微妙的墨水！",
    "icons":{
