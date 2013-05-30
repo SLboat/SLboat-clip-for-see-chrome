@@ -270,9 +270,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 					//播放动画啥子的。。。
 					chrome.tabs.sendMessage(tab.id, {
 						// 传递方法，传递api_key
-						method: "get_flickr_tag_pic",
-						ink: get_ink(), //墨水内容
-						ink_type: ink_type //墨水类型，也就是哪种渲染格式吧
+						method: "get_flickr_tag_pic"
 					}); //注入事件申请
 				}, 50); //等待页面间隔
 

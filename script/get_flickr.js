@@ -206,7 +206,13 @@ chrome.runtime.onMessage.addListener(function (request, sender,
 			//获取类型，分别一种特殊的情况
 			copy_type: get_type, //多配置一些东西在里面
 		});
-	} else
+	} else if (request.method == "get_flickr_tag_pic")
+	{
+		
+		//不传回去了，去它的
+	}
+	
+	else
 		return false;
 });
 

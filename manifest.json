@@ -25,7 +25,7 @@
 	    },
 	    {
 	    "matches": [ "http://www.flickr.com/photos/organize"],
-	    "js": ["./script/jquery.min.js", "./script/get_organize_tag.js" ,"./script/get_flickr.js" , "./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
+	    "js": ["./script/jquery.min.js", "./script/get_flikcr_organize_tag.js" ,"./script/get_flickr.js" , "./script/get_flickr_api.js","./script/webtoolkit.md5.js"],
 	    "run_at": "document_end"
 	     },
 	    {
