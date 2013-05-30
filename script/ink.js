@@ -203,14 +203,24 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 /* 添加按钮点击事件 */
 chrome.browserAction.onClicked.addListener(function (tab) {
 	var currentTime = new Date().getTime();
+
+	// 一些注入页面的特殊标记规则，这里的标记替换模式需要的是替换掉[/]为[\/]，替换掉[.]为[\.]，简单的说就是对符号下手
 	/* 一个注入见识的连接就像是：
 	 * http://see.sl088.com/wiki/Mediawiki_%E7%BC%96%E8%BE%91%E6%A1%86#.E5.9C.A8.E5.85.89.E6.A0.87.E4.B8.8B.E5.86.99.E5.85.A5.E5.86.85.E5.AE.B9
 	 */
+
 	var slboat_edit_patern = /\/see\.sl088\.com\/w\/index\.php.+action=edit/; //森亮号大船编辑模式
 	/* 一个eBay注入的连接就像是
 	 * http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber2&LineID=Transactions.181078954797
 	 */
 	var ebay_tracknumber_patern = /\/payments\.ebay\.com\/ws\/eBayISAPI\.dll\?AddTrackingNumber/; //eBay的承运人编辑模式
+
+	/* 只有一种flickr的管理页面样式，那就是
+	 * http://www.flickr.com/photos/organize
+	 * 不收尾巴，虽然看起来没啥坏事
+	 */
+	var flickr_organize_patern = /www\.flickr\.com\/photos\/organize/;
+
 	//如果是非http协议走人，或许可以注入支持，但是谁需要呢
 	if (tab.url.search(/http/) == -1) {
 		clear_ink();
@@ -221,8 +231,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 		// 第一次点击-作为添加事件
 		// set manage flag
 		isInManage = false;
-		//判断是否为森亮号页面
-		if (tab.url.match(slboat_edit_patern) != null) {
+		//判断是否为森亮号页面，用非值足以判断match发出的null了
+		if (tab.url.match(slboat_edit_patern)) {
 			if (get_ink().length > 0) {
 				if (image_stay_ink < 0) //需要准备图标吗？
 				{
@@ -244,19 +254,28 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 					}); //注入事件申请
 				}, 50); //等待页面间隔
 			}
-		} else if (tab.url.match(ebay_tracknumber_patern) != null){ //这是eBay的编辑注入模式，或许要考虑选择了内容？那太稀少了
-				//放置动画
+		} else if (tab.url.match(ebay_tracknumber_patern)){ //这是eBay的编辑注入模式（不要考虑选择了内容？那太稀少了，没见识价值度）
+				//放置动画-释放墨水，不减少
 				ink_close_animateGraph(true);
 				//不用减少墨水咯，这看起来有点诡异。。。
 				setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
+					chrome.tabs.sendMessage(tab.id, {
+						// 这是干活方式
+						method: "putInk_ebay"
+					}); //注入事件申请
+				}, 50); //等待页面间隔
+		} else if(tab.url.match(flickr_organize_patern)){ //这是Flickr的管理模式
+					//播放API捕获动画-todo
+					setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
 					//播放动画啥子的。。。
 					chrome.tabs.sendMessage(tab.id, {
 						// 传递方法，传递api_key
-						method: "putInk_ebay",
+						method: "get_flickr_tag_pic",
 						ink: get_ink(), //墨水内容
-						ink_type: ink_type //墨水类型
+						ink_type: ink_type //墨水类型，也就是哪种渲染格式吧
 					}); //注入事件申请
 				}, 50); //等待页面间隔
+
 		} else { //正常的吸取墨水
 			setTimeout(function () { //为啥要设置超时呢，看起来是500毫秒后
 				if (isInManage) return; //返回去啥子的。。难道在中间

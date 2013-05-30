@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		ink_go(request.ink, request.ink_type);
     } else if (request.method == "putInk_ebay" && typeof(ink_go_ebay)=="function") { //确保已定义函数
 		//释放墨水
-		ink_go_ebay(request.ink, request.ink_type);
+		ink_go_ebay();
 	}else
 		return false;
 });

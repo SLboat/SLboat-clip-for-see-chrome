@@ -1,7 +1,10 @@
-//当前光标写入文字
-function ink_go_ebay(ink, curr_pos){
+//写入eBay的快递单
+//
+function ink_go_ebay(){
 		//注入香港小包文字，如果可能的话
-		jQuery("#trackingTable .boxtext[id^='carrierName']").val("Hong Kong Post"); //香港小包看起来，要拆开来
+		var carrierName  = "Hong Kong Post";
+
+		jQuery("#trackingTable .boxtext[id^='carrierName']").val(carrierName); //香港小包看起来，要拆开来
 		if (jQuery("#trackingTable .boxtext[id^='trackingNumber']:first").val() != "") //如果第一个不是空白的
 		{
 				//eBay 更新后看起来只有一个按钮了
