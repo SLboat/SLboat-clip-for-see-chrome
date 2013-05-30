@@ -5,11 +5,16 @@
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
  * 但愿只有一个
+ * todo：检查是否存在不存在则注入
  */
-window.onload = function (){
-	$.fn.nextNode = function(){
-	  var contents = $(this).parent().contents();
-	  return contents.get(contents.index(this)+1);
+function jQuery_load_nextNode(){
+	if (typeof($.fn.nextNode)=="undefined")
+	//不存在，注册使用
+	{
+		$.fn.nextNode = function(){
+		  var contents = $(this).parent().contents();
+		  return contents.get(contents.index(this)+1);
+	}
 	}
 }
 
@@ -33,19 +38,49 @@ function get_flickr_organize_tag(selct_tag_str){
 		{
 			//选中文字不匹配，试试唯一性的匹配
 			tag_to_found = get_only_tags(tags);
+		}else if (tag_to_found=="::alot")
+		{
+			set_taginfo_text("@many - 航海见识墨水匹配到接近( " + selct_tag_str + " )的玩意太多了,不止有1个")
+			//可以匹配的太多了
+			use_ink_api_clean();
+			return  false;
 		}
+	}else{
+		use_ink_api_clean();
+		//发生意外事件
+		return  false;
 	}
 	//如果无匹配
+	//todo：提醒加上标题？因为没有复位
 	if (!tag_to_found)
 	{
+		if (selct_tag_str.length==0)
+		{
+			if (tags.num==0)
+			{
+				set_taginfo_text("航海见识墨水无法提取到有效标签,这里甚至没有标签");
+			}else{
+				set_taginfo_text("航海见识墨水不知道该提取哪个是好,这里有"+tags.num+"个标签呢");
+			}
+		}else{
+			if (tags.num==0)
+			{
+				set_taginfo_text("航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意,这里甚至没有任何标签!")
+			}else{
+				set_taginfo_text("航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意")
+			}
+		}
+		use_ink_api_clean();
+		//todo: 更多提醒，选中了啥子的
 		return false;
 	}
 
 	//啊哈，匹配了
 	//给出提示信息
-	set_taginfo_text("航海见识墨水提取了标签：" + tag_to_found);
-	//召唤API
-	call_flickr_api_search(tag_to_found);
+	set_taginfo_text("@work - 航海见识墨水正在提取标签:" + tag_to_found + "...");
+	
+	//召唤API，使用高级模式
+	call_flickr_api_search(tag_to_found, true);
 	//别的？
 
 	return true;
@@ -54,6 +89,14 @@ function get_flickr_organize_tag(selct_tag_str){
 
 //获得页面里对话框的tag
 function get_in_tags(tags, selct_tag_str){
+	var match_tag=null ; //匹配的标记
+	var match_times = 0; //匹配次数
+
+
+	if (selct_tag_str=="")
+	{
+		return false; //直接完毕
+	}
 	//todo：模糊匹配一部分？
 	if (tags.text.match(selct_tag_str)) //存在字符串里 
 	{
@@ -62,9 +105,17 @@ function get_in_tags(tags, selct_tag_str){
 			tag = tags.alltag[i];
 			if (tag.match(selct_tag_str))
 			{
-				return tag;
+				match_tag = tag;
+				match_times++;
 			}
 		}
+	}
+	if (match_times==1)
+	{
+		return match_tag;
+	}else if (match_times>1) //不止一个
+	{
+		return "::alot"; //太多了！
 	}
 	//失败告终，没有tag匹配
 	return null;
@@ -83,6 +134,7 @@ function get_only_tags(tags){
 /* 标签标记显示和操作 */
 //获得标签标记的文字层
 function get_taginfo_div(){
+	jQuery_load_nextNode(); //必要的话载入
 	return $("#one_photo_description+br").nextNode();
 }
 
@@ -98,12 +150,18 @@ function get_all_tags(){
 	var tag_conts_div = "#addtagbox"; //标签内容容器的标志
 	var tag_split_str =" ";//标签分割字符，默认是空格
 
-	var tags_text = $(tag_conts_div).val(); //临时的中间标签文本
+	var tags_text = $.trim($(tag_conts_div).val()); //临时的中间标签文本,切割空格
+	var alltag = tags_text.split(tag_split_str); //切割的临时变量
+	var num = 0;
+	if (tags_text.length>0) //有内容的话
+	{
+		num = alltag.length; //获得的长度，没有将是0
+	}
 
 	return {
 		text: tags_text, //最基础的玩意
-		alltag: tags_text.split(tag_split_str), //使用tags很好，但是可能很意外
-		num: tags_text.split(tag_split_str).length //一个多余的小玩意
+		alltag: alltag, //使用tags很好，但是可能很意外
+		num: num //一个多余的小玩意
 	}
 }
 
@@ -118,4 +176,18 @@ function is_only_tags(tags){
 function is_empty_tags(tags){
 	//即时很坏的扑捉到了空格，那么也是得到空白玩意
 	return (tags.text == "");
+}
+
+//通知播放一切动画
+function use_ink_api_clean(){
+	chrome.extension.sendMessage({
+		command: "ink_api_clean",
+	});
+}
+
+/* 当完成了api工作后
+  * 这里会被调用api未来调用
+  */
+function ink_organize_api_done(tag){
+	set_taginfo_text("@done - 航海见识墨水已经提取标签: " + tag + "");
 }

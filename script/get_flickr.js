@@ -3,6 +3,8 @@
 var is_debug_ink = false; //调试标志
 var flickr_api_key = new Object; //api key
 
+var flikcr_organize_tag = false; //是否是管理页面的api_tag模式
+
 var ink_option = {
 	ink_for: "slboat",
 	flickr_order: "pos"
@@ -11,14 +13,11 @@ var ink_option = {
 /* 主函数们 */
 
 //得到Flickr的连接
+
 function get_flickr_link() {
 	/* 自动获得，看起来很有需要 */
 	//获得标题，仅仅留来给自己用用，似乎放到全局变量也不错
-	var page_info = {
-		txtTitle: document.title,
-		//获得URL
-		txtUrl: window.location.href
-	}
+	var page_info = get_page_info();
 
 	//初始化图片数量
 	var pic_num = 0;
@@ -34,7 +33,7 @@ function get_flickr_link() {
 		txt: "",
 		need_api: false,
 		tag: "",
-        pic_num: 0
+		pic_num: 0
 	}; //返回的一个组件
 
 	var tag = ""; //默认的标记获得物
@@ -52,10 +51,10 @@ function get_flickr_link() {
 	var Ident_single_page = "#liquid-photo-buffer"; //单页标记，会优先得到buffer缓冲，很奇怪
 	//单页的标题和描述
 	var Ident_single_page_info = {
-		title_div: "#title_div",	//标题div
-		desc_div: "#description_div",	//描述div
-		class_none: "insitu-hint",	//没有文字的class，默认提醒标记
-		text_none: "按一下這裡以增加"	//没有文字的开头提醒字符，第一个算起
+		title_div: "#title_div", //标题div
+		desc_div: "#description_div", //描述div
+		class_none: "insitu-hint", //没有文字的class，默认提醒标记
+		text_none: "按一下這裡以增加" //没有文字的开头提醒字符，第一个算起
 	};
 	/* 标记处理完毕 */
 
@@ -77,7 +76,7 @@ function get_flickr_link() {
 				flickr_return.need_api = true;
 				flickr_return.tag = tag; //传回去似乎也没啥用
 				//不管了呼叫API去
-				call_flickr_api_search(tag);
+				call_flickr_api_search(tag, false);
 			}
 		} else {
 			//依然使用API因为可以获得附注
@@ -88,8 +87,8 @@ function get_flickr_link() {
 				//赋值给未来的人
 				flickr_return.need_api = true;
 				flickr_return.tag = tag; //传回去似乎也没啥用
-				//不管了呼叫API去
-				call_flickr_api_search(tag);
+				//不管了呼叫API去，非组织模式
+				call_flickr_api_search(tag, false);
 			}
 		}
 	}
@@ -107,14 +106,14 @@ function get_flickr_link() {
 	//看看是否抓到了一些可以捕获的玩意
 	if (catch_them.length > 0) {
 		catch_them.each(function () {
-			var str_alt = $(this).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
-			//渲染得到单条的最终连接情况
-			var imgcont = render_per_link($(this).prop("src"), $(this).parent().prop(
-				"href"), str_alt, false); //单条
-			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
-			//递加图片数量1
-			pic_num++;
-		})
+				var str_alt = $(this).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
+				//渲染得到单条的最终连接情况
+				var imgcont = render_per_link($(this).prop("src"), $(this).parent().prop(
+						"href"), str_alt, false); //单条
+				txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
+				//递加图片数量1
+				pic_num++;
+			})
 	} else {
 		//不属于标签页、不属于相册页
 		//尝试单页
@@ -127,15 +126,15 @@ function get_flickr_link() {
 			var str_alt = "Slboat Seeing..."; //默认值
 			/* 效验单页标题和特征 */
 			//获得alt标题，太重复使用var了
-			if (!$(Ident_single_page_info.title_div).hasClass(Ident_single_page_info.class_none) && 
-					$(Ident_single_page_info.title_div).text().search(Ident_single_page_info.text_none) != 0) {
+			if (!$(Ident_single_page_info.title_div).hasClass(Ident_single_page_info.class_none) &&
+				$(Ident_single_page_info.title_div).text().search(Ident_single_page_info.text_none) != 0) {
 				//有标题文字
 				str_alt = $(Ident_single_page_info.title_div).text();
 			}
 			//获得描述信息
 			var str_desc = ""; //空字串
-			if (!$(Ident_single_page_info.desc_div).hasClass(Ident_single_page_info.class_none) && 
-					$(Ident_single_page_info.class_none).text().search(Ident_single_page_info.text_none) != 0) {
+			if (!$(Ident_single_page_info.desc_div).hasClass(Ident_single_page_info.class_none) &&
+				$(Ident_single_page_info.class_none).text().search(Ident_single_page_info.text_none) != 0) {
 				//有标题文字
 				str_desc = $(Ident_single_page_info.desc_div).text();
 			}
@@ -151,9 +150,9 @@ function get_flickr_link() {
 
 	//搭建屁股部分
 	var str_end = get_end_html(pic_num, useapi);
-    //传回得到了多少的数量玩意
-    flickr_return.pic_num = pic_num;
-    
+	//传回得到了多少的数量玩意
+	flickr_return.pic_num = pic_num;
+
 	//如果得到了一些东西
 	if (txtcont != "") {
 		//拼合一切
@@ -174,58 +173,56 @@ function get_flickr_link() {
 /* 处理事件钩子 */
 //添加事件钩子，当服务端请求的时候响应
 chrome.runtime.onMessage.addListener(function (request, sender,
-	sendResponse) {
-	if (request.method == "getSelection") {
-        //todo:处理是否为组织管理的页面。。。
-		var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
-		var copystr = window.getSelection().toString(); //选中的玩意
-		var get_type = {
-			type: "ink"
-		}; //获取的类型
-		flickr_api_key = request.flickr_api_key; //放到全局去，API_Key
-		ink_option = request.ink_option; //墨水类型
+		sendResponse) {
+		if (request.method == "getSelection") {
+			//todo:处理是否为组织管理的页面。。。
+			var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
+			var copystr = window.getSelection().toString(); //选中的玩意
+			var get_type = {
+				type: "ink"
+			}; //获取的类型
+			flickr_api_key = request.flickr_api_key; //放到全局去，API_Key
+			ink_option = request.ink_option; //墨水类型
 
-		//处理是否有复制文本
-		if (copystr.length == 0) {
-			//转为尝试获取flickr图片
-			get_type.api = get_flickr_link(); // api都丢在这里了
-			copystr = get_type.api.txt; // 赋值给基本文本，只是兼容一下啥子的
-			//判断是否有获得
-			if (copystr.length > 0) {
-				get_type.type = "flickr"; //新的获取类型
+			//处理是否有复制文本
+			if (copystr.length == 0) {
+				//转为尝试获取flickr图片
+				get_type.api = get_flickr_link(); // api都丢在这里了
+				copystr = get_type.api.txt; // 赋值给基本文本，只是兼容一下啥子的
+				//判断是否有获得
+				if (copystr.length > 0) {
+					get_type.type = "flickr"; //新的获取类型
+				}
 			}
-		}
-		if (typeof (copystr) == "undefined") {
-			return false; //无效而归
-		}
-		//遣送回去数据，保留选择文字？这是一个callback
-		sendResponse({
-			data: copystr,
-			title: titlestr,
-			url: window.location.href,
-			//获取类型，分别一种特殊的情况
-			copy_type: get_type, //多配置一些东西在里面
-		});
-	} else if (request.method == "get_flickr_organize_tag")
-	{
-		//获得选中内容
-		var selctstr = window.getSelection().toString(); 
+			if (typeof (copystr) == "undefined") {
 
-		//处理原料工具
-		flickr_api_key = request.flickr_api_key; 
-		ink_option = request.ink_option; 
+			}
+			//遣送回去数据，保留选择文字？这是一个callback
+			sendResponse({
+					data: copystr,
+					title: titlestr,
+					url: window.location.href,
+					//获取类型，分别一种特殊的情况
+					copy_type: get_type, //多配置一些东西在里面
+				});
+		} else if (request.method == "get_flickr_organize_tag") {
+			//获得选中内容
+			var selctstr = window.getSelection().toString();
 
-		//送去检测真实tag
-		get_flickr_organize_tag(selctstr);
-		//不传回去了，去它的
-	}
-	
-	else
-		return false;
-});
+			//处理原料工具
+			flickr_api_key = request.flickr_api_key;
+			ink_option = request.ink_option;
+
+			//送去检测真实tag
+			get_flickr_organize_tag(selctstr);
+			//不传回去了，去它的
+		} //else
+
+	});
 
 /* 作为目标页面直接运行的注入式脚本 */
 //加载入脚本，在中间脚本里不再需要，仅在特殊情况的注入下
+
 function load_jquery_script() {
 	//尝试载入新的JQuery，判断jQuery，总是能够工作的更好
 	if (typeof (jQuery) == "undefined") {
@@ -243,15 +240,11 @@ function load_jquery_script() {
 
 /* 小函数们 */
 //森亮号大船的标记头玩意
-function get_start_html() {
+
+function get_start_html(page_info) {
 	var need_div = false; //关闭需要div标签
 	//提取页面信息，是的就在页面里
-	//todo:置换为全局变量
-	var page_info = {
-		txtTitle: document.title,
-		//获得URL
-		txtUrl: window.location.href
-	}
+	page_info = page_info || get_page_info(); //默认是当前页
 
 	//最初标头
 	var str_start = "<!-- 来自：[" + page_info.txtTitle + "] -->\r\n";
@@ -311,6 +304,17 @@ function flickr_order_pics(txtcont, txtnow) {
 	else
 	//逆序
 		return txtnow + txtcont;
+}
+
+/* 获得页面信息 */
+
+function get_page_info() {
+	var page_info = {
+		txtTitle: document.title, //获取标题
+		txtUrl: window.location.href //获得URL
+	}
+	//返回页面信息
+	return page_info;
 }
 
 //获得标签页的标签名称，仅仅获得自己的标签
@@ -396,7 +400,7 @@ function render_final_text(txtstart, txtcont, txtend) {
 		return txtcont; //输出本次临时的
 	}
 	// 如果前面多换行，必须处理中间内容，否则那么最后会有大换行
-	return "\r\n" + txtstart + txtcont + txtend;  //最终返回拼合
+	return "\r\n" + txtstart + txtcont + txtend; //最终返回拼合
 }
 
 //返回是否设置为BBCODE
