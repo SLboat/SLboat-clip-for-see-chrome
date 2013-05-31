@@ -248,7 +248,7 @@ function get_start_html(page_info) {
 
 	//最初标头
 	var str_start = "<!-- 来自：[" + page_info.txtTitle + "] -->\r\n";
-	//一个链接记录下来
+	//一个链接记录下来，缩进看起来是破坏了大空格
 	str_start += ":<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
 	if (need_div) //如果需要div
 	{
@@ -370,53 +370,63 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		/* 森亮号航海见识风格 */
 		//处理描述信息
 		var descstr = ""; //临时标记
-
+		var flickr_id = null; //默认是null，这是id
+		//可选备注
 		if (typeof (desc) != "undefined" && desc != "") //有备注
 		{
 			descstr = ' desc=\"' + desc + '\" ';
 		}
-		//后面部分
-		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">
-		txt_out += '<flickr alt=\"' + str_alt + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
-		//看看是否增加ID
+		//这是匹配模式工厂
 		var patern_url_id = /.+\/(.+?)_.+_.+\./; //匹配的URL ID
-		var flickr_id = urlimg.match(patern_url_id)
+
+		//提取ID - 假设它为必须存在
+		if (urlimg.match(patern_url_id)) //是否有效匹配
+		{
+			flickr_id = urlimg.match(patern_url_id)[1]; //获取初步匹配值
+		}
+
+		//----后面部分-----
+		//注释加上些标记，alt信息咯，切分后缀？
+		txt_out += " <!-- 原始图片标题：" + str_alt + " -->" + "\r\n";
+		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">
+		txt_out += ' <flickr alt=\"' + str_alt + '\" id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
+		//看看是否增加ID
 		if (flickr_id != null) //检测是否有ID，最好必须有个这样的玩意
 		{
-			txt_out += flickr_id[1]; //加入图片ID
+			txt_out += flickr_id
 		}
 		//标签合并
-		txt_out += "</flickr>\r\n";
+		txt_out += " </flickr>\r\n";
 
 	}
-	return txt_out; //输出本次临时的
-}
-
-//渲染最终生成图片
-//传入开头部分，中间部分，结尾部分
-
-function render_final_text(txtstart, txtcont, txtend) {
-	if (isAlex()) {
-		return txtcont; //输出本次临时的
+		return txt_out; //输出本次临时的
 	}
-	// 如果前面多换行，必须处理中间内容，否则那么最后会有大换行
-	return "\r\n" + txtstart + txtcont + txtend; //最终返回拼合
-}
 
-//返回是否设置为BBCODE
+	//渲染最终生成图片
+	//传入开头部分，中间部分，结尾部分
 
-function isAlex() {
-	return ink_option.ink_for == "alex";
-}
+	function render_final_text(txtstart, txtcont, txtend) {
+		if (isAlex()) {
+			return txtcont; //输出本次临时的
+		}
+		// 如果前面多换行，必须处理中间内容，否则那么最后会有大换行
+		return "\r\n" + txtstart + txtcont + txtend; //最终返回拼合
+	}
 
-//获得排序选项，这些真该直接丢在object里，是否是正序的
+	//返回是否设置为BBCODE
 
-function get_flickr_order_pos() {
-	return ink_option.flickr_order == "pos";
-}
-/* 额外的测试执行 */
+	function isAlex() {
+		return ink_option.ink_for == "alex";
+	}
 
-/*
+	//获得排序选项，这些真该直接丢在object里，是否是正序的
+
+	function get_flickr_order_pos() {
+		return ink_option.flickr_order == "pos";
+	}
+	/* 额外的测试执行 */
+
+	/*
 is_debug_ink=true;  // 开启调试信息
 get_flickr_link(); // 开始一次捕获
 */
