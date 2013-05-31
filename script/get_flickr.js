@@ -106,7 +106,7 @@ function get_flickr_link() {
 	//看看是否抓到了一些可以捕获的玩意
 	if (catch_them.length > 0) {
 		catch_them.each(function () {
-				var str_alt = $(this).prop("alt") || "Slboat Seeing..."; //尝试获得替换文本
+				var str_alt = $(this).prop("alt") || null; //尝试获得替换文本
 				//渲染得到单条的最终连接情况
 				var imgcont = render_per_link($(this).prop("src"), $(this).parent().prop(
 						"href"), str_alt, false); //单条
@@ -123,7 +123,7 @@ function get_flickr_link() {
 			if (typeof (img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去
 			}
-			var str_alt = "Slboat Seeing..."; //默认值
+			var str_alt = null; //默认值
 			/* 效验单页标题和特征 */
 			//获得alt标题，太重复使用var了
 			if (!$(Ident_single_page_info.title_div).hasClass(Ident_single_page_info.class_none) &&
@@ -359,6 +359,8 @@ function mov_flickr_url(org_url, org_link) {
 
 function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 	var txt_out = ""; //输出的临时变量
+	var null_str_alt = "SLboat Seeing..."; //null的替换标题文字
+
 	if (!no_url_work) //如果指定不处理，那就不处理了，转录图片大小
 	{
 		urlimg = mov_flickr_url(urlimg, urllink); //通用的处理图片
@@ -386,8 +388,22 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		}
 
 		//----后面部分-----
-		//注释加上些标记，alt信息咯，切分后缀？
-		txt_out += " <!-- 原始图片标题：" + str_alt + " -->" + "\r\n";
+		//检查是否没有标题信息
+		if (str_alt==null)
+		{
+			str_alt = null_str_alt; //默认的标题信息
+		}else{ //有标题信息那就再写入一些
+			var match_alt_patern = /(.+)\..+/ ; //匹配文件切割的规则
+			var alt_name = " "+ str_alt + ""; //默认的标题信息-原始
+			//切割掉后缀-存在的话
+			if (str_alt.match(match_alt_patern)) //如果存在[.]
+			{
+				alt_name = " " + str_alt.match(match_alt_patern)[1]+" "; //匹配第一个
+				alt_name +=  "(全名:" + " " + str_alt +" "+ ")"; //最终拼合，需要很多空格
+			}
+			//注释加上些标记，alt信息咯，切分后缀？
+			txt_out += "<!-- 来自图片文件:" + alt_name + "的Flickr标记--> ";//去掉分号，确保空格，检索的关键-这是英文
+		}
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">
 		txt_out += ' <flickr alt=\"' + str_alt + '\" id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
 		//看看是否增加ID

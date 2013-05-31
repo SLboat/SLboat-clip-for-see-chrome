@@ -2,6 +2,8 @@
  * 依赖jQuery进行运作
  */
 
+var no_matter_tag = "From_Eye_Fi";
+
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
  * 但愿只有一个
@@ -54,21 +56,20 @@ function get_flickr_organize_tag(selct_tag_str){
 	//todo：提醒加上标题？因为没有复位
 	if (!tag_to_found)
 	{
+		var taff_str = ""; //艰难标签的说辞
+		if (tags.has_taff_tag)
+			taff_str = "虽然有着坚硬的标签:" +no_matter_tag;
 		if (selct_tag_str.length==0)
 		{
-			if (tags.num==0)
-			{
-				set_taginfo_text("航海见识墨水无法提取到有效标签,这里甚至没有标签");
-			}else{
-				set_taginfo_text("航海见识墨水不知道该提取哪个是好,这里有"+tags.num+"个标签呢");
-			}
+			if (tags.num==0)	
+				set_taginfo_text("航海见识墨水无法提取到有效标签,这里甚至没有标签"+taff_str);
+			else
+				set_taginfo_text("!faild -航海见识墨水不知道该提取哪个是好,这里有"+tags.num+"个标签呢");
 		}else{
 			if (tags.num==0)
-			{
-				set_taginfo_text("航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意,这里甚至没有任何标签!")
-			}else{
-				set_taginfo_text("航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意")
-			}
+				set_taginfo_text("!faild -航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意,这里甚至没有任何标签!"+taff_str)
+			else
+				set_taginfo_text("!faild -航海见识墨水无法匹配到接近( " + selct_tag_str + " )的玩意")
 		}
 		use_ink_api_clean();
 		//todo: 更多提醒，选中了啥子的
@@ -149,9 +150,24 @@ function set_taginfo_text(tips){
 function get_all_tags(){
 	var tag_conts_div = "#addtagbox"; //标签内容容器的标志
 	var tag_split_str =" ";//标签分割字符，默认是空格
+	var has_taff_tag = false; //带着坚硬的标签-无价值标签
 
 	var tags_text = $.trim($(tag_conts_div).val()); //临时的中间标签文本,切割空格
+
 	var alltag = tags_text.split(tag_split_str); //切割的临时变量
+	//开始检索不必要的标签，目前只处理一个，通常它是eyefi的
+	for (var tag in alltag)
+	{
+		if (alltag[tag]==no_matter_tag) //如果是不要的标签
+		{
+			alltag.splice(tag,1); //丢弃掉它
+			has_taff_tag = true; //设置坚硬标签
+		}
+	}
+
+	//搭建完成
+	tags_text = alltag.join(tag_split_str); //重新组合最终字串
+
 	var num = 0;
 	if (tags_text.length>0) //有内容的话
 	{
@@ -161,7 +177,8 @@ function get_all_tags(){
 	return {
 		text: tags_text, //最基础的玩意
 		alltag: alltag, //使用tags很好，但是可能很意外
-		num: num //一个多余的小玩意
+		num: num, //一个多余的小玩意
+		has_taff_tag: has_taff_tag
 	}
 }
 

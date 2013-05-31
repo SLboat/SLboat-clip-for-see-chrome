@@ -129,7 +129,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		//只获取最后一次管它呢
 		picownername = pics.ownername.toLowerCase();
 		var url_link = "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/" + pics.id; //获得点击的连接，用户名和ID拼凑
-		var alt_str = pics.title || "SLboat Seeing..."; //获得标签作为alt
+		var alt_str = pics.title || null; //获得标签作为alt
 		//提取备注信息
 		if (typeof (pics.description) != "undefined") {
 			desc = pics.description._content; //获得描述信息在这里
