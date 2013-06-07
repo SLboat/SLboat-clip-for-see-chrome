@@ -402,7 +402,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 				alt_name +=  "(全名:" + " " + str_alt +" "+ ")"; //最终拼合，需要很多空格
 			}
 			//注释加上些标记，alt信息咯，切分后缀？
-			txt_out += "<!-- 来自图片文件:" + alt_name + "的Flickr标记-->";//去掉分号，确保空格，检索的关键-这是英文
+			txt_out += "<!-- 来自图片文件:" + alt_name + " 的Flickr标记-->";//去掉分号，确保空格，检索的关键-这是英文
 		}
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">，修理被引用问题，还是去空格的好
 		txt_out += '<flickr alt=\"' + str_alt + '\" id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '>'; //标记所有的一切
