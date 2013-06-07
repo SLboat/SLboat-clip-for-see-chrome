@@ -53,6 +53,7 @@ function get_flickr_link() {
 	var Ident_single_page_info = {
 		title_div: "#title_div", //标题div
 		desc_div: "#description_div", //描述div
+		desc_div_inEDIT: "#description_div textarea", //在编辑模式下的描述DIV
 		class_none: "insitu-hint", //没有文字的class，默认提醒标记
 		text_none: "按一下這裡以增加" //没有文字的开头提醒字符，第一个算起
 	};
@@ -135,8 +136,14 @@ function get_flickr_link() {
 			var str_desc = ""; //空字串
 			if (!$(Ident_single_page_info.desc_div).hasClass(Ident_single_page_info.class_none) &&
 				$(Ident_single_page_info.class_none).text().search(Ident_single_page_info.text_none) != 0) {
-				//有标题文字
-				str_desc =  $.trim($(Ident_single_page_info.desc_div).text());
+				// 是否存在编辑模式下的文字框
+				if ($(Ident_single_page_info.desc_div_inEDIT).length>0)  //如果存在的话
+				{
+					str_desc =  $.trim($(Ident_single_page_info.desc_div_inEDIT).val()); // 编辑模式下-标题编辑模式下，特殊点
+				}else{
+					//有标题文字			
+					str_desc =  $.trim($(Ident_single_page_info.desc_div).text());
+				}
 			}
 
 			imgcont = render_per_link(img_src, page_info
