@@ -129,14 +129,14 @@ function get_flickr_link() {
 			if (!$(Ident_single_page_info.title_div).hasClass(Ident_single_page_info.class_none) &&
 				$(Ident_single_page_info.title_div).text().search(Ident_single_page_info.text_none) != 0) {
 				//有标题文字
-				str_alt = $(Ident_single_page_info.title_div).text();
+				str_alt =$(Ident_single_page_info.title_div).text();
 			}
 			//获得描述信息
 			var str_desc = ""; //空字串
 			if (!$(Ident_single_page_info.desc_div).hasClass(Ident_single_page_info.class_none) &&
 				$(Ident_single_page_info.class_none).text().search(Ident_single_page_info.text_none) != 0) {
 				//有标题文字
-				str_desc = $(Ident_single_page_info.desc_div).text();
+				str_desc =  $.trim($(Ident_single_page_info.desc_div).text());
 			}
 
 			imgcont = render_per_link(img_src, page_info
