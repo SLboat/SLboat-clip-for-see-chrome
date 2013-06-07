@@ -8,7 +8,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		{
 			return false;//结束
 		}
-		slboat_title = "[[" + slboat_title + "]]"; //封装
+        //加上冒号，为啥不呢
+		slboat_title = ":[[" + slboat_title + "]]"; //封装
 		// 框架里会重复非常多次这样的问题
 		if (copystr=="") //无内容跳出
 		{
