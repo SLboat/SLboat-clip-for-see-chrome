@@ -148,7 +148,7 @@ function set_taginfo_text(tips) {
 	//todo: 获取默认值？
 	var default_tips = "標籤"; //默认的显示文字，这里考虑为中文的
 	var taginfo_div=get_taginfo_div();//临时获得
-	if (typeof(tag_div)!="undefined") //以无效来判断是否为第一次初始化
+	if (typeof(taginfo_div)!="undefined") //以无效来判断是否为第一次初始化
 	{
 			taginfo_div.textContent = default_tips + "\t\t\t      [" + tips + "]";
 	}
