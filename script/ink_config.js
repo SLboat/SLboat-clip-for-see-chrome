@@ -1,4 +1,4 @@
-var link_for_token = "http://www.flickr.com/auth-72157633098872233"; //API KEY的对应获取地址
+var default_link_for_token = "http://www.flickr.com/auth-72157633098872233"; //API KEY的对应获取地址，默认值
 
 function init() {
 	//可以工作
@@ -9,8 +9,9 @@ function init() {
 function Load_Setting(){
 	// th1nk: 利用遍历一次性保存-听起来如何，匹配ID来操作，这样可以直接读取改变的值来变更哪里变了，不用全局变动
 
-    $("#see_ink").val(localStorage.see_ink || "80"); //默认80
+	$("#see_ink").val(localStorage.see_ink || "80"); //默认80
 	$("#ink_for").val(localStorage.ink_for || "slboat"); //默认值slboat
+	$("#link_for_token").val(localStorage.link_for_token || default_link_for_token) ;//默认值或者默认值
 	$("#api_key").val(localStorage.api_key || ""); //默认值为空
 	$("#secret_key").val(localStorage.secret_key || ""); //默认值为空
 	$("#auth_token").val(localStorage.auth_token || ""); //默认值为空
@@ -18,7 +19,6 @@ function Load_Setting(){
 	$("#flickr_order").val(localStorage.flickr_order || ""); //默认值为空
 
 	//种子不用动
-
 	Disabled_Save_Button();
 }
 
@@ -27,6 +27,7 @@ function Save_Setting() {
 	localStorage.clear(); //清空抛弃不必要的
 	localStorage.see_ink = $("#see_ink").val();
 	localStorage.ink_for = $("#ink_for").val();
+	localStorage.link_for_token = $("#link_for_token").val() ;//这里是认证连接
 	localStorage.api_key = $("#api_key").val();
 	localStorage.secret_key = $("#secret_key").val();
 	localStorage.auth_token = $("#auth_token").val();
@@ -37,17 +38,17 @@ function Save_Setting() {
 	Disabled_Save_Button();	//黑按钮
 	save_tips("应该保存进去了！不然为啥按钮都黑了！");	//保存提醒
 
-   // chrome.extension.getBackgroundPage().init();
+	// chrome.extension.getBackgroundPage().init();
 }
 
 //开启按钮
 function Enable_Save_Button() {
-   $("#save-button").prop("disabled",false);
+	$("#save-button").prop("disabled",false);
 }
 
 //禁止按钮
 function Disabled_Save_Button() {
-   $("#save-button").prop("disabled",true);
+	$("#save-button").prop("disabled",true);
 }
 
 $(document).ready(function(){
@@ -60,7 +61,7 @@ $(document).ready(function(){
 
 	$("#flickr_order").change(Save_Setting); //所有保存
 
-	$("#link_get_token").prop("href",link_for_token); //赋予链接
+	$("#link_get_token").prop("href",$("#link_for_token").val());//赋予链接
 	//绑定获得token的玩意
 	$("#get-token-button").click(function(){
 		if ($("#api_key").val().length==0) //长度是0
@@ -90,8 +91,8 @@ function get_token_back(Json_Token){
 	if (Json_Token.stat=="ok")
 	{
 		tips ("获得token成功!已填入授权密匙处，请记得保存！");
-		$("#auth_token").val(Json_Token.auth.token._content); //写入到token里去
-		$("#user_name").val(Json_Token.auth.user.username.toLowerCase()); //写入到token里去
+		$("#auth_token").val(Json_Token.auth.token._content); 		//写入到token里去
+		$("#user_name").val(Json_Token.auth.user.username.toLowerCase()); 
 	}else{
 		tips ("尝试获取token失败，原因："+Json_Token.message);
 	}
@@ -100,7 +101,7 @@ function get_token_back(Json_Token){
 
 //直接输入提示给token
 function tips(text){
-		$("#tips").text(text); //不返回直接操作
+	$("#tips").text(text); //不返回直接操作
 }
 
 function save_tips(text){
