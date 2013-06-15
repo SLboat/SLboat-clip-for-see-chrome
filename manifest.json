@@ -39,6 +39,14 @@
 			"run_at": "document_end"
 		}
 	],
+	"commands" : {
+		"_execute_browser_action": {
+			"suggested_key":{
+				"windows": "Ctrl+Q",
+				"mac":"MacCtrl+Q"
+			}
+		}
+	},
 	"description": "森亮号航海见识墨水！吸取Web和Flickr，一种微妙的墨水！",
 	"icons": {
 		"128": "./img/icon_128.png",
@@ -53,7 +61,7 @@
 	"homepage_url": "http://see.sl088.com",
 	"manifest_version": 2,
 	"version": "2.26.15",
-	"minimum_chrome_version": "20",
+	"minimum_chrome_version": "25",
 	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 
 }
