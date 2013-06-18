@@ -31,8 +31,8 @@ function tag_press_done_bundle() {
 		//返回已经完成
 		return 302;
 	}
-	if ($("#batch_add_tags_form .Butt").length > 0) {
-		$("#batch_add_tags_form .Butt").click(function() {
+	if ($("#batch_add_tags_form").length > 0) {
+		$("#batch_add_tags_form").submit(function() {
 			//动画开始-通常的需要它吗？
 			use_ink_api_start();
 			//开始制造剩余部分-需要点好运
