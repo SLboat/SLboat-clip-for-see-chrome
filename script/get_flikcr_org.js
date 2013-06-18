@@ -38,6 +38,9 @@ function tag_press_done_bundle() {
 
 		})
 		have_bundle_flag = true; //绑定标志锁死
+	}else{
+		//试试未来注入吧
+		set_up_tag_hook();
 	}
 }
 
@@ -72,7 +75,7 @@ function get_flickr_organize_tag(selct_tag_str) {
 	var check_div = "#one_photo_edit_pop"; //检查是否存在的标记
 
 	//锁定绑定标志-委托给body
-	set_up_tag_hook();
+	tag_press_done_bundle();
 
 	//提取一份tag列表，确定是否有对话框出现
 	if ($(check_div).length > 0 && $(check_div).css("display") != "none") //存在并且可见
