@@ -16,11 +16,17 @@ var ink_images = new Array("icon_32.png", "pen_shape_1.png ",
 
 var ink_images_start = "./img/icon_32.png"; // 初始墨水
 
-var flickr_images = new Array("flickr_pen_shape_1.png ",
-	"flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
-	"flickr_pen_shape_4.png ", "flickr_pen_shape_5.png ",
-	"flickr_pen_shape_6.png "); //Flickr墨水
+//黄色版本
 
+var ink_images_yellow = new Array("pen_yellow_1.png ",
+	"pen_yellow_2.png ", "pen_yellow_3.png ",
+	"pen_yellow_4.png "); 
+	
+var flickr_images = new Array("flickr_pen_shape_1.png ",
+		"flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
+		"flickr_pen_shape_4.png ", "flickr_pen_shape_5.png ",
+		"flickr_pen_shape_6.png "); //Flickr墨水
+		
 var flickr_images_ink_done = "./img/" + flickr_images[flickr_images.length - 1]; //最后一帧正常
 var flickr_images_api_wait = "./img/flickr_pen_api_wait.png"; //API_等待
 var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
@@ -358,10 +364,9 @@ function flickr_api_start() {
 	clear_ink();
 	//播放等待图标
 	chrome.browserAction.setIcon({
-		path: flickr_images_api_wait
+		//黄色初始化
+		path: "./img/" + ink_images_yellow[1]
 	});
-	//一些有意思的文字
-	set_inkicon_text("_");
 }
 
 //播放flickr APi捕获的动画
