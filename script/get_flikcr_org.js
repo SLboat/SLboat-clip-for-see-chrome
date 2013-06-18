@@ -2,6 +2,8 @@
  * 依赖jQuery进行运作
  */
 var no_matter_tag = "From_Eye_Fi";
+var have_bundle_flag = false; //是否已经绑定
+var have_setup_bundle = false; //是否已经注入绑定
 
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
@@ -10,23 +12,64 @@ var no_matter_tag = "From_Eye_Fi";
  */
 
 function jQuery_load_nextNode() {
-	if (typeof ($.fn.nextNode) == "undefined")
+	if (typeof($.fn.nextNode) == "undefined")
 	//不存在，注册使用
 	{
-		$.fn.nextNode = function () {
+		$.fn.nextNode = function() {
 			var contents = $(this).parent().contents();
 			return contents.get(contents.index(this) + 1);
 		}
 	}
 }
 
+//加入绑定事件-原型，还不能工作的很好
+
+function tag_press_done_bundle() {
+	if (have_bundle_flag) {
+		//返回已经完成
+		return 302;
+	}
+	if ($("#batch_add_tags_form .Butt").length > 0) {
+		$("#batch_add_tags_form .Butt").click(function() {
+			//动画开始-通常的需要它吗？
+			use_ink_api_start();
+			//开始制造剩余部分-需要点好运
+			make_tag_and_get();
+
+		})
+		have_bundle_flag = true; //绑定标志锁死
+	}
+}
+
+//注入和绑定，尚未使用
+
+function set_up_tag_hook() {
+	if (!have_setup_bundle) {
+		$("body").on("click", "#batch_add_tags_form .Butt", function() {
+			//注销原始触发器-相比one的好处是不是处理完注销
+			$("body").off("click", "#batch_add_tags_form .Butt");
+			//一次性事件注入
+			tag_press_done_bundle();
+			//激活首次事件
+			$("#batch_add_tags_form .Butt").click();
+		})
+		//绑定完毕
+		have_bundle_flag = true;
+	}
+
+}
+
 //完整的获取逻辑 - 这里是一切的起源地
+//todo:复位work_tag
 
 function get_flickr_organize_tag(selct_tag_str) {
 	var tags; //定义标记的中间仓库
 	var tag_to_found = null; //获得的tag标签
 
 	var check_div = "#one_photo_edit_pop"; //检查是否存在的标记
+
+	//锁定绑定标志-当前不稳定
+	tag_press_done_bundle();
 
 	//提取一份tag列表，确定是否有对话框出现
 	if ($(check_div).length > 0 && $(check_div).css("display") != "none") //存在并且可见
@@ -47,15 +90,14 @@ function get_flickr_organize_tag(selct_tag_str) {
 			return false;
 		}
 	} else {
-		if (has_tag_edit_diag())
-		{
-				//交给获取标签的去试试运气
-				make_tag_and_get();
-				return true;//返回成功
-		}	//清空
-			use_ink_api_clean();
-			//发生意外事件
-			return false;
+		if (has_tag_edit_diag()) {
+			//交给获取标签的去试试运气
+			push_the_tag_button();
+			return true; //返回成功
+		} //清空
+		use_ink_api_clean();
+		//发生意外事件
+		return false;
 	}
 	//如果无匹配
 	//todo：提醒加上标题？因为没有复位
@@ -97,7 +139,7 @@ function get_in_tags(tags, selct_tag_str) {
 	var match_tag = null; //匹配的标记
 	var match_times = 0; //匹配次数
 	//清理空白格
-	selct_tag_str=$.trim(selct_tag_str);
+	selct_tag_str = $.trim(selct_tag_str);
 
 	if (selct_tag_str == "") {
 		return false; //直接完毕
@@ -147,10 +189,10 @@ function get_taginfo_div() {
 function set_taginfo_text(tips) {
 	//todo: 获取默认值？
 	var default_tips = "標籤"; //默认的显示文字，这里考虑为中文的
-	var taginfo_div=get_taginfo_div();//临时获得
-	if (typeof(taginfo_div)!="undefined") //以无效来判断是否为第一次初始化
+	var taginfo_div = get_taginfo_div(); //临时获得
+	if (typeof(taginfo_div) != "undefined") //以无效来判断是否为第一次初始化
 	{
-			taginfo_div.textContent = default_tips + "\t\t\t      [" + tips + "]";
+		taginfo_div.textContent = default_tips + "\t\t\t      [" + tips + "]";
 	}
 }
 
@@ -205,6 +247,14 @@ function is_empty_tags(tags) {
 	return (tags.text == "");
 }
 
+//通知开始主动播放动画
+
+function use_ink_api_start() {
+	chrome.extension.sendMessage({
+		command: "ink_api_start",
+	});
+}
+
 //通知播放一切动画
 
 function use_ink_api_clean() {
@@ -232,8 +282,17 @@ var is_debug_tag_module = true; //标签模块的调试标记-输出日志
 
 function has_tag_edit_diag() {
 	//存在显示，长度大于0
-	return $("#batch_edit_pop").css("display") == "block" && 
-			$("#batch_add_tags").val().length>0;
+	return $("#batch_edit_pop").css("display") == "block" &&
+		$("#batch_add_tags").val().length > 0;
+}
+
+//推一下tag对话框
+
+function push_the_tag_button() {
+	if ($("#batch_edit_pop").css("display") == "block") {
+		$("#batch_add_tags_form .Butt").click(); //点击，开始干活
+		//剩下的交给别人去做
+	}
 }
 
 //在编辑对话框制造一些玩意
@@ -245,10 +304,10 @@ function make_tag_and_get() {
 		if (tags_for_work.length == 0) {
 			return 1; //意外退出
 		} else
-			$("#batch_add_tags_form .Butt").click(); //点击，开始干活
+
 		//开始等待10秒的工作，或许需要更多？
-		wait_tag_done(10);
-	}else
+			wait_tag_done(10);
+	} else
 		return false;
 }
 
@@ -258,7 +317,7 @@ function wait_tag_done(timeout_time) {
 	var work_start_time = new Date().getTime(); //开始工作的事件，毫秒
 	clearInterval(wait_id); //清理上次的id
 	//开始每500毫秒一次扫描对话框
-	wait_id = setInterval(function () {
+	wait_id = setInterval(function() {
 		//扫描间隔
 		if ($("#comm_div").css("display") == "block" && $("#comm_button_ok").val() == "謝謝！") {
 			//已经完成任务了
