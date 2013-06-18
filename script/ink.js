@@ -360,6 +360,8 @@ function flickr_api_start() {
 	chrome.browserAction.setIcon({
 		path: flickr_images_api_wait
 	});
+	//一些有意思的文字
+	set_inkicon_text("_");
 }
 
 //播放flickr APi捕获的动画
@@ -491,7 +493,7 @@ function set_inkicon_text(str) {
 
 //清除墨水文字
 
-function clear_inkicon_text(str) {
+function clear_inkicon_text() {
 	chrome.browserAction.setBadgeText({
 		text: ""
 	});
