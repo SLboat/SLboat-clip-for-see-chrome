@@ -46,18 +46,22 @@ function tag_press_done_bundle() {
 	}
 }
 
-function use_esc_key_bundle(){
-	if (!Has_key_esc_bundle){
-		$("body").on("mouseover mouseout", "#one_photo_inner_border_div", function() {
+Function Use_esc_key_bundle(){
+	If (!Has_key_esc_bundle){
+		$("Body").on("Mouseover Mouseout", "#One_photo_inner_border_div", Function() {
 			//取消委托-不需要了
-			$("body").off("mouseover mouseout", "#one_photo_inner_border_div");
+			$("Body").off("Mouseover Mouseout", "#One_photo_inner_border_div");
 			//绑定新的方法-取消按钮
-			$("#one_photo_inner_border_div").keydown(function(event){ 
-				if (event.keyCode == 27){$("#one_photo_cancel").click()}; 
+			$("#One_photo_inner_border_div").Keydown(Function(Event){ 
+				If (Event.Keycode == 27){$("#One_photo_cancel").Click()}; 
+			});
+			//注入一个回车事件钩子
+			$("#Addtagbox").Keydown(Function(Event){ 
+				If (Event.Keycode == 13){$("#One_photo_save").Click()}; 
 			});
 		})
 		//失效
-		Has_key_esc_bundle=true;
+		Has_key_esc_bundle=True;
 	}
 }
 
