@@ -39,6 +39,14 @@ function tag_press_done_bundle() {
 			make_tag_and_get();
 
 		})
+		//奇怪的是按键事件竟然可能是独立的
+		$("#batch_add_tags_form .butt").click(function() {
+			//动画开始-通常的需要它吗？
+			use_ink_api_start();
+			//开始制造剩余部分-需要点好运
+			make_tag_and_get();
+
+		})
 		Have_bundle_flag = true; //绑定标志锁死
 	}else{
 		//试试未来注入吧
