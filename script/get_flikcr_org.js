@@ -46,22 +46,24 @@ function tag_press_done_bundle() {
 	}
 }
 
-Function Use_esc_key_bundle(){
-	If (!Has_key_esc_bundle){
-		$("Body").on("Mouseover Mouseout", "#One_photo_inner_border_div", Function() {
+function use_esc_key_bundle(){
+	if (!Has_key_esc_bundle){
+		$("body").on("mouseover mouseout", "#one_photo_inner_border_div", function() {
 			//取消委托-不需要了
-			$("Body").off("Mouseover Mouseout", "#One_photo_inner_border_div");
+			$("body").off("mouseover mouseout", "#one_photo_inner_border_div");
 			//绑定新的方法-取消按钮
-			$("#One_photo_inner_border_div").Keydown(Function(Event){ 
-				If (Event.Keycode == 27){$("#One_photo_cancel").Click()}; 
+			//todo:检查对话框有效性
+			$("#one_photo_inner_border_div").keydown(function(event){ 
+				if (event.keyCode == 27){$("#one_photo_cancel").click()}; 
 			});
 			//注入一个回车事件钩子
-			$("#Addtagbox").Keydown(Function(Event){ 
-				If (Event.Keycode == 13){$("#One_photo_save").Click()}; 
+			//todo:检查对话框显示并且存在
+			$("#addtagbox").keydown(function(event){ 
+				if (event.keyCode == 13){$("#one_photo_save").click()}; 
 			});
 		})
 		//失效
-		Has_key_esc_bundle=True;
+		Has_key_esc_bundle=true;
 	}
 }
 
