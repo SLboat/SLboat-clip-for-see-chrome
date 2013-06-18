@@ -1,9 +1,11 @@
 /* 这里是从管理页面获取tag，然后用API调用
  * 依赖jQuery进行运作
  */
-var no_matter_tag = "From_Eye_Fi";
-var have_bundle_flag = false; //是否已经绑定
-var have_setup_bundle = false; //是否已经注入绑定
+var No_matter_tag = "From_Eye_Fi";
+var Have_bundle_flag = false; //是否已经绑定
+var Have_setup_bundle = false; //是否已经注入绑定
+
+var Has_key_esc_bundle = false;//esc键是否绑定成功
 
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
@@ -25,7 +27,7 @@ function jQuery_load_nextNode() {
 //加入绑定事件-原型，还不能工作的很好
 
 function tag_press_done_bundle() {
-	if (have_bundle_flag) {
+	if (Have_bundle_flag) {
 		//返回已经完成
 		return 302;
 	}
@@ -37,17 +39,32 @@ function tag_press_done_bundle() {
 			make_tag_and_get();
 
 		})
-		have_bundle_flag = true; //绑定标志锁死
+		Have_bundle_flag = true; //绑定标志锁死
 	}else{
 		//试试未来注入吧
 		set_up_tag_hook();
 	}
 }
 
+function use_esc_key_bundle(){
+	if (!Has_key_esc_bundle){
+		$("body").on("mouseover mouseout", "#one_photo_inner_border_div", function() {
+			//取消委托-不需要了
+			$("body").off("mouseover mouseout", "#one_photo_inner_border_div");
+			//绑定新的方法-取消按钮
+			$("#one_photo_inner_border_div").keydown(function(event){ 
+				if (event.keyCode == 27){$("#one_photo_cancel").click()}; 
+			});
+		})
+		//失效
+		Has_key_esc_bundle=true;
+	}
+}
+
 //注入和绑定，尚未使用
 
 function set_up_tag_hook() {
-	if (!have_setup_bundle) {
+	if (!Have_setup_bundle) {
 		//鼠标移动怎么样！
 		$("body").on("mouseover mouseout", "#batch_add_tags_form", function() {
 			//注销原始触发器-相比one的好处是不是处理完注销
@@ -60,7 +77,7 @@ function set_up_tag_hook() {
 			//$("#batch_add_tags_form .Butt").click();
 		})
 		//绑定完毕
-		have_setup_bundle = true;
+		Have_setup_bundle = true;
 	}
 
 }
@@ -76,6 +93,8 @@ function get_flickr_organize_tag(selct_tag_str) {
 
 	//锁定绑定标志-委托给body
 	tag_press_done_bundle();
+	//绑定esc键为啥不呢
+	use_esc_key_bundle();
 
 	//提取一份tag列表，确定是否有对话框出现
 	if ($(check_div).length > 0 && $(check_div).css("display") != "none") //存在并且可见
@@ -110,7 +129,7 @@ function get_flickr_organize_tag(selct_tag_str) {
 	if (!tag_to_found) {
 		var taff_str = ""; //艰难标签的说辞
 		if (tags.has_taff_tag)
-			taff_str = "虽然有着坚硬的标签:" + no_matter_tag;
+			taff_str = "虽然有着坚硬的标签:" + No_matter_tag;
 		if (selct_tag_str.length == 0) {
 			if (tags.num == 0)
 				set_taginfo_text("航海见识墨水无法提取到有效标签,这里甚至没有标签" + taff_str);
@@ -214,7 +233,7 @@ function get_all_tags() {
 	var alltag = tags_text.split(tag_split_str); //切割的临时变量
 	//开始检索不必要的标签，目前只处理一个，通常它是eyefi的
 	for (var tag in alltag) {
-		if (alltag[tag] == no_matter_tag) //如果是不要的标签
+		if (alltag[tag] == No_matter_tag) //如果是不要的标签
 		{
 			alltag.splice(tag, 1); //丢弃掉它
 			has_taff_tag = true; //设置坚硬标签
