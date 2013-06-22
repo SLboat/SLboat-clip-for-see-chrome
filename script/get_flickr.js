@@ -49,10 +49,7 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 	var Ident_photostream_page = ".pc_ju .pc_img"; //照片流页标记-Photostream，新的相册看起来也在这里了，看起来旧时代离开了
 	var Ident_single_page = "#liquid-photo-buffer"; //单页标记，会优先得到buffer缓冲，很奇怪
 	//灯箱页的东西们
-	var Ident_lightbox_page_info = {
-		img: (".facade-of-protection[id]~img"), //图片本身
-
-	};
+	var Ident_lightbox_div = ".position[style*='visibility: visible']";
 	//单页的标题和描述
 	var Ident_single_page_info = {
 		title_div: "#title_div", //标题div
@@ -123,15 +120,22 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 			pic_num++;
 		})
 	}
+	var flag_light_box = false;
 	//试试灯箱页面的运气
 	if (catch_them.length == 0) {
 		if (page_info.txtUrl.match("/photostream/lightbox/")) { //匹配了灯箱
+			//至少标记是允许的
+			flag_light_box = true;
 			//赋予给一个家伙
-			catch_them = $(".position[style*='visibility: visible; left: 0px;']");
-			if (catch_them.length > 0){
+			catch_them = $(Ident_lightbox_div); //搜索唯一可见者
+			if (catch_them.length > 0) {
 				//存在灯箱图片咯
-				var img_src = $(catch_them).find("img").prop("src");
-				var str_alt = $(catch_them).find(".lightbox-meta-title a").prop("title");
+				var img_src = $(catch_them)
+					.find("img")
+					.prop("src");
+				var str_alt = $(catch_them)
+					.find(".lightbox-meta-title a")
+					.prop("title");
 				var str_desc = "";
 				//生成和返回
 				imgcont = render_per_link(img_src, page_info.txtUrl, str_alt, false, str_desc);
@@ -143,7 +147,8 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 		}
 	}
 
-	if (catch_them.length == 0) { //如果还是啥也没有
+
+	if (!flag_light_box && catch_them.length == 0) { //如果还是啥也没有
 		//不属于标签页、不属于相册页
 		//尝试单页，灯箱页也会存在单页，这里单页做最后处理
 		if ($(Ident_single_page)
