@@ -104,12 +104,17 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 	if (catch_them.length == 0) { //如果相册页没戏
 		catch_them = $(Ident_photostream_page); //疯狂点-尝试群组页
 	}
-
+	//我们丢失了的图片-因为运气不佳
+	var we_lost_them = 0;
 	//看看是否抓到了一些可以捕获的玩意，之前所有抓到的都在这里被处理
 	if (catch_them.length > 0) {
 		catch_them.each(function() {
 			var str_alt = $(this)
 				.prop("alt") || null; //尝试获得替换文本
+			if ($(this).prop("src").match("images/spaceball.gif")) {
+				we_lost_them++; //记录发生了一次意外的丢失
+				return true; //跳出本次，看起来工作
+			}
 			//渲染得到单条的最终连接情况
 			var imgcont = render_per_link($(this)
 				.prop("src"), $(this)
@@ -198,7 +203,7 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 	}
 
 	//搭建屁股部分
-	var str_end = get_end_html(pic_num, useapi);
+	var str_end = get_end_html(pic_num, useapi, we_lost_them);
 	//传回得到了多少的数量玩意
 	flickr_return.pic_num = pic_num;
 
@@ -222,7 +227,7 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 /* 处理事件钩子 */
 //添加事件钩子，当服务端请求的时候响应
 chrome.runtime.onMessage.addListener(function(request, sender,
-sendResponse) {
+	sendResponse) {
 	if (request.method == "getSelection") {
 		//todo:处理是否为组织管理的页面。。。
 		var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
@@ -286,7 +291,7 @@ function load_jquery_script() {
 		document.body.appendChild(script);
 	} else
 	//直接开始工作
-	get_flickr_link();
+		get_flickr_link();
 }
 
 /* 小函数们 */
@@ -311,11 +316,13 @@ function get_start_html(page_info) {
 }
 
 //森亮号大船的标记尾玩意
-//传入pic_num捕获张数，useapi，是否使用了api
+//传入pic_num捕获张数，useapi，是否使用了api，we_lost_them丢失了多少
+//todo:全局替换\r\n，比如为br
 
-function get_end_html(pic_num, useapi) {
+function get_end_html(pic_num, useapi, we_lost_them) {
 	var need_div = false; //关闭需要div标签
-	pic_num = pic_num || "0";
+	pic_num = pic_num || 0;
+	we_lost_them = we_lost_them || 0; //写入默认值 如果没有这个参数的话
 	useapi = useapi || "no"; //初始值假
 
 	//搭建屁股部分
@@ -337,7 +344,12 @@ function get_end_html(pic_num, useapi) {
 		//还没有获得描述信息
 		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"
 		str_end += "<!-- 尚未使用API获得备注信息 -->\r\n"
-	} else str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"; //只跟了一句哦
+	} else { //默认的值是"no"，所以会被抛到这里来
+		str_end += "<!-- 以上共计捕获" + pic_num + "张图片 -->\r\n"; //只跟了一句哦
+		if (we_lost_them > 0) {
+			str_end += "<!-- 因为缓存问题，我们丢失了" + we_lost_them + "张图片 -->\r\n"
+		}
+	}
 
 	//最后的结尾
 	str_end += "<!-- 来自Flickr相册告一段落 -->\r\n"
@@ -350,10 +362,10 @@ function flickr_order_pics(txtcont, txtnow) {
 	//获得顺序
 	if (get_flickr_order_pos())
 	//正序
-	return txtcont + txtnow;
+		return txtcont + txtnow;
 	else
 	//逆序
-	return txtnow + txtcont;
+		return txtnow + txtcont;
 }
 
 /* 获得页面信息 */
@@ -380,7 +392,7 @@ function get_my_tag_name(title) {
 	if (get_tag_by == null) var get_tag_by = title.match(tag_title_patern_en); //匹配英文尝试
 
 	if (get_tag_by == null) //全部失败，走人
-	return ""
+		return ""
 	return get_tag_by[1]; //返回第一个字节
 
 }
@@ -392,13 +404,21 @@ function mov_flickr_url(org_url, org_link) {
 	//替换中图，替换小图
 	//todo：可选的获得最终图片尺寸样式
 	var return_url = "";
-	var replace_url_letter = /_[sqtmnzcbo]\./; //正则匹配宏，匹配后缀字母
+	var replace_url_letter_pattern = /_[sqtmnzcbo]\./; //正则匹配宏，匹配后缀字母
+	var replace_url_notierd_pattern = /\/.+_([^_]{2,})\./
 	if (isAlex() || org_link.search("/slboat/") == -1) {
 		//alex不需要太大的图片，如果不是slboat自己的相册也一样处理，考虑到早期的情况
 		return_url = org_url.replace(/_[sqtmnzcbo]\./, "_z.");
 	} else {
-		//森亮号大船用800大图-考虑到多半是自己的
-		return_url = org_url.replace(replace_url_letter, "_c.");
+		if (org_url.match(replace_url_letter_pattern)) {
+			//森亮号大船用800大图-考虑到多半是自己的
+			return_url = org_url.replace(replace_url_letter_pattern, "_c.");
+		} else if (org_url.match(replace_url_notierd_pattern)) {
+			//或许可以直接传来带来id
+			var secrt_str = org_url.match(replace_url_notierd_pattern)[1]; //匹配后就具备一切有趣吧
+			//检查那种奇怪的没尾巴图片
+			return_url = org_url.replace(secrt_str, secrt_str + "_c");
+		}
 	}
 	return return_url; //最终返回咯
 }
@@ -426,7 +446,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 			descstr = ' desc=\"' + desc + '\" ';
 		}
 		//这是匹配模式工厂
-		var patern_url_id = /.+\/(.+?)_.+_.+\./; //匹配的URL ID
+		var patern_url_id = /.+\/(.+?)_.+(?=_.+)?\./; //匹配的URL ID
 
 		//提取ID - 假设它为必须存在
 		if (urlimg.match(patern_url_id)) //是否有效匹配
