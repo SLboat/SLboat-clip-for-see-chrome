@@ -44,9 +44,9 @@ function ink_color(ink_box) {
 
 function randerink(perink, ink_box) {
 	//todo：考虑如果替换原始内容有特殊玩意的处理，目前考虑的是模式符号\1
-	perink = perink.replace(/%ink%/g, ink_box.text); //文字
-	perink = perink.replace(/%title%/g, ink_box.title); //标题
-	perink = perink.replace(/%url%/g, ink_box.url); //地址
+	perink = perink.replace(/%ink%/g, escape_replace_substr(ink_box.text)); //文字
+	perink = perink.replace(/%title%/g, escape_replace_substr(ink_box.title)); //标题
+	perink = perink.replace(/%url%/g, escape_replace_substr(ink_box.url)); //地址
 	perink = perink.replace(/%br%/g, "\r\n"); //新行也支持了，是的
 
 	return perink;
@@ -61,4 +61,12 @@ function get_time_str(){
 		//获得时间串
 		var timestr = now.getHours() + ":" + now.getMinutes(); 
 		return datastr + " " + timestr; // 最后得到的玩意
+}
+
+/* 反注释替换字符的怪异字符
+ * 比如[]$&]
+*/
+function escape_replace_substr(s){
+	return s.replace(/\$/g,"$$$$");
+	
 }
