@@ -92,3 +92,9 @@ a { color: gray }
 .auto_tip{
 	margin-left: 20px;
 }
+
+#eyefi-tips{
+	color: grey;
+	margin-left: 20px;
+	font-size: 80%;
+}
