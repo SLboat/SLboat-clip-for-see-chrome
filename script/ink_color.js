@@ -43,7 +43,7 @@ function ink_color(ink_box) {
 //渲染墨水-染色，渲染文字、标题、url、新行
 
 function randerink(perink, ink_box) {
-	//todo：考虑如果替换原始内容有特殊玩意的处理，目前考虑的是模式符号\1
+	//todo：考虑如果替换原始内容有特殊玩意的处理，目前考虑的是模式符号[\1]
 	perink = perink.replace(/%ink%/g, escape_replace_substr(ink_box.text)); //文字
 	perink = perink.replace(/%title%/g, escape_replace_substr(ink_box.title)); //标题
 	perink = perink.replace(/%url%/g, escape_replace_substr(ink_box.url)); //地址
