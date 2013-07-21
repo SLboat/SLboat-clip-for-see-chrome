@@ -1,7 +1,7 @@
-/* 所有与HTML相关部分标记为：于目标HTML相关联代码 */
+/* 所有与HTML相关部分标记为于目标HTML相关联代码 */
 /* 基本变量配置 */
 var is_debug_ink = false; //调试标志
-var flickr_api_key = new Object; //api key
+var flickr_api_key = {}; //api key
 
 var flikcr_organize_tag = false; //是否是管理页面的api_tag模式
 
@@ -52,6 +52,7 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 	var Ident_lightbox_div = ".position[style*='visibility: visible']";
 	//单页的标题和描述
 	var Ident_single_page_info = {
+		small_box_pic: "div#context-photos-stream li[data-context-position='0'] img", //这恐怕是唯一不是[_h]的图片了
 		title_div: "#title_div", //标题div
 		desc_div: "#description_div", //描述div
 		desc_div_inEDIT: "#description_div textarea", //在编辑模式下的描述DIV
@@ -159,7 +160,7 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 		if ($(Ident_single_page)
 			.length > 0) //有至少一个单页标签，一般也只有一个
 		{
-			var img_src = $(Ident_single_page)
+			var img_src = $(Ident_single_page_info.small_box_pic)
 				.prop("src");
 			if (typeof(img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去
@@ -404,11 +405,11 @@ function mov_flickr_url(org_url, org_link) {
 	//替换中图，替换小图
 	//todo：可选的获得最终图片尺寸样式
 	var return_url = "";
-	var replace_url_letter_pattern = /_[sqtmnzcbo]\./; //正则匹配宏，匹配后缀字母
+	var replace_url_letter_pattern = /_[sqtmnzcbo]\./; //正则匹配宏，匹配后缀字母，遗憾h不能用在这里
 	var replace_url_notierd_pattern = /\/.+_([^_]{2,})\./
 	if (isAlex() || org_link.search("/slboat/") == -1) {
 		//alex不需要太大的图片，如果不是slboat自己的相册也一样处理，考虑到早期的情况
-		return_url = org_url.replace(/_[sqtmnzcbo]\./, "_z.");
+		return_url = org_url.replace(replace_url_letter_pattern, "_z.");
 	} else {
 		if (org_url.match(replace_url_letter_pattern)) {
 			//森亮号大船用800大图-考虑到多半是自己的
