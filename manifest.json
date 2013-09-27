@@ -52,6 +52,9 @@
 		"128": "./img/icon_128.png",
 		"48": "./img/icon_48.png"
 	},
+	"web_accessible_resources":[
+		"script/jquery-1.10.2.min.map"
+	],
 	"name": "见识墨水",
 	"permissions": [
 		"clipboardWrite",
@@ -60,7 +63,7 @@
 	],
 	"homepage_url": "http://see.sl088.com",
 	"manifest_version": 2,
-	"version": "2.27.21",
+	"version": "2.29.28",
 	"minimum_chrome_version": "25",
 	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 
