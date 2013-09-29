@@ -8,7 +8,7 @@ $(document).bind('keydown', 'alt+q', function() {
 		old_desc = $.trim($("#description_div").text()); //非编辑框尝试，这里看起来是很多p
 	}
 
-	if (typeof(old_desc) != undefined && old_desc == "") //最终判断
+	if (typeof(old_desc) != undefined && (old_desc == "" || old_desc.match("按一下這裡以增加描述"))) //最终判断
 	{
 		var note_str = prompt("还未标记,标记点啥?船长");
 	} else {
@@ -17,7 +17,7 @@ $(document).bind('keydown', 'alt+q', function() {
 
 	//开始处理标记
 
-	if (note_str != "" && note_str != old_desc) { //避开没有变化的变化
+	if (note_str && note_str != "" && note_str != old_desc) { //避开没有变化的变化	
 		//点击编辑
 		$("#description_div").click();
 		//输入文字
