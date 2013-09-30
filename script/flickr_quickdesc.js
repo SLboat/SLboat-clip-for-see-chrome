@@ -1,5 +1,5 @@
 /* 快速添加标记 */
-$(document).bind('keydown', 'alt+q', function() {
+$(document).bind('keydown', 'ctrl+p', function() { //这里包括了绑定基本的快捷键
 	var old_desc = "";
 	//获取正常文字
 	if ($("#description_div textarea").length > 0) {
