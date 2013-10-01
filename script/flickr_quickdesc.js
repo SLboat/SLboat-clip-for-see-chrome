@@ -1,5 +1,9 @@
-/* 快速添加标记 */
-$(document).bind('keydown', 'ctrl+p', function() { //这里包括了绑定基本的快捷键
+/* 快速添加标记 
+  * 用于一个对话框之下快速的完成添加标记 
+  */
+
+//主函数
+var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
 	var old_desc = "";
 	//获取正常文字
 	if ($("#description_div textarea").length > 0) {
@@ -25,4 +29,9 @@ $(document).bind('keydown', 'ctrl+p', function() { //这里包括了绑定基本
 		//点击保存
 		$("#description_div .Butt").click();
 	}
-});
+}
+
+//意外发现有趣的是，这里的函数传递就像直接对等一样，而不需要()来执行，因为它不需要被执行，只需要被传入-就像一个指针。
+$(document).bind('keydown', 'ctrl+p', flickr_add_tag); //Mac下这个啥都能用
+
+$(document).bind('keydown', 'alt+p', flickr_add_tag); //用于Win的兼容
