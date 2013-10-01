@@ -42,8 +42,8 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 
 	/* 处理各种玩意的标记 */
 	/* 于目标HTML相关联代码 */
-	var Ident_tag_page = ".pc_t .pc_img"; //标签页标记
-	var Ident_tag_page_more_than_one = ".pages" //不止一页的标签页，有页面点击框
+	var Ident_tag_page = ".refinement b a[href*='m=tags']"; //标签页标记
+
 	var Ident_set_page = ".pc_s .pc_img"; //相册页标记 
 	var Ident_groups_page = ".pc_n .pc_img"; //群组页标记
 	var Ident_photostream_page = ".pc_ju .pc_img"; //照片流页标记-Photostream，新的相册看起来也在这里了，看起来旧时代离开了
@@ -60,19 +60,18 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 		text_none: "按一下這裡以增加" //没有文字的开头提醒字符，第一个算起
 	}; /* 标记处理完毕 */
 
+	//NOTEICE: 这里目前仅仅作为一个标签的标记的检测
 	catch_them = $(Ident_tag_page); //先试试是不是来到了标签页里
-	if (catch_them.length == 0) { //标签页没戏
-		catch_them = $(Ident_set_page); //尝试相册页
+	if (catch_them.length == 0) { //标签页没戏，或许改匹配只有一个？
+		catch_them = $(Ident_set_page); //尝试相册页，已经离开了
 	} else {
 		//来到了标签页里
-		//试试是否超过了一页
-		if ($(Ident_tag_page_more_than_one)
-			.length > 0) {
 			//超过了一页，不太好办，召唤API，同时这里让它继续去
-			if (is_debug_ink) console.log("超过一页了！将使用API进行处理");
+			if (is_debug_ink) console.log("疑似标签页，提取进行。");
+			//?这究竟用了没有呢,看起来是初始化的
 			useapi = "notmine"; //不管它，就是没用到api
 			// 获得自己相册页面的tag
-			tag = get_my_tag_name(page_info.txtTitle);
+			tag = get_my_tag_name(catch_them.text()); //从内容获取，试试看
 			if (tag.length > 0) {
 				useapi = "notyet"; //还没准备好
 				//赋值给未来的人
@@ -80,19 +79,6 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 				flickr_return.tag = tag; //传回去似乎也没啥用
 				//不管了呼叫API去
 				call_flickr_api_search(tag, false);
-			}
-		} else {
-			//依然使用API因为可以获得附注
-			// 获得自己相册页面的tag
-			tag = get_my_tag_name(page_info.txtTitle);
-			if (tag.length > 0) {
-				useapi = "notdesc"; //还没获得desc信息
-				//赋值给未来的人
-				flickr_return.need_api = true;
-				flickr_return.tag = tag; //传回去似乎也没啥用
-				//不管了呼叫API去，非组织模式
-				call_flickr_api_search(tag, false);
-			}
 		}
 	}
 
@@ -383,18 +369,9 @@ function get_page_info() {
 //获得标签页的标签名称，仅仅获得自己的标签
 //如果获得别人的需要它的用户ID，暂时不去考虑
 
-function get_my_tag_name(title) {
+function get_my_tag_name(tag_str) {
 
-	/* 于目标HTML相关联代码 */
-	var tag_title_patern_cn = /你的標籤為 (.+) 的材料/;
-	var tag_title_patern_en = /Your stuff tagged with (.+)/;
-
-	var get_tag_by = title.match(tag_title_patern_cn); //匹配中文尝试
-	if (get_tag_by == null) var get_tag_by = title.match(tag_title_patern_en); //匹配英文尝试
-
-	if (get_tag_by == null) //全部失败，走人
-		return ""
-	return get_tag_by[1]; //返回第一个字节
+	return tag_str.replace(" 標籤的內容",""); //投回匹配的内容玩意
 
 }
 
