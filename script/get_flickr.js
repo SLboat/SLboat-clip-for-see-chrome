@@ -441,10 +441,13 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		//处理描述信息
 		var descstr = ""; //临时标记
 		var flickr_id = null; //默认是null，这是id
+		//作为生产辅助一部分的描述临时
+		var desc_thing = ""; //默认的描述信息
 		//可选备注
 		if (typeof(desc) != "undefined" && desc != "") //有备注
 		{
 			descstr = ' desc=\"' + desc + '\" ';
+			desc_thing = "，带有描述信息: " + desc; //添加描述信息的标记在这里
 		}
 		//这是匹配模式工厂
 		var patern_url_id = /.+\/(.+?)_.+(?=_.+)?\./; //匹配的URL ID
@@ -462,6 +465,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		} else { //有标题信息那就再写入一些
 			var match_alt_patern = /(.+)\..+/; //匹配文件切割的规则
 			var alt_name = " " + str_alt + ""; //默认的标题信息-原始
+
 			//切割掉后缀-存在的话
 			if (str_alt.match(match_alt_patern)) //如果存在[.]
 			{
@@ -469,7 +473,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 				alt_name += "(全名:" + " " + str_alt + " " + ")"; //最终拼合，需要很多空格
 			}
 			//注释加上些标记，alt信息咯，切分后缀？
-			txt_out += "<!-- 来自图片文件:" + alt_name + " 的Flickr标记-->"; //去掉分号，确保空格，检索的关键-这是英文
+			txt_out += "<!-- 来自图片文件:" + alt_name + " 的Flickr标记" + desc_thing + " -->"; //去掉分号，确保空格，检索的关键-这是英文
 		}
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">，修理被引用问题，还是去空格的好
 		txt_out += '<flickr alt=\"' + str_alt + '\" id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '> '; //标记所有的一切
