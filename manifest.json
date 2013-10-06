@@ -9,7 +9,7 @@
 	},
 	"content_scripts": [{
 			"matches": ["http://*/*", "https://*/*"],
-			"exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*"],
+			"exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*","http://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/get_sel.js"],
 			"run_at": "document_end"
 		}, {
@@ -38,6 +38,10 @@
 			"js": ["./script/jquery.min.js", "./script/get_sel_slboat.js"],
 			"run_at": "document_start"
 		}, {
+			"matches": ["http://vod.ebay.com/vod/FetchOrderDetails*"],
+			"js": ["./script/jquery.min.js", "./script/eBay_getAddress.js"],
+			"run_at": "document_start"
+		},{
 			"matches": ["http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
 			"js": ["./script/jquery.min.js", "./script/ink_inject_ebay.js"],
 			"run_at": "document_end"
@@ -67,7 +71,7 @@
 	],
 	"homepage_url": "http://see.sl088.com",
 	"manifest_version": 2,
-	"version": "2.30.1",
+	"version": "3.10.6",
 	"minimum_chrome_version": "25",
 	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 
