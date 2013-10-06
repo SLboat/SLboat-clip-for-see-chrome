@@ -11,6 +11,7 @@ function ink_go_ebay() {
 	//REV:第一次使用_me_下划线桥接
 	var _flag_alert_ = true; //是否弹出提示框
 
+	var no_faild_one_rember = true; //没有失败的
 	//TODO:显示这是第几个问题？
 	$("#trackingTable .boxtext[id^='trackingNumber']").each(function(index, box) { //如果一个都没有看起来是不会执行的呢
 		var chk_id = $(box).val(); //单号值
@@ -20,6 +21,7 @@ function ink_go_ebay() {
 		if (vaild_hk_post(chk_id, _flag_alert_)) {
 			$("#trackingTable .boxtext[id='" + id_str + "']").val(carrierName); //写入承运人
 		} else { //效验不通过的话
+			no_faild_one_rember = false; //从此失败
 			//nothing to do
 			$(box).focus(); //聚集焦点？
 		}
@@ -27,7 +29,7 @@ function ink_go_ebay() {
 
 	})
 
-	if (jQuery("#trackingTable .boxtext[id^='trackingNumber']:first").val() != "") //如果第一个不是空白的
+	if (jQuery("#trackingTable .boxtext[id^='trackingNumber']:first").val() != "" && no_faild_one_rember) //如果第一个不是空白的
 	{
 		//eBay 更新后看起来只有一个按钮了
 		jQuery("#update1 input").click(); //点击下去，看起来是的
