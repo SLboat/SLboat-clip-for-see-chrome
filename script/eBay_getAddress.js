@@ -34,6 +34,10 @@ function ebay_GetAddress() {
 
 	//构建电话信息的
 	phone = $("#shippingAddressPhoneNum").text(); //进行两次替换-由于两种不同的空格头长度
+	if (phone.trim()=="Phone number") //检查只有电话号码字样
+	{
+		phone = ""; //清理掉所有？
+	}
 	phone = phone.replace(/	/g, "").replace(/    /g, "");
 
 	//电话的递加
