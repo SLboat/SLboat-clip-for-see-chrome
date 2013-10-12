@@ -1,6 +1,6 @@
 {
 	"background": {
-		"page": "maketxt.html"
+		"page": "INK_Main.html"
 	},
 	"options_page": "set.html",
 	"browser_action": {
