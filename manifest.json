@@ -19,15 +19,15 @@
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://www.flickr.com/photos/organize*"],
-			"js": ["./script/get_flikcr_org.js"],
+			"js": ["./script/Flickr/Flickr_GetPicsByOrgin.js"],
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://www.flickr.com/*", "https://www.flickr.com/*"],
-			"js": ["./script/jquery.min.js", "./script/get_flickr.js", "./script/get_flickr_api.js", "./script/webtoolkit.md5.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/Flickr/Flickr_GetPics.js", "./script/Flickr/Flickr_GetPicsByAPI.js", "./script/Lib/webtoolkit.md5.js"],
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://www.flickr.com/photos/slboat/*"],
-			"js": ["./script/jquery.hotkeys.js", "./script/flickr_quickdesc.js"],
+			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_Set1PicDesc.js"],
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://see.sl088.com/w/*"],
@@ -35,15 +35,15 @@
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://see.sl088.com/wiki/*"],
-			"js": ["./script/jquery.min.js", "./script/get_sel_slboat.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/get_sel_slboat.js"],
 			"run_at": "document_start"
 		}, {
 			"matches": ["http://vod.ebay.com/vod/FetchOrderDetails*"],
-			"js": ["./script/jquery.min.js", "./script/eBay/eBay_getAddress.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_getAddress.js"],
 			"run_at": "document_start"
 		},{
 			"matches": ["http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
-			"js": ["./script/jquery.min.js", "./script/eBay/eBay_setTrackNumber.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_setTrackNumber.js"],
 			"run_at": "document_end"
 		}
 	],
@@ -55,13 +55,13 @@
 			}
 		}
 	},
-	"description": "森亮号航海见识墨水！吸取Web和Flickr，一种微妙的墨水！",
+	"description": "森亮号航海见识墨水！吸取Web和Flickr，加上一些小部件，一种微妙的墨水！",
 	"icons": {
 		"128": "./img/icon_128.png",
 		"48": "./img/icon_48.png"
 	},
 	"web_accessible_resources":[
-		"script/jquery-1.10.2.min.map"
+		"script/Lib/jquery-1.10.2.min.map"
 	],
 	"name": "见识墨水",
 	"permissions": [
