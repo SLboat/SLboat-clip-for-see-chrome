@@ -43,11 +43,15 @@ var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
 		$("#description_div .Butt").click();
 	}
 }
-
+//TODO 优化这些按键
 //意外发现有趣的是，这里的函数传递就像直接对等一样，而不需要()来执行，因为它不需要被执行，只需要被传入-就像一个指针。
-$(document).bind('keydown', 'ctrl+p', flickr_add_tag); //Mac下这个啥都能用
+$(document).bind('keydown', 'ctrl+p', flickr_add_tag); //Mac下这个啥都能用，哈！
 
 $(document).bind('keydown', 'alt+p', flickr_add_tag); //用于Win的兼容
 
 /* 额外的bones */
 $(document).bind('keydown', 'ctrl+/', flickr_add_tag); //俺喜欢这个，就像c的注释的一部分
+$(document).bind('keydown', 'meta+/', flickr_add_tag); //mac里是command
+
+//在mac这是非常接近的两键呢
+$(document).bind('keydown', 'alt+/', flickr_add_tag); //mac里是command
