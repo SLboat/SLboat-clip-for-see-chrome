@@ -14,6 +14,16 @@ function get_all_token() {
 	return true; // 算作成功了
 }
 
+/* 我想要一份API信息，提交申请 */
+
+function i_request_for_API() {
+	chrome.extension.sendMessage({
+		command: "flickr_api_request"
+	}, function(api) {
+		flickr_api_key = api; //赋予全局的API
+	});
+}
+
 //传入搜索tag，传入页面信息，仅获取自己的
 //todo:用户名未来也加进去给予考虑
 //todo:api_key 尽快加入到考虑范围里，虽然这里也是作为app使用的。。。
@@ -174,6 +184,120 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 	return flickr_txt;
 
 	//最终可以呼叫对方来告诉对方已经完成，但是必须注意时间不能太长了
+}
+
+/* 写入单个图片的描述信息 
+ * 需要id，需要标题title，需要描述desc
+ * 哇喔，这里不就像进行了一个封装嘛
+ */
+
+function call_flickr_api_setmete(photo_id, title, description) {
+
+	if (photo_id == "" || description == "") return false; //如果没有一点有用的东西，那则全部抛弃
+
+	/* 基础地址 */
+	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+
+	var Requst_url = "?method=flickr.photos.setMeta"; //基础搭建，需要的方法
+	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
+	Requst_url += "&format=json&nojsoncallback=1"; //最后的一些玩意
+
+	/* 基本的密匙等信息 */
+	Requst_url += "&auth_token=" + flickr_api_key.auth_token
+
+	/* 组合最后的请求数据 */
+	//TODO:效验数据是否有效
+	Requst_url += "&description=" + description;
+	Requst_url += "&title=" + title;
+	Requst_url += "&photo_id=" + photo_id;
+
+	//最后的签名
+	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url);
+	Requst_url = base_url + Requst_url;
+
+	/* 开始送入数据 */
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", Requst_url, true);
+
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var res = JSON.parse(xhr.responseText); //返回的json玩意
+			//console.log("放回来了", res)
+			if (res.stat != "ok") {
+				alert("船长，写入它的描述失败了，返回的是：" + res.id + " - " + res.message); //一个该死的错误
+				//IDEA:或许该保存到剪贴板？
+			} //TODO：成功的提醒？看起来要关闭对话框咯(3秒后如何？)
+		}
+	}
+	xhr.send();
+}
+
+/* 获得图片的详细信息
+ * 返回的是 Take_Back(res){}
+ * 一些有趣的个例是[res.photo.description._content]是描述信息
+ */
+
+function call_flickr_api_getinfo(photo_id, Take_Back) {
+
+	if (photo_id == "") return false; //如果没有一点有用的东西，那则全部抛弃
+
+    if (typeof(Take_Back) != "function"){
+        console.log("船长，这家伙没有效的回调函数，而不是这个:",Take_Back);
+        return false;//返回
+    }
+	/* 基础地址 */
+	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+
+	var Requst_url = "?method=flickr.photos.getInfo"; //基础搭建，需要的方法
+	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
+	Requst_url += "&format=json&nojsoncallback=1"; //最后的一些玩意
+
+	/* 基本的密匙等信息 */
+	Requst_url += "&auth_token=" + flickr_api_key.auth_token
+
+	/* 组合最后的请求数据 */
+	Requst_url += "&photo_id=" + photo_id;
+
+	//最后的签名
+	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url);
+	Requst_url = base_url + Requst_url;
+
+	/* 开始送入数据 */
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", Requst_url, true);
+
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var res = JSON.parse(xhr.responseText); //返回的json玩意
+			Take_Back(res); //抛回回调里咯
+			if (is_debug_ink) console.log("返回来了:", res); //调试描述
+		}
+	}
+	xhr.send();
+}
+
+/* 封装后的一些高级些的函数 */
+
+/* 简单的返回描述信息 
+ * Take_Desc(desc_str){}
+ * 有效的话是字符串，无效的话是""(不要null好了)
+ */
+ 
+function call_flickr_api_for_desc(photo_id, Take_Desc){
+	if (typeof(Take_Desc) != "function"){
+        console.log("船长，这家伙没有效的回调函数，而不是这个:",Take_Desc);
+        return false;//返回
+    }
+	//在外包的初始化字符串
+	var desc_str = "";
+	 //开门见山的呼叫
+	 return call_flickr_api_getinfo(photo_id, function(res){	 	
+	 	if (res.stat == "ok"){
+	 		Take_Desc(res.photo.description._content); //当然了这里不需要return嘛
+	 	}
+
+	 }) 
+
 }
 
 

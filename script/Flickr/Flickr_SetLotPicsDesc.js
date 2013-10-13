@@ -3,6 +3,8 @@ var debug_flickr
 	function Flickr_pics_SetUP_hook() {
 		//检查是否值得冒泡起来
 		if ($(".comment-button-desc").length == 0) {
+			//新的状态框！互动的时代
+			$(".add-comment-form").before($('<div style = "font-size:0.3em;margin-bottom: 5px;text-align: right;color: grey;" id = "Desc_info" > 随时待命准备写入描述信息... </div>'));
 			//重置默认提醒文字
 			$("textarea#message").prop("placeholder", "或许来点描述 - 航海见识墨水已替换留言部件");
 			//隐藏掉默认的注释玩意
@@ -12,7 +14,21 @@ var debug_flickr
 
 			//确保按钮管用
 			$(".comment-button-desc").click(function() {
-				console.log('hi,you press me');
+				console.log('hi,you press me'); //TEMP:临时的问号
+				set_note_state("是，船长，收到描述提交请求...");
+				//构建写入...
+				var title = get_title_by_comment();
+				var id = get_id_by_comment();
+				var descnote = get_descnote_by_comment();
+				if (title != "" && id != "" && descnote != "") {
+					set_note_state("吔吼！一切就绪，正在送往Flickr那家伙...")
+					call_flickr_api_setmete(id, title, descnote)
+					//回调？延时？
+				}else{
+					//TODO:红色？
+					set_note_state("见鬼船长，有些玩意是空的...啥玩意就得去检查下了");
+				}
+
 			})
 		}
 	}
@@ -43,9 +59,23 @@ function get_id_by_comment() {
 	return $("#message").parents(".photo-display-item").attr("data-photo-id");
 }
 
-//领取API回家
-chrome.extension.sendMessage({
-	command: "flickr_api_request"
-}, function(api) {
-	flickr_api_key = api; //赋予全局的API
-});
+/* 获得输入的描述信息 */
+
+function get_descnote_by_comment() {
+	return $("#message").val();
+}
+
+/* 写入状态信息 */
+
+function set_note_state(state) {
+	$("#Desc_info").text(state);
+}
+
+/* 读取状态信息 */
+
+function get_note_state(state) {
+	return $("#Desc_info").text();
+}
+
+/* 在这里提前用到API-于是领取API回家 */
+i_request_for_API();
