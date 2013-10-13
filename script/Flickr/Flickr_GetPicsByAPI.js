@@ -188,10 +188,11 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 
 /* 写入单个图片的描述信息 
  * 需要id，需要标题title，需要描述desc
+ * 回调函数负责回调返回内容: Way_Back(res){}
  * 哇喔，这里不就像进行了一个封装嘛
  */
 
-function call_flickr_api_setmete(photo_id, title, description) {
+function call_flickr_api_setmete(photo_id, title, description, Way_Back) {
 
 	if (photo_id == "" || description == "") return false; //如果没有一点有用的东西，那则全部抛弃
 
@@ -222,11 +223,15 @@ function call_flickr_api_setmete(photo_id, title, description) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			var res = JSON.parse(xhr.responseText); //返回的json玩意
-			//console.log("放回来了", res)
-			if (res.stat != "ok") {
-				alert("船长，写入它的描述失败了，返回的是：" + res.id + " - " + res.message); //一个该死的错误
-				//IDEA:或许该保存到剪贴板？
-			} //TODO：成功的提醒？看起来要关闭对话框咯(3秒后如何？)
+			if (typeof(Way_Back) == "function") { //如果有效函数传入
+				Way_Back(res);
+			} else {
+				//console.log("放回来了", res)
+				if (res.stat != "ok") {
+					alert("船长，写入它的描述失败了，没有回调所以我来报告咯，返回的是：" + res.id + ":" + res.message); //一个该死的错误
+					//IDEA:或许该保存到剪贴板？
+				}
+			}
 		}
 	}
 	xhr.send();
@@ -241,10 +246,10 @@ function call_flickr_api_getinfo(photo_id, Take_Back) {
 
 	if (photo_id == "") return false; //如果没有一点有用的东西，那则全部抛弃
 
-    if (typeof(Take_Back) != "function"){
-        console.log("船长，这家伙没有效的回调函数，而不是这个:",Take_Back);
-        return false;//返回
-    }
+	if (typeof(Take_Back) != "function") {
+		console.log("船长，这家伙没有效的回调函数，而不是这个:", Take_Back);
+		return false; //返回
+	}
 	/* 基础地址 */
 	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
 
@@ -282,21 +287,21 @@ function call_flickr_api_getinfo(photo_id, Take_Back) {
  * Take_Desc(desc_str){}
  * 有效的话是字符串，无效的话是""(不要null好了)
  */
- 
-function call_flickr_api_for_desc(photo_id, Take_Desc){
-	if (typeof(Take_Desc) != "function"){
-        console.log("船长，这家伙没有效的回调函数，而不是这个:",Take_Desc);
-        return false;//返回
-    }
+
+function call_flickr_api_for_desc(photo_id, Take_Desc) {
+	if (typeof(Take_Desc) != "function") {
+		console.log("船长，这家伙没有效的回调函数，而不是这个:", Take_Desc);
+		return false; //返回
+	}
 	//在外包的初始化字符串
 	var desc_str = "";
-	 //开门见山的呼叫
-	 return call_flickr_api_getinfo(photo_id, function(res){	 	
-	 	if (res.stat == "ok"){
-	 		Take_Desc(res.photo.description._content); //当然了这里不需要return嘛
-	 	}
+	//开门见山的呼叫
+	return call_flickr_api_getinfo(photo_id, function(res) {
+		if (res.stat == "ok") {
+			Take_Desc(res.photo.description._content); //当然了这里不需要return嘛
+		}
 
-	 }) 
+	})
 
 }
 
