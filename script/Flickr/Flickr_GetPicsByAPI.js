@@ -26,10 +26,10 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 		//遗憾，啥都没得到
 		// 放置变身图标
 		chrome.extension.sendMessage({
-				command: "ink_api_finish",
-				have_ink: false,
-				ink: ""
-			});
+			command: "ink_api_finish",
+			have_ink: false,
+			ink: ""
+		});
 		return false;
 	}
 
@@ -56,7 +56,7 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", Requst_url, true);
-	xhr.onreadystatechange = function () {
+	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			//获得完毕了
 			//pics_json=JSON.parse(xhr.responseText);//临时调试用，一个全局变量
@@ -123,7 +123,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		var pics = pics_json.photos.photo[pics_check];
 		var img_link = pics.url_c || pics.url_z; //自动生成的图片链接，这里就先考虑c
 		var desc = "";
-		if (typeof (url_link) == "undefined") {
+		if (typeof(url_link) == "undefined") {
 			var img_link = pics.url_z; //没有大尺寸的时候，就用z好了
 		}
 		//只获取最后一次管它呢
@@ -131,7 +131,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		var url_link = "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/" + pics.id; //获得点击的连接，用户名和ID拼凑
 		var alt_str = pics.title || null; //获得标签作为alt
 		//提取备注信息
-		if (typeof (pics.description) != "undefined") {
+		if (typeof(pics.description) != "undefined") {
 			desc = pics.description._content; //获得描述信息在这里
 		}
 		//遍历中的任何一项
@@ -164,11 +164,11 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 
 	//呼叫API弄到剪贴板里去，检查是否得到了东西
 	chrome.extension.sendMessage({
-			command: "ink_api_finish",
-			have_ink: have_ink,
-			ink: flickr_txt,
-			pic_num: pic_num
-		});
+		command: "ink_api_finish",
+		have_ink: have_ink,
+		ink: flickr_txt,
+		pic_num: pic_num
+	});
 
 	//提取到此完毕
 	return flickr_txt;

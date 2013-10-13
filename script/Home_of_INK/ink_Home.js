@@ -336,6 +336,9 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		flick_api_end(request); //把呼叫体传回去得了
 	} else if (request.command == "ink_api_clean") {
 		clear_ink(); //把呼叫体传回去得了
+	} else if (request.command == "flickr_api_request") { //需要API
+		//TODO:效验页面是否可以发出请求？
+		sendResponse(get_api_key()); //传回返回的api
 	}
 
 	//目前没有使用到
