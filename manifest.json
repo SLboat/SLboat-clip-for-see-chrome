@@ -27,7 +27,7 @@
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://www.flickr.com/photos/slboat/*"],
-			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_Set1PicDesc.js"],
+			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_Set1PicDesc.js", "./script/Flickr/Flickr_SetLotPicsDesc.js"],
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://see.sl088.com/w/*"],
