@@ -20,13 +20,13 @@ var ink_images_start = "./img/icon_32.png"; // 初始墨水
 
 var ink_images_yellow = new Array("pen_yellow_1.png ",
 	"pen_yellow_2.png ", "pen_yellow_3.png ",
-	"pen_yellow_4.png "); 
-	
+	"pen_yellow_4.png ");
+
 var flickr_images = new Array("flickr_pen_shape_1.png ",
-		"flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
-		"flickr_pen_shape_4.png ", "flickr_pen_shape_5.png ",
-		"flickr_pen_shape_6.png "); //Flickr墨水
-		
+	"flickr_pen_shape_2.png ", "flickr_pen_shape_3.png ",
+	"flickr_pen_shape_4.png ", "flickr_pen_shape_5.png ",
+	"flickr_pen_shape_6.png "); //Flickr墨水
+
 var flickr_images_ink_done = "./img/" + flickr_images[flickr_images.length - 1]; //最后一帧正常
 var flickr_images_api_wait = "./img/flickr_pen_api_wait.png"; //API_等待
 var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成

@@ -9,7 +9,7 @@
 	},
 	"content_scripts": [{
 			"matches": ["http://*/*", "https://*/*"],
-			"exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*","http://vod.ebay.com/vod/FetchOrderDetails*"],
+			"exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*", "http://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/get_sel.js"],
 			"run_at": "document_end"
 		}, {
@@ -47,11 +47,11 @@
 			"run_at": "document_end"
 		}
 	],
-	"commands" : {
+	"commands": {
 		"_execute_browser_action": {
-			"suggested_key":{
+			"suggested_key": {
 				"windows": "Ctrl+Q",
-				"mac":"MacCtrl+Q"
+				"mac": "MacCtrl+Q"
 			}
 		}
 	},
@@ -60,18 +60,18 @@
 		"128": "./img/icon_128.png",
 		"48": "./img/icon_48.png"
 	},
-	"web_accessible_resources":[
-		"script/Lib/jquery-1.10.2.min.map"
+	"web_accessible_resources": [
+			"script/Lib/jquery-1.10.2.min.map"
 	],
 	"name": "见识墨水",
 	"permissions": [
-		"clipboardWrite",
-		"storage",
-		"tabs"
+			"clipboardWrite",
+			"storage",
+			"tabs"
 	],
 	"homepage_url": "http://see.sl088.com",
 	"manifest_version": 2,
-	"version": "3.10.12",
+	"version": "3.10.13",
 	"minimum_chrome_version": "25",
 	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 
