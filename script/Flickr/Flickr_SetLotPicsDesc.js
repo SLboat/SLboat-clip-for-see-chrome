@@ -6,6 +6,9 @@ var close_timer_id; //关闭的定时器ID
  */
 
 function Flickr_Comment_Hook_Start() {
+	//如果不再页面，立即离开
+	if ($("#photo-list-holder").length == 0) return false;
+
 	/* 在这里提前用到API-于是领取API回家 */
 	i_request_for_API();
 
@@ -17,6 +20,9 @@ function Flickr_Comment_Hook_Start() {
 		console.log("已将航海见识墨水注入到评论框的按钮里了！");
 	}; //告知已载入
 	Enable_SetLotPicsDesc = true;
+
+	//TODO:或许要延时一些时间？
+	//NOTE:这里默认大概是300张
 	Flickr_pics_quick_mouse();
 
 }
@@ -35,7 +41,7 @@ $(document).ready(function() {
 /* 绑定一个快速的钩子-快速的添加标记到里面 */
 
 function Flickr_pics_quick_mouse() {
-	var the_need_postion =  ".meta .title,.meta .attribution-block"; //需要针对的区域
+	var the_need_postion = ".meta .title,.meta .attribution-block"; //需要针对的区域
 
 	$(the_need_postion).unbind("click"); //解除绑定
 
@@ -89,9 +95,17 @@ function Flickr_pics_SetUP_hook() {
 			Note.SetNote("该死的！船长！提取旧描述出现意外！");
 		} else if (desc_orgin != "") { //找到了原始信息
 			Note.SetNoteClor("blue"); //来电蓝色
-			Note.SetNote("啊哈！船长！提取回来了旧的描述见识！");
-			//检查是否已经修改了-考虑到延时
-			Note.SetDesc(desc_orgin);
+			if (Note.GetDesc() == "") {
+				Note.SetNote("啊哈！船长！提取回来了旧的描述见识！");
+				//检查是否已经修改了-考虑到延时
+				Note.SetDesc(desc_orgin);
+			} else {
+				//糟糕了打架了
+				Note.SetNoteClor("red");
+				Note.SetNote("啊，这叫我咋办好！我提取回来了描述[" + desc_orgin + "]");
+			}
+			//变成修改描述
+			$(".comment-button-desc").val("修改描述");
 			Note.SetDone("有描");
 		} else {
 			Note.SetNote("嘿！船长！检查完毕！这玩意还未描述呢！");
@@ -147,6 +161,7 @@ function Flickr_pics_SetUP_hook() {
 			Note.CloseDiag();
 		} else {
 			Note.SetNoteClor("red"); //红色警告
+			//TODO:或许该有原始的话，就不为难这里了呢？
 			//包含字符串
 			Note.SetNote("见鬼船长，Esc不能取消，有描述了呢！");
 			//抛弃事件
@@ -183,7 +198,8 @@ Note = {
 	/* 获得输入的描述信息 */
 
 	GetDesc: function() {
-		return $("#message").val();
+		//切刀换行问题
+		return $.trim($("#message").val());
 	},
 
 	/* 设置已描的标记 */
