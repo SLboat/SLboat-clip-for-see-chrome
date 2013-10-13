@@ -49,7 +49,7 @@ function Flickr_pics_quick_mouse() {
 	$(the_need_postion).click(function() {
 		$(this).parent().find(".comments-icon img").click();
 	})
-	return $(the_need_postion).length; //返回处理的数量
+	return ($(the_need_postion).length / 2); //返回处理的数量，大概是一半
 }
 
 /* 设置最基本的钩子们 */
@@ -106,7 +106,7 @@ function Flickr_pics_SetUP_hook() {
 			}
 			//变成修改描述
 			$(".comment-button-desc").val("修改描述");
-			Note.SetDone("有描");
+			Note.SetDone("有描", desc_orgin);
 		} else {
 			Note.SetNote("嘿！船长！检查完毕！这玩意还未描述呢！");
 		}
@@ -120,13 +120,13 @@ function Flickr_pics_SetUP_hook() {
 		//获取最新的标记
 		descnote = $.trim(Note.GetDesc());
 		//构建写入...
-		if (title != "" && id != "" && descnote != "") {
+		if (id != "" && descnote != "") {
 			Note.SetNote("吔吼！一切就绪，正在送往Flickr那家伙...")
 			call_flickr_api_setmete(id, title, descnote, function(res) {
 				if (res.stat == "ok") {
 					Note.SetNoteClor("blue"); //蓝色
 					Note.SetNote("太棒了！船长！一切都送出去了！" + Note.wait_for_close + "秒后将自动关闭这里...");
-					Note.SetDone("已描"); //设置描绘标记
+					Note.SetDone("已描", descnote); //设置描绘标记
 					close_timer_id = setTimeout(Note.CloseDiag, Note.wait_for_close * 1000); //等待几秒后完毕
 				} else {
 					Note.SetNoteClor("red"); //红色警告
@@ -203,8 +203,14 @@ Note = {
 	},
 
 	/* 设置已描的标记 */
-	SetDone: function(donestr) {
-		$("#message").parents(".photo-display-item").find(".comment-count").text(donestr)
+	SetDone: function(donestr, desc) {
+		//设置模糊
+		$("#message").parents(".photo-display-item").find("[id][class*=img]").css("opacity", "0.15");
+		//设置标记
+		$("#message").parents(".photo-display-item").find(".comment-count").text(donestr);
+		if (typeof(desc) == "string" && desc != "") {
+			$("#message").parents(".photo-display-item").find(".comments-icon").attr("title", "描述信息:" + desc);
+		}
 	},
 
 	/* 设置状态的颜色 */
@@ -240,4 +246,61 @@ Note = {
 		}
 	},
 
+}
+
+/* 遍历所有的图片，解决里面的是否有标记问题 */
+//TODO：检查tag来变色？
+//TODO：记录缓存，给后来调用？
+
+function Scan_All_Pics_For_Desc() {
+	var blur_mush = 15; //糊掉的程度
+	var max_per_time_work = 150; //一次最大处理的张数
+	//制造犯迷糊
+	var blur_me = function(pics, desc) {
+		//CSS的模糊-看起来太卡了 
+		//$(pics).css("-webkit-filter", "blur(" + blur_mush + "px)");
+		//CSS的透明-这个还不错
+		$(pics).find("[id][class*=img]").css("opacity", "0.15");
+		//设置有标记
+		$(pics).find(".comment-count").text("抛锚");
+		$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
+	};
+	//标记自己为已检查
+	var check_me = function(pics) {
+		$(pics).attr("has_check", "true"); //标记已经检查
+	}
+	//设置回调的回调函数来获得特别的玩意-看起来这里意外的变成闭包了
+	var back_the_desc = function(id, $pic, callback) {
+		call_flickr_api_for_desc(id, function(desc_returun) {
+			//再包装一层。。。看起来是从闭包里得到小局部函数啊
+			callback(desc_returun, $pic);
+		});
+	}
+	var i_count = 0; //计数器
+	//限制最大数，不检查已检查的
+	$(".photo-display-item:not([has_check])").each(function() { //遍历开始
+		var id = $(this).attr("data-photo-id");
+		//临时备份图片
+		$img = $(this).find("[id][class*=img]");
+		if ($img.prop("src").match("spaceball.gif")) {
+			return true; //继续下一个，不能返回fasle会死掉
+		}
+		//传入再传入。。。
+		back_the_desc(id, $(this), function(desc_returun, $pic) {
+			if (desc_returun && desc_returun != "") {
+				//必要的话-糊掉-需要指向准确的对象
+				blur_me($pic, desc_returun);
+				check_me($pic); //标记检查
+			} else if (desc_returun != null) { //至少不是null吧
+				check_me($pic); //标记检查
+			}
+
+		});
+		i_count++;
+		if (i_count > max_per_time_work) {
+			console.log("船长！超过了" + max_per_time_work + "张，根据说好的！老子不干了！")
+			return false; //彻底终止循环
+		}
+	}); //遍历结束
+	//TODO:没有的话进行一个提醒
 }

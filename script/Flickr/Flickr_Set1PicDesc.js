@@ -9,6 +9,8 @@ var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
 
 	//检查是否需要全局标记
 	if (Enable_SetLotPicsDesc) {
+		Scan_All_Pics_For_Desc();  //测试使用
+
 		var work_num = Flickr_pics_quick_mouse();
 		alert("船长！已经给全部的图片写入了标记！大概是" + work_num + "个呢！")
 		return true; //已经完成工作
