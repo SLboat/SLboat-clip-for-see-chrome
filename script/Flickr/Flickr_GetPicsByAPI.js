@@ -293,12 +293,12 @@ function call_flickr_api_for_desc(photo_id, Take_Desc) {
 		console.log("船长，这家伙没有效的回调函数，而不是这个:", Take_Desc);
 		return false; //返回
 	}
-	//在外包的初始化字符串
-	var desc_str = "";
 	//开门见山的呼叫
 	return call_flickr_api_getinfo(photo_id, function(res) {
 		if (res.stat == "ok") {
 			Take_Desc(res.photo.description._content); //当然了这里不需要return嘛
+		} else {
+			Take_Desc(null); //意外来了
 		}
 
 	})

@@ -2,8 +2,18 @@
   * 用于一个对话框之下快速的完成添加标记 
   */
 
+  var Enable_SetLotPicsDesc = false; //是否已经开启了大量图片标记
+
 //主函数
 var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
+
+	//检查是否需要全局标记
+	if (Enable_SetLotPicsDesc){
+		Flickr_pics_quick_mouse();
+		alert("船长！已经给全部的图片写入了标记！")
+		return true; //已经完成工作
+	}
+
 	var old_desc = "";
 	//获取正常文字
 	if ($("#description_div textarea").length > 0) {
