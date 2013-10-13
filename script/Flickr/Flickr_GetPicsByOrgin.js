@@ -56,9 +56,10 @@ function tag_press_done_bundle() {
 
 function use_esc_key_bundle(){
 	if (!Has_key_esc_bundle){
-		$("body").on("mouseover mouseout", "#one_photo_inner_border_div", function() {
+		//旧的方式是[mouseover mouseout]，在这里新的方式看起来妙极了
+		$("body").on("DOMSubtreeModified", "#one_photo_inner_border_div", function() {
 			//取消委托-不需要了
-			$("body").off("mouseover mouseout", "#one_photo_inner_border_div");
+			$("body").off("DOMSubtreeModified", "#one_photo_inner_border_div");
 			//绑定新的方法-取消按钮
 			//todo:检查对话框有效性
 			$("#one_photo_inner_border_div").keydown(function(event){ 
@@ -80,9 +81,9 @@ function use_esc_key_bundle(){
 function set_up_tag_hook() {
 	if (!Have_setup_bundle) {
 		//鼠标移动怎么样！
-		$("body").on("mouseover mouseout", "#batch_add_tags_form", function() {
+		$("body").on("DOMSubtreeModified", "#batch_add_tags_form", function() {
 			//注销原始触发器-相比one的好处是不是处理完注销
-			$("body").off("mouseover mouseout", "#batch_add_tags_form");
+			$("body").off("DOMSubtreeModified", "#batch_add_tags_form");
 			//一次性事件注入
 			tag_press_done_bundle();
 			//一个象征物
