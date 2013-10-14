@@ -16,11 +16,15 @@ function get_all_token() {
 
 /* 我想要一份API信息，提交申请 */
 
-function i_request_for_API() {
+function i_request_for_API(callback) {
 	chrome.extension.sendMessage({
 		command: "flickr_api_request"
 	}, function(api) {
 		flickr_api_key = api; //赋予全局的API
+		//释放回调回去
+		if (typeof(callback) == "function") {
+			callback();
+		}
 	});
 }
 

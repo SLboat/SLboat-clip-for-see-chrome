@@ -10,7 +10,9 @@ function Flickr_Comment_Hook_Start() {
 	if ($("#photo-list-holder").length == 0) return false;
 
 	/* 在这里提前用到API-于是领取API回家 */
-	i_request_for_API();
+	i_request_for_API(function() {
+		Scan_All_Pics_For_Desc(50);
+	});
 
 	//确保，确保，只干了一次
 	$("#photo-list-holder").off("DOMSubtreeModified");
@@ -33,8 +35,6 @@ $(document).ready(function() {
 	//IDEA:或许等待对象移除后再次复活事件？
 	Flickr_Comment_Hook_Start();
 
-	//开始扫描一次？
-	Scan_All_Pics_For_Desc(50);
 })
 
 /* -------------实现之旅------------- */
@@ -317,8 +317,8 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		//传入再传入。。。
 		back_the_desc(id, $(this), function(res, $pic) {
 			if (res.stat == "ok") { //如果有效发挥
-				//考虑是否已描
-				//TODO:不需要具体检查了-但愿还好
+				//获得描述文本				
+				var desc_returun = res.photo.description._content;
 				if (desc_returun != "") {
 					//必要的话-糊掉-需要指向准确的对象
 					blur_me($pic, desc_returun);
@@ -342,5 +342,9 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 			return false; //彻底终止循环
 		}
 	}); //遍历结束
+	//TODO:全局基数？
+	if (i_count > 0) {
+		console.log("使用了API完成了" + i_count + "个请求");
+	}
 	//TODO:没有的话进行一个提醒
 }
