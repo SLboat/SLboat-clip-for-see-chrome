@@ -86,13 +86,13 @@ function use_key_bundle() {
 			});
 		})
 		//再继续绑定别的玩意
-		$(Document).bind("keydown", "esc", function() {
+		$(document).bind("keydown", "esc", function() {
 			//所有的esc处理玩意
 			press_esc_event(); //呼叫这个玩意
 
 		})
 		/* 绑定按键 t */
-		$(Document).bind("keydown", "t", function() {
+		$(document).bind("keydown", "t", function() {
 			//NOTE：这里不处理标记对话框，因为它可以回到自己
 			/** 检查权限对话框 **/
 			if (check_display($("#batch_mat_perms"))) {
@@ -106,7 +106,7 @@ function use_key_bundle() {
 			return false; //不要本次事件
 		})
 		/* 绑定按键 s */
-		$(Document).bind("keydown", "s", function() {
+		$(document).bind("keydown", "s", function() {
 			/* 检查对话框 */
 			/** 检查自己的对话框 **/
 			if (check_display($("#batch_mat_perms"))) {
@@ -126,13 +126,13 @@ function use_key_bundle() {
 			return false; //不要本次事件
 		})
 		/* 绑定按键 c */
-		$(Document).bind("keydown", "c", function() {
+		$(document).bind("keydown", "c", function() {
 			if ($("#clear_batch_div").css("visibility") == "visible") {
 				$("#clear_batch_div a")[0].click();
 			}
 		})
 		/* 绑定按键 p */
-		$(Document).bind("keydown", "p", function() {
+		$(document).bind("keydown", "p", function() {
 			//选择隐私
 			$("#findr_privacy_select").val("priv_5");
 			//原生按钮尝试
