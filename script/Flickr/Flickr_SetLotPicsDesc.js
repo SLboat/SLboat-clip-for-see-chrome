@@ -204,12 +204,18 @@ Note = {
 
 	/* 设置已描的标记 */
 	SetDone: function(donestr, desc) {
+		var pics = $("#message").parents(".photo-display-item");
+
+		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已抛锚");
+
+		//一个悲剧的颜色-绿绿的
+		$(pics).find("span.photo_container").css("background-color", "#00FFAD");
 		//设置模糊
-		$("#message").parents(".photo-display-item").find("[id][class*=img]").css("opacity", "0.15");
+		$(pics).find("[id][class*=img]").css("opacity", "0.15");
 		//设置标记
-		$("#message").parents(".photo-display-item").find(".comment-count").text(donestr);
+		$(pics).find(".comment-count").text(donestr);
 		if (typeof(desc) == "string" && desc != "") {
-			$("#message").parents(".photo-display-item").find(".comments-icon").attr("title", "描述信息:" + desc);
+			$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
 		}
 	},
 
@@ -259,21 +265,38 @@ function Scan_All_Pics_For_Desc() {
 	var blur_me = function(pics, desc) {
 		//CSS的模糊-看起来太卡了 
 		//$(pics).css("-webkit-filter", "blur(" + blur_mush + "px)");
+
+		//写入一个文字
+		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已抛锚");
+
+		//一个悲剧的颜色-绿绿的
+		$(pics).find("span.photo_container").css("background-color", "#00FFAD");
 		//CSS的透明-这个还不错
 		$(pics).find("[id][class*=img]").css("opacity", "0.15");
 		//设置有标记
 		$(pics).find(".comment-count").text("抛锚");
 		$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
 	};
+	//制造变成灰色，不考虑返回
+	var public_me = function(pics) {
+
+		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已公开");
+
+		//设置一个背景色
+		$(pics).find("span.photo_container").css("background-color", "palegreen");
+		//模糊掉图片自己
+		$(pics).find("[id][class*=img]").css("opacity", "0.10");
+
+	}
 	//标记自己为已检查
 	var check_me = function(pics) {
 		$(pics).attr("has_check", "true"); //标记已经检查
 	}
 	//设置回调的回调函数来获得特别的玩意-看起来这里意外的变成闭包了
 	var back_the_desc = function(id, $pic, callback) {
-		call_flickr_api_for_desc(id, function(desc_returun) {
+		call_flickr_api_for_desc(id, function(desc_returun, res) {
 			//再包装一层。。。看起来是从闭包里得到小局部函数啊
-			callback(desc_returun, $pic);
+			callback(desc_returun, res, $pic);
 		});
 	}
 	var i_count = 0; //计数器
@@ -286,13 +309,23 @@ function Scan_All_Pics_For_Desc() {
 			return true; //继续下一个，不能返回fasle会死掉
 		}
 		//传入再传入。。。
-		back_the_desc(id, $(this), function(desc_returun, $pic) {
+		//TODO:精简到只要做一次
+		back_the_desc(id, $(this), function(desc_returun, res, $pic) {
+			//检查是否公开
+			if (res.stat == "ok") {
+				//效验是否设置了公开
+				if (res.photo.visibility.ispublic == 1) {
+					//检查公开部分
+					public_me($pic);
+				}
+			};
+
 			if (desc_returun && desc_returun != "") {
 				//必要的话-糊掉-需要指向准确的对象
 				blur_me($pic, desc_returun);
 				check_me($pic); //标记检查
 			} else if (desc_returun != null) { //至少不是null吧
-				check_me($pic); //标记检查
+				check_me($pic); //标记检查				
 			}
 
 		});
