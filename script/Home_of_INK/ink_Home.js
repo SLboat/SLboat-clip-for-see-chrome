@@ -388,6 +388,11 @@ function flickr_api_animal() {
 //API完成处理，只是动动图标啥的
 
 function flick_api_end(request) {
+	//设置墨水类型，哈
+	ink_type="flickr";
+	//这个是播放的动画啥的玩意
+	image_stay_ink = flickr_images.length - 1
+	
 	if (request.have_ink) { //有墨水了
 		//API完成图标
 		chrome.browserAction.setIcon({
