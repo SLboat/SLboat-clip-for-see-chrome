@@ -7,7 +7,7 @@ var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
 
 	//为更多图片牺牲自己
 	if (Enable_SetLotPicsDesc) {
-		
+
 		Scan_All_Pics_For_Desc(150); //最大扫描150张？
 
 		Flickr_pics_quick_mouse();
@@ -55,4 +55,5 @@ $(document).ready(function() {
 
 	//在mac这是非常接近的两键呢
 	$(document).bind('keydown', 'alt+/', flickr_add_tag); //mac里是command
-}
+
+});

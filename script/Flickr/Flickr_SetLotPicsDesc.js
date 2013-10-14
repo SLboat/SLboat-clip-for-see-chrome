@@ -331,8 +331,7 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 					//检查公开部分
 					public_me($pic);
 				}
-			};
-			else {
+			} else {
 				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
 			}
 
