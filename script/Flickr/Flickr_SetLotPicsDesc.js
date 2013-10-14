@@ -310,15 +310,7 @@ function Scan_All_Pics_For_Desc() {
 		//传入再传入。。。
 		//TODO:精简到只要做一次
 		back_the_desc(id, $(this), function(desc_returun, res, $pic) {
-			//检查是否公开
-			if (res.stat == "ok") {
-				//效验是否设置了公开
-				if (res.photo.visibility.ispublic == 1) {
-					//检查公开部分
-					public_me($pic);
-				}
-			};
-
+			//考虑是否已描
 			if (desc_returun && desc_returun != "") {
 				//必要的话-糊掉-需要指向准确的对象
 				blur_me($pic, desc_returun);
@@ -326,6 +318,14 @@ function Scan_All_Pics_For_Desc() {
 			} else if (desc_returun != null) { //至少不是null吧
 				check_me($pic); //标记检查				
 			}
+			//检查是否公开-处理公开问题
+			if (res.stat == "ok") {
+				//效验是否设置了公开
+				if (res.photo.visibility.ispublic == 1) {
+					//检查公开部分
+					public_me($pic);
+				}
+			};
 
 		});
 		i_count++;

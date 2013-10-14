@@ -511,7 +511,7 @@ function get_flickr_order_pos() {
 }
 
 /* 检测是否在首页 */
-
+//TODO:引入escape？
 function am_i_index() {
 	var chk_flickr_all = window.location.href.match(/http:\/\/www\.flickr\.com\/photos\/slboat(.*)/);
 	if (chk_flickr_all) {
