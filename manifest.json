@@ -18,12 +18,12 @@
 			"all_frames": true,
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://www.flickr.com/photos/organize*"],
-			"js": ["./script/Flickr/Flickr_GetPicsByOrgin.js"],
-			"run_at": "document_end"
-		}, {
 			"matches": ["http://www.flickr.com/*", "https://www.flickr.com/*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/Flickr/Flickr_GetPics_Home.js", "./script/Flickr/Flickr_GetPicsByAPI.js", "./script/Lib/webtoolkit.md5.js"],
+			"run_at": "document_end"
+		}, {
+			"matches": ["http://www.flickr.com/photos/organize*"],
+			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_GetPicsByOrgin.js"],
 			"run_at": "document_end"
 		}, {
 			"matches": ["http://www.flickr.com/photos/slboat/*"],
