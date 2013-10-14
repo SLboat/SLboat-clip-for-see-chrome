@@ -412,7 +412,10 @@ function ebay_GetAddress() {
 	if (is_vaild_Country_Code(code)) {
 		code_full = eBay_TranCountryCode(code);
 		if (code_full) { //考虑到空字串为假，这里很可能是可靠的
-			$("#shippingAddress").html($("#shippingAddress").html().replace("	" + code + "\n", "	" + code + " [" + code_full + "]" + "\n"))
+			code_new = code + " [" + code_full + "]"; //新的编号
+			$("#shippingAddress").html($("#shippingAddress").html().replace("	" + code + "\n", "	" + code_new + "\n"));
+			//替换自己的地址
+			address = address.replace("\n" + code + "\n", "\n" + code_new + "\n")
 		}
 	}
 	/* 电话信息处理 */
@@ -433,6 +436,8 @@ function ebay_GetAddress() {
 
 	//最后的事情
 	info_add = info_add.replace(/\n$/, ""); //切除末尾的换行，如果需要的话
+
+	info_add = wrap_address(info_add); //包装自己
 
 	return info_add; //抛出返回信息
 }
@@ -469,4 +474,22 @@ function str_getLastline(str) {
 		return tmpStrArr[tmpStrArr.length - 1];
 	}
 	return ""
+}
+
+/* 字符串完结模块：包裹地址 
+ * 将地址包裹起来
+ */
+
+function wrap_address(str) {
+	var head, tail; //开头和尾巴
+	/* 开头 */
+	head = "↓↓↓↓↓↓↓↓↓↓↓↓↓--下面为森亮编号和地址--↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓"; //标记头
+	head += "\n\n"; //两个换行
+	head += "___________________"; //一条直线
+	head += "\n"; //保守一个换行
+	/* 结尾 */
+	tail = "\n"; //加上一个尾换行
+	tail += "^^^^^^^^^^^^^^^^^^^上面结束一个编号^^^^^^^^^^^^^^^^^^^^^"
+	tail += "\n"; //结尾一个换行
+	return head + str + tail; //返回打包
 }
