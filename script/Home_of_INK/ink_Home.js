@@ -217,10 +217,15 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 	 */
 
 	var slboat_edit_patern = /\/see\.sl088\.com\/w\/index\.php.+action=edit/; //森亮号大船编辑模式
+
+	/* eBay 的填写单号页面 */
 	/* 一个eBay注入的连接就像是
 	 * http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber2&LineID=Transactions.181078954797
 	 */
 	var ebay_tracknumber_patern = /\/payments\.ebay\.com\/ws\/eBayISAPI\.dll\?AddTrackingNumber/; //eBay的承运人编辑模式
+
+	/* eBay的管理页面-在这里是 */
+	var ebay_myebay_pater = escape4regexp("http://my.ebay.com/ws/eBayISAPI.dll?MyEbay");
 
 	/* 只有一种flickr的管理页面样式，那就是
 	 * http://www.flickr.com/photos/organize
@@ -290,6 +295,28 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 						flickr_order: localStorage.flickr_order || ""
 					}
 				});
+			}, 50); //等待页面间隔
+
+		} else if (tab.url.match(ebay_myebay_pater)) {
+			setTimeout(function() { //为啥要设置超时呢，看起来是500毫秒后
+				if (isInManage) return; //返回去啥子的。。难道在中间
+				//清空墨水
+				clear_ink();
+				//发送事件请求
+				chrome.tabs.sendMessage(tab.id, {
+					// 传递方法，传递api_key
+					method: "getMyeBaySelection",
+					flickr_api_key: get_api_key(),
+					//用于墨水的作用
+					ink_option: {
+						ink_for: get_ink_for(),
+						flickr_order: localStorage.flickr_order || ""
+					} //传入选项
+				}, function(response) {
+					ink_add(response.data, response.title, response.url, response
+						.copy_type,
+						tab);
+				}); //注入事件申请
 			}, 50); //等待页面间隔
 
 		} else { //正常的吸取墨水
@@ -389,10 +416,10 @@ function flickr_api_animal() {
 
 function flick_api_end(request) {
 	//设置墨水类型，哈
-	ink_type="flickr";
+	ink_type = "flickr";
 	//这个是播放的动画啥的玩意
 	image_stay_ink = flickr_images.length - 1
-	
+
 	if (request.have_ink) { //有墨水了
 		//API完成图标
 		chrome.browserAction.setIcon({
@@ -533,4 +560,10 @@ function init_inkicon_color(str) {
 	chrome.browserAction.setBadgeBackgroundColor({
 		color: [255, 0, 0, 200]
 	});
+}
+
+/* 逃脱字符串，并且返回正则形式 */
+
+function escape4regexp(str) {
+	return new RegExp(str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 }

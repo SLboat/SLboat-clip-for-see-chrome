@@ -39,11 +39,11 @@
 			"run_at": "document_start"
 		}, {
 			"matches": ["http://vod.ebay.com/vod/FetchOrderDetails*"],
-			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_getAddress.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_GetAddress.js"],
 			"run_at": "document_start"
 		},{
 			"matches": ["http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
-			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_setTrackNumber.js"],
+			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_SetTrackNumber.js"],
 			"run_at": "document_end"
 		}
 	],
