@@ -61,7 +61,7 @@
 		"48": "./img/icon_48.png"
 	},
 	"web_accessible_resources": [
-			"script/Lib/jquery-1.10.2.min.map"
+			"script/Lib/jquery.min.map"
 	],
 	"name": "见识墨水",
 	"permissions": [
