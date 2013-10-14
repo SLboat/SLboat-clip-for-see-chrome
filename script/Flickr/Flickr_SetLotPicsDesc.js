@@ -21,8 +21,7 @@ function Flickr_Comment_Hook_Start() {
 	}; //告知已载入
 	Enable_SetLotPicsDesc = true;
 
-	//TODO:或许要延时一些时间？
-	//NOTE:这里默认大概是300张
+	//快速点击区域启动，或许需要延时几秒？
 	Flickr_pics_quick_mouse();
 
 }

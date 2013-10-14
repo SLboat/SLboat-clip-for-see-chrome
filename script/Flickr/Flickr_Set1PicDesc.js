@@ -2,18 +2,14 @@
  * 用于一个对话框之下快速的完成添加标记
  */
 
-var Enable_SetLotPicsDesc = false; //是否已经开启了大量图片标记
-
 //主函数
 var flickr_add_tag = function() { //这里包括了绑定基本的快捷键
 
-	//检查是否需要全局标记
+	//为更多图片牺牲自己
 	if (Enable_SetLotPicsDesc) {
 		Scan_All_Pics_For_Desc();  //测试使用
 
-		var work_num = Flickr_pics_quick_mouse();
-        //别再提示了
-		//alert("船长！已经给全部的图片写入了标记！大概是" + work_num + "个呢！")
+		Flickr_pics_quick_mouse();
 		return true; //已经完成工作
 	}
 

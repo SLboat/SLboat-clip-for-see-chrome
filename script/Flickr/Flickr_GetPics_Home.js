@@ -10,6 +10,9 @@ var ink_option = {
 	flickr_order: "pos"
 }; //墨水选项
 
+//内部交互函数
+var Enable_SetLotPicsDesc = false; //是否已经开启了大量图片标记
+
 /* 主函数们 */
 
 //得到Flickr的连接
@@ -66,19 +69,19 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 		catch_them = $(Ident_set_page); //尝试相册页，已经离开了
 	} else {
 		//来到了标签页里
-			//超过了一页，不太好办，召唤API，同时这里让它继续去
-			if (is_debug_ink) console.log("疑似标签页，提取进行。");
-			//?这究竟用了没有呢,看起来是初始化的
-			useapi = "notmine"; //不管它，就是没用到api
-			// 获得自己相册页面的tag
-			tag = get_my_tag_name(catch_them.text()); //从内容获取，试试看
-			if (tag.length > 0) {
-				useapi = "notyet"; //还没准备好
-				//赋值给未来的人
-				flickr_return.need_api = true;
-				flickr_return.tag = tag; //传回去似乎也没啥用
-				//不管了呼叫API去
-				call_flickr_api_search(tag, false);
+		//超过了一页，不太好办，召唤API，同时这里让它继续去
+		if (is_debug_ink) console.log("疑似标签页，提取进行。");
+		//?这究竟用了没有呢,看起来是初始化的
+		useapi = "notmine"; //不管它，就是没用到api
+		// 获得自己相册页面的tag
+		tag = get_my_tag_name(catch_them.text()); //从内容获取，试试看
+		if (tag.length > 0) {
+			useapi = "notyet"; //还没准备好
+			//赋值给未来的人
+			flickr_return.need_api = true;
+			flickr_return.tag = tag; //传回去似乎也没啥用
+			//不管了呼叫API去
+			call_flickr_api_search(tag, false);
 		}
 	}
 
@@ -216,6 +219,24 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 chrome.runtime.onMessage.addListener(function(request, sender,
 	sendResponse) {
 	if (request.method == "getSelection") {
+		//处理首页的问题
+		//为更多图片牺牲自己
+		if (Enable_SetLotPicsDesc) {
+			if (am_i_index) {
+				//获取所有的图片
+				Scan_All_Pics_For_Desc();
+				//快速制造一个标记区域
+				Flickr_pics_quick_mouse();
+				//呼叫API换个图标
+				chrome.extension.sendMessage({
+					command: "flickr_note_icon",
+				});
+				
+				return true; //已经完成工作
+			}
+		}
+		//TODO:效验username从api拉回来
+
 		//todo:处理是否为组织管理的页面。。。
 		var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
 		var copystr = window.getSelection()
@@ -371,7 +392,7 @@ function get_page_info() {
 
 function get_my_tag_name(tag_str) {
 
-	return tag_str.replace(" 標籤的內容",""); //投回匹配的内容玩意
+	return tag_str.replace(" 標籤的內容", ""); //投回匹配的内容玩意
 
 }
 
@@ -487,7 +508,21 @@ function isAlex() {
 
 function get_flickr_order_pos() {
 	return ink_option.flickr_order == "pos";
-} /* 额外的测试执行 */
+}
+
+/* 检测是否在首页 */
+
+function am_i_index() {
+	var chk_flickr_all = window.location.href.match("/http:\/\/www\.flickr\.com\/photos\/slboat(.*)/");
+	if (chk_flickr_all) {
+		if (chk_flickr_all(1) == "" || chk_flickr_all(1) == "/" || chk_flickr_all(1).match(/^\/with\//)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/* 额外的测试执行 */
 
 /*
 is_debug_ink=true;  // 开启调试信息

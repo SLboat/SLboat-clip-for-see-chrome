@@ -31,6 +31,7 @@ var flickr_images_ink_done = "./img/" + flickr_images[flickr_images.length - 1];
 var flickr_images_api_wait = "./img/flickr_pen_api_wait.png"; //API_等待
 var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
 
+var flickr_images_note_me = "./img/Flickr/Flickr_Desc_39.png"
 //默认墨水风格
 var ink_type = "ink";
 
@@ -339,10 +340,12 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 	} else if (request.command == "flickr_api_request") { //需要API
 		//TODO:效验页面是否可以发出请求？
 		sendResponse(get_api_key()); //传回返回的api
+	} else if (request.command == "flickr_note_icon") {
+		flickr_make_note_icon(); //啊哈制造icon
+	} else { //如果啥都没有
+		//返回空包函数-看起来没啥必要
+		sendResponse({}); // snub them.
 	}
-
-	//目前没有使用到
-	sendResponse({}); // snub them.
 });
 
 /* 每次启动的时候初始化 */
@@ -401,6 +404,18 @@ function flick_api_end(request) {
 		clear_inkicon_text(); // 清理现场
 	}
 
+}
+
+//描述标记有关
+
+function flickr_make_note_icon() {
+	//先清理下，要清理吗？
+	clear_ink();
+	//播放等待图标
+	chrome.browserAction.setIcon({
+		//黄色初始化
+		path: flickr_images_note_me
+	});
 }
 
 //获得API的KEY
