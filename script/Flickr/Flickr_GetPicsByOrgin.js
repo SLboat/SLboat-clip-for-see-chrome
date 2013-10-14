@@ -56,8 +56,10 @@ function tag_press_done_bundle() {
 
 //试图注入基本钩子
 $(document).ready(function() {
-	use_key_bundle();
-	set_up_tag_hook();
+	i_request_for_API(); //索要api
+	//TODO:这里看起来会出现问题
+	use_key_bundle(); //绑定寄出键
+	set_up_tag_hook(); //绑定tag对话框
 })
 
 /* 热键绑定，让事情变得简单一些-至少试图 
@@ -100,7 +102,6 @@ function use_key_bundle() {
 			if (check_display($("#comm_div"))) {
 				return true; //只处理一层
 			}
-
 			$("#candy_button_o_addtags a")[0].click(); //看起来哦，只能dom方法
 			return false; //不要本次事件
 		})
@@ -130,7 +131,13 @@ function use_key_bundle() {
 				$("#clear_batch_div a")[0].click();
 			}
 		})
-
+		/* 绑定按键 p */
+		$(Document).bind("keydown", "p", function() {
+			//选择隐私
+			$("#findr_privacy_select").val("priv_5");
+			//原生按钮尝试
+			$("#findr_submit").click();
+		})
 		//额外再次绑定添加标签按钮
 		$(document).bind("keydown", "ctrl+/", function() {
 			$("#candy_button_o_addtags a")[0].click(); //看起来哦，只能dom方法
@@ -146,7 +153,7 @@ function use_key_bundle() {
 function set_up_tag_hook() {
 	if (!Have_setup_bundle) {
 		//鼠标移动怎么样！
-		$("body").on("DOMSubtreeModified", "#batch_add_tags_form", function() {
+		$("#batch_edit_pop").on("DOMSubtreeModified", "#batch_add_tags_form", function() {
 			//注销原始触发器-相比one的好处是不是处理完注销
 			$("body").off("DOMSubtreeModified", "#batch_add_tags_form");
 			//一次性事件注入
@@ -465,7 +472,6 @@ function check_display($dom) {
 }
 
 /* 全局的esc工作函数 */
-//TODO 检查那种取消的状态
 
 function press_esc_event() {
 	//console.log("esc has press:!a"); //提醒
@@ -473,6 +479,11 @@ function press_esc_event() {
 	/* 开始处理对话框 */
 	/** 处理公共对话框 **/
 	if (check_display($("#comm_div"))) {
+		//检查取消按钮是否存在
+		if ($("#comm_button_cancel").css("visibility") == "visible") {
+			return false;
+		}
+
 		$("#comm_button_ok")[0].click(); //奇怪只能用html的方式
 		return true; //只处理一层
 	}
