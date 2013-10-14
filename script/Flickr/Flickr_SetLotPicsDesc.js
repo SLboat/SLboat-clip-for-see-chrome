@@ -33,6 +33,8 @@ $(document).ready(function() {
 	//IDEA:或许等待对象移除后再次复活事件？
 	Flickr_Comment_Hook_Start();
 
+	//开始扫描一次？
+	Scan_All_Pics_For_Desc(50);
 })
 
 /* -------------实现之旅------------- */
@@ -257,9 +259,14 @@ Note = {
 //TODO：检查tag来变色？
 //TODO：记录缓存，给后来调用？
 
-function Scan_All_Pics_For_Desc() {
+function Scan_All_Pics_For_Desc(max_per_time_work) {
 	var blur_mush = 15; //糊掉的程度
-	var max_per_time_work = 150; //一次最大处理的张数
+
+	//指定最大数量-如果失败
+	if (typeof(max_per_time_work) != "number") {
+		max_per_time_work = 150; //一次最大处理的张数
+	}
+
 	//制造犯迷糊
 	var blur_me = function(pics, desc) {
 		//CSS的模糊-看起来太卡了 
@@ -293,9 +300,9 @@ function Scan_All_Pics_For_Desc() {
 	}
 	//设置回调的回调函数来获得特别的玩意-看起来这里意外的变成闭包了
 	var back_the_desc = function(id, $pic, callback) {
-		call_flickr_api_for_desc(id, function(desc_returun, res) {
+		call_flickr_api_getinfo(id, function(res) {
 			//再包装一层。。。看起来是从闭包里得到小局部函数啊
-			callback(desc_returun, res, $pic);
+			callback(res, $pic);
 		});
 	}
 	var i_count = 0; //计数器
@@ -308,24 +315,26 @@ function Scan_All_Pics_For_Desc() {
 			return true; //继续下一个，不能返回fasle会死掉
 		}
 		//传入再传入。。。
-		//TODO:精简到只要做一次
-		back_the_desc(id, $(this), function(desc_returun, res, $pic) {
-			//考虑是否已描
-			if (desc_returun && desc_returun != "") {
-				//必要的话-糊掉-需要指向准确的对象
-				blur_me($pic, desc_returun);
-				check_me($pic); //标记检查
-			} else if (desc_returun != null) { //至少不是null吧
-				check_me($pic); //标记检查				
-			}
-			//检查是否公开-处理公开问题
-			if (res.stat == "ok") {
-				//效验是否设置了公开
+		back_the_desc(id, $(this), function(res, $pic) {
+			if (res.stat == "ok") { //如果有效发挥
+				//考虑是否已描
+				//TODO:不需要具体检查了-但愿还好
+				if (desc_returun != "") {
+					//必要的话-糊掉-需要指向准确的对象
+					blur_me($pic, desc_returun);
+					check_me($pic); //标记检查
+				} else { //至少不是null吧
+					check_me($pic); //标记检查				
+				}
+				//检查是否公开-处理公开问题-这里是那么优先
 				if (res.photo.visibility.ispublic == 1) {
 					//检查公开部分
 					public_me($pic);
 				}
 			};
+			else {
+				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
+			}
 
 		});
 		i_count++;

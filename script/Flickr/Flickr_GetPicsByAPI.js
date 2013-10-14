@@ -281,29 +281,4 @@ function call_flickr_api_getinfo(photo_id, Take_Back) {
 	xhr.send();
 }
 
-/* 封装后的一些高级些的函数 */
-
-/* 简单的返回描述信息 
- * Take_Desc(desc_str,res){}
- * 有效的话是字符串，无效的话是""(不要null好了)
- */
-
-function call_flickr_api_for_desc(photo_id, Take_Desc) {
-	if (typeof(Take_Desc) != "function") {
-		console.log("船长，这家伙没有效的回调函数，而不是这个:", Take_Desc);
-		return false; //返回
-	}
-	//开门见山的呼叫
-	return call_flickr_api_getinfo(photo_id, function(res) {
-		if (res.stat == "ok") {
-			Take_Desc(res.photo.description._content, res); //当然了这里不需要return嘛
-		} else {
-			Take_Desc(null); //意外来了
-		}
-
-	})
-
-}
-
-
 /* 以下代码仅仅临时调试用 */
