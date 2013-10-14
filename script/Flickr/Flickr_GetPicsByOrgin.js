@@ -5,7 +5,7 @@ var No_matter_tag = "From_Eye_Fi";
 var Have_bundle_flag = false; //是否已经绑定
 var Have_setup_bundle = false; //是否已经注入绑定
 
-var Has_key_esc_bundle = false;//esc键是否绑定成功
+var Has_key_bundle = false; //esc键是否绑定成功
 
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
@@ -48,35 +48,100 @@ function tag_press_done_bundle() {
 
 		})
 		Have_bundle_flag = true; //绑定标志锁死
-	}else{
+	} else {
 		//试试未来注入吧
 		set_up_tag_hook();
 	}
 }
 
-function use_esc_key_bundle(){
-	if (!Has_key_esc_bundle){
+//试图注入基本钩子
+$(document).ready(function() {
+	use_key_bundle();
+	set_up_tag_hook();
+})
+
+/* 热键绑定，让事情变得简单一些-至少试图 
+/* 确保页面完成后再做这个 */
+
+function use_key_bundle() {
+	if (!Has_key_bundle) {
 		//旧的方式是[mouseover mouseout]，在这里新的方式看起来妙极了
 		$("body").on("DOMSubtreeModified", "#one_photo_inner_border_div", function() {
 			//取消委托-不需要了
 			$("body").off("DOMSubtreeModified", "#one_photo_inner_border_div");
-			//绑定新的方法-取消按钮
-			//todo:检查对话框有效性
-			$("#one_photo_inner_border_div").keydown(function(event){ 
-				if (event.keyCode == 27){$("#one_photo_cancel").click()}; 
+
+			//很奇怪热键在这里不能用
+			$("#one_photo_inner_border_div").keydown(function(event) {
+				if (event.keyCode == 27) { //ESC
+					$("#one_photo_cancel").click()
+				};
 			});
-			//注入一个回车事件钩子
+
+			/* 绑定回车按钮 */
 			//todo:检查对话框显示并且存在
-			$("#addtagbox").keydown(function(event){ 
-				if (event.keyCode == 13){$("#one_photo_save").click()}; 
+			$("#addtagbox").bind("keydown", "return", function() {
+				$("#one_photo_save").click()
 			});
 		})
+		//再继续绑定别的玩意
+		$(Document).bind("keydown", "esc", function() {
+			//所有的esc处理玩意
+			press_esc_event(); //呼叫这个玩意
+
+		})
+		/* 绑定按键 t */
+		$(Document).bind("keydown", "t", function() {
+			//NOTE：这里不处理标记对话框，因为它可以回到自己
+			/** 检查权限对话框 **/
+			if (check_display($("#batch_mat_perms"))) {
+				return true;
+			}
+			/** 检查公共对话框 **/
+			if (check_display($("#comm_div"))) {
+				return true; //只处理一层
+			}
+
+			$("#candy_button_o_addtags a")[0].click(); //看起来哦，只能dom方法
+			return false; //不要本次事件
+		})
+		/* 绑定按键 s */
+		$(Document).bind("keydown", "s", function() {
+			/* 检查对话框 */
+			/** 检查自己的对话框 **/
+			if (check_display($("#batch_mat_perms"))) {
+				return true;
+			}
+			/** 检查标记对话框 **/
+			if (check_display($("#batch_mat_add_tags"))) {
+				return true;
+			}
+			/** 检查公共对话框 **/
+			if (check_display($("#comm_div"))) {
+				return true; //只处理一层
+			}
+
+			/* 激活事件 */
+			$("#candy_menu_o_perms a:eq(0)")[0].click(); //看起来哦，只能dom方法	
+			return false; //不要本次事件
+		})
+		/* 绑定按键 c */
+		$(Document).bind("keydown", "c", function() {
+			if ($("#clear_batch_div").css("visibility") == "visible") {
+				$("#clear_batch_div a")[0].click();
+			}
+		})
+
+		//额外再次绑定添加标签按钮
+		$(document).bind("keydown", "ctrl+/", function() {
+			$("#candy_button_o_addtags a")[0].click(); //看起来哦，只能dom方法
+		});
+
 		//失效
-		Has_key_esc_bundle=true;
+		Has_key_bundle = true;
 	}
 }
 
-//注入和绑定，尚未使用
+//标签按钮的钩子
 
 function set_up_tag_hook() {
 	if (!Have_setup_bundle) {
@@ -88,6 +153,19 @@ function set_up_tag_hook() {
 			tag_press_done_bundle();
 			//一个象征物
 			use_ink_api_start();
+			//tab标签框，绑定esc
+			$("#batch_add_tags").bind("keydown", "esc", function() {
+				$("#batch_add_tags_form .CancelButt").click()
+			});
+
+			//因为是一起出现的，这里绑定公开的玩意
+			$("#batch_mat_perms").bind("keydown", "esc", function() { //ESC取消
+				$("#batch_perms_form .CancelButt").click(); //可用[this.find]不是吗
+			});
+			$("#batch_mat_perms").bind("keydown", "return", function() { //return输入
+				$("#batch_perms_form .Butt").click();
+			});
+
 			//激活首次事件
 			//$("#batch_add_tags_form .Butt").click();
 		})
@@ -109,7 +187,7 @@ function get_flickr_organize_tag(selct_tag_str) {
 	//锁定绑定标志-委托给body
 	tag_press_done_bundle();
 	//绑定esc键为啥不呢
-	use_esc_key_bundle();
+	use_key_bundle();
 
 	//提取一份tag列表，确定是否有对话框出现
 	if ($(check_div).length > 0 && $(check_div).css("display") != "none") //存在并且可见
@@ -376,4 +454,43 @@ function wait_tag_done(timeout_time) {
 		if (is_debug_tag_module) console.log("继续等待对话框...") //标签模块的调试标记-输出日志
 
 	}, 500)
+}
+
+/* 基本函数部分 */
+/** 检查是否显示 **/
+
+function check_display($dom) {
+	if ($($dom).length == 0) return false; //检查至少需要存在嘛
+	return $($dom).css("display") != "none";
+}
+
+/* 全局的esc工作函数 */
+//TODO 检查那种取消的状态
+
+function press_esc_event() {
+	//console.log("esc has press:!a"); //提醒
+
+	/* 开始处理对话框 */
+	/** 处理公共对话框 **/
+	if (check_display($("#comm_div"))) {
+		$("#comm_button_ok")[0].click(); //奇怪只能用html的方式
+		return true; //只处理一层
+	}
+	/** 处理公开对话框 **/
+	if (check_display($("#batch_mat_perms"))) {
+		$("#batch_perms_form .CancelButt").click(); //取消咯
+		return true;
+	}
+	/** 处理标签对话框 **/
+	if (check_display($("#batch_mat_add_tags"))) {
+		$("#batch_add_tags_form .CancelButt").click(); //取消咯
+		return true;
+	}
+	/* 处理单个图片信息对话框 **/
+	if (check_display($("#one_photo_edit_pop"))) {
+		$("#one_photo_cancel").click();
+		return true;
+	}
+
+	return false; //可伶的没有一个
 }
