@@ -40,13 +40,23 @@ function tag_press_done_bundle() {
 
 		})
 		//奇怪的是按键事件竟然可能是独立的
-		$("#batch_add_tags_form .butt").click(function() {
+		$("#batch_add_tags_form .Butt").click(function() {
 			//动画开始-通常的需要它吗？
 			use_ink_api_start();
 			//开始制造剩余部分-需要点好运
 			make_tag_and_get();
 
 		})
+
+		/* 顺带的绑定留言框的 */
+		$("#batch_perms_form").submit(function() {
+			wait_tag_done(10); //依然等待几秒
+		});
+
+		$("#batch_perms_form .butt").click(function() {
+			wait_tag_done(10); //依然等待几秒
+		})
+
 		Have_bundle_flag = true; //绑定标志锁死
 	} else {
 		//试试未来注入吧
@@ -123,10 +133,14 @@ function use_key_bundle() {
 
 			/* 激活事件 */
 			$("#candy_menu_o_perms a:eq(0)")[0].click(); //看起来哦，只能dom方法	
+
+			//目前是等待一秒五呢
+			setTimeout($("#batch_perms_form .Butt").click(), 1500);
+
 			return false; //不要本次事件
 		})
 		/* 绑定按键 c */
-		$(document).bind("keydown", "c", function() {
+		$(document).bind("keydown", "c", function() { //大写是不会干活的
 			if ($("#clear_batch_div").css("visibility") == "visible") {
 				$("#clear_batch_div a")[0].click();
 			}
@@ -436,7 +450,7 @@ function make_tag_and_get() {
 		return false;
 }
 
-//等待最后的任务完成
+/* 关闭公共对话框 */
 
 function wait_tag_done(timeout_time) {
 	var work_start_time = new Date().getTime(); //开始工作的事件，毫秒
@@ -446,7 +460,7 @@ function wait_tag_done(timeout_time) {
 		//扫描间隔
 		if ($("#comm_div").css("display") == "block" && $("#comm_button_ok").val() == "謝謝！") {
 			//已经完成任务了
-			if (is_debug_tag_module) console.log("看起来任务完成了！这次要针对的标签是", tags_for_work) //标签模块的调试标记-输出日志
+			if (is_debug_tag_module) console.log("看起来任务完成了！") //标签模块的调试标记-输出日志
 			clearInterval(wait_id);
 			$("#comm_button_ok")[0].click(); //奇怪只能用html的方式
 			call_flickr_api_search(tags_for_work, true); //1秒后完成剩下的工作

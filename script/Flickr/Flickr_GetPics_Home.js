@@ -222,7 +222,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		//处理首页的问题
 		//为更多图片牺牲自己
 		if (Enable_SetLotPicsDesc) {
-			if (am_i_index) {
+			if (am_i_index()) {
 				//获取所有的图片
 				Scan_All_Pics_For_Desc();
 				//快速制造一个标记区域
