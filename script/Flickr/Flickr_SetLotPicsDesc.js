@@ -116,7 +116,7 @@ function Flickr_pics_SetUP_hook() {
 	//确保按钮管用
 	$(".comment-button-desc").click(function() {
 		Note.SetNoteClor("grey"); //灰色开始
-		console.log('hi,you press me'); //TEMP:临时的问号
+		//console.log('hi,you press me'); //TEMP:临时的问号
 		Note.SetNote("是，船长，收到描述提交请求...");
 		//获取最新的标记
 		descnote = $.trim(Note.GetDesc());
