@@ -12,7 +12,7 @@ function get_orgin_tabid() {
 
 	chrome.windows.getAll({
 		populate: true
-	}, function(windows) { // 开始遍历里面的每一个
+	}, function(wins) { // 开始遍历里面的每一个
 		wins.every(function(win) {
 			win.tabs.every(function(tab) {
 				if (tab.url.match(tab_match_patern)) {
