@@ -34,6 +34,8 @@ function Flickr_Comment_Hook_Start() {
 function HOOK_FLICKR_PAGE() {
 	Scan_All_Pics_For_Desc(150); //最大扫描150张？
 	Flickr_pics_quick_mouse();
+	//注入图片可以检查
+	HOOK_FOR_PIC_CAN_CHECKED();
 }
 
 //TODO:如果hook失败，那么可以墨水按钮按下去的时候再次Hook，听起来如何
@@ -42,7 +44,7 @@ function HOOK_FLICKR_PAGE() {
 $(document).ready(function() {
 	//IDEA:或许等待对象移除后再次复活事件？
 	Flickr_Comment_Hook_Start();
-	pics_chk_hook(); //再次的钩子-或许有优先级问题？背景问题？
+	HOOK_FOR_PIC_CAN_CHECKED(); //再次的钩子-或许有优先级问题？背景问题？
 	flickr_chk_hotkey_bind(); /* 热键的绑定 */
 
 })
@@ -347,7 +349,7 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 
 /* 绑定注入图片点击钩子 */
 
-function pics_chk_hook() {
+function HOOK_FOR_PIC_CAN_CHECKED() {
 	//选中的图片背景-ico by @alex
 	//TODO:导入到扩展内部
 	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
@@ -438,7 +440,7 @@ function flickr_chk_hotkey_bind() {
 	$(document).bind("keydown", "c", clean_everything);
 	/* 绑定送出去哩 */
 	$(document).bind("keydown", "ctrl+/", send_to_orgin);
-	$(document).bind("keydown", "z", send_to_orgin); 
+	$(document).bind("keydown", "z", send_to_orgin);
 }
 
 /* 发送到管理页面-哇喔！ */
