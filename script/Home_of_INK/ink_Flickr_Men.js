@@ -3,10 +3,11 @@
  */
 
 /* 获得匹配的Flickr管理页标签 
- * 没有的话返回0
+ * 返回callback(id)
+ * 没有的话返回id:0
  */
 
-function get_orgin_tabid() {
+function get_orgin_tabid(callback) {
 	var tab_work_id = 0
 	var tab_match_patern = /http:\/\/www\.flickr\.com\/photos\/organize/
 
@@ -23,26 +24,27 @@ function get_orgin_tabid() {
 			})
 			if (tab_work_id > 0) return false; //如果已经获得，跳出
 			return true;
-		});
-	}) //<--遍历结束
+		}); //<--遍历结束
+		callback(tab_work_id);
+	}); //<--搜索结束
 
 	//NOTE:有趣没办法一个return退出所有，只能退出一层
-	return tab_work_id;
 }
 
 //发送给目标页面，设置flick返回的id
 
 function set_flick_orgin_ids(idstr) {
-	var tab_id = get_orgin_tabid(); //获得标签id
-	//忽视：暂不考虑反馈了
-	if (tab_id > 0) {
-		chrome.tabs.sendMessage(tab_id, {
-			method: "set_flick_orgin_ids",
-			idstr: idstr //传出字符串id
-		})
-		return true;
-	} else {
-		return false;
-	}
-
+	get_orgin_tabid(function(tab_id) {
+		//检查返回来的id如何
+		if (tab_id > 0) {
+			chrome.tabs.sendMessage(tab_id, {
+				method: "set_flick_orgin_ids",
+				idstr: idstr //传出字符串id
+			});
+			//未等待返回结果-直接的切过去！
+			chrome.tabs.update(tab_id, {
+				active: true
+			})
+		} // <-- 返回结束
+	});
 }

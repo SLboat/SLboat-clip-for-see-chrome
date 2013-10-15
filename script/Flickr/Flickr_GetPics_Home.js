@@ -280,12 +280,13 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		//送去检测真实tag
 		get_flickr_organize_tag(selctstr);
 		//不传回去了，去它的
-	} else if (request.method == "set_flick_ids") { //请求设置标签这里是
+	} else if (request.method == "set_flick_orgin_ids") { //请求设置标签这里是
 		if (typeof(add_pics_by_sandbox) == "function") { //简单检查下存在工作函数
 			add_pics_by_sandbox(request.idstr); //添加一些图片进去
-			//返回失败？
-		} else {
-			//非管理页面
+			//一些奇怪的提醒？
+			//alert("已注入图片！")
+		} else {					
+			//加载函数失败？不太可能的情况
 		}
 
 
