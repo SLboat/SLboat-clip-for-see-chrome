@@ -29,12 +29,21 @@ function Flickr_Comment_Hook_Start() {
 
 }
 
+/* 当激活一次热键等情况下的处理 */
+
+function HOOK_FLICKR_PAGE() {
+	Scan_All_Pics_For_Desc(150); //最大扫描150张？
+	Flickr_pics_quick_mouse();
+}
+
 //TODO:如果hook失败，那么可以墨水按钮按下去的时候再次Hook，听起来如何
 //CRAZY:或许给body一个hook，然后匹配两个hook是否一致？
 //NOW:使用photo-list-holder这里挂钩，看起来好多了！
 $(document).ready(function() {
 	//IDEA:或许等待对象移除后再次复活事件？
 	Flickr_Comment_Hook_Start();
+	pics_chk_hook(); //再次的钩子-或许有优先级问题？背景问题？
+	flickr_chk_hotkey_bind(); /* 热键的绑定 */
 
 })
 
@@ -333,4 +342,116 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		console.log("使用了API完成了" + i_count + "个请求");
 	}
 	//TODO:没有的话进行一个提醒
+}
+
+
+/* 绑定注入图片点击钩子 */
+
+function pics_chk_hook() {
+	//选中的图片背景-ico by @alex
+	//TODO:导入到扩展内部
+	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
+	/* 搜寻所有有希望的图片 */
+	//TODO:HOOK钩子
+	$(".photo-display-item .photo-click[data-track] img[id][class*=img]:not([src*='spaceball.gif'])").each(function() {
+		/* 初始化为这家伙 */
+		var $img = $(this); //捆定自己
+		var $img_a = $(this).parent(); //绑定操作对象
+		var $pic_div = $(this).parents(".photo-display-item"); //绑定对应图像框
+		/* 清理自带点击 */
+		$img_a.attr("href", ""); //指向保持空就好了，保留鼠标图标
+		$img_a.removeAttr("data-track"); //自带的跟踪属性清理，防止冒泡
+		$img_a.attr("title", "船长！选了它？");
+		/* 注入一个div描述 */
+		if ($img_a.find("div.take_state").length == 0) {
+			$pic_div.find(".play").after('<div style="top: 10%; font-size: 3em;position: absolute;left: 0;right: 0;color: grey;" class="take_state">[-]</div>')
+		}
+
+		/* 绑定新的点击事件 */
+		$img_a.click(function() {
+			/** 开始处理图片被点击 **/
+			//NOTE:这里存在闭包吗-是的！属于上一级
+			//困扰:闭包什么时候会失去呢？整个堆栈回来完毕后吗
+			if (typeof($pic_div.attr("slboat_take_you")) == "undefined" || $pic_div.attr("slboat_take_you") != "true") { //字符串对比?
+				$img_a.css("opacity", 0.4); //图片透明化，操作A的透明
+				$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
+				$img_a.attr("title", "船长！不要它？");
+				$pic_div.attr("slboat_take_you", "true"); //写入标记			
+			} else { //尽可能还原现场
+				$img_a.css("opacity", ""); //取消透明
+				$img_a.parent().css("background", ""); //取消背景
+				$img_a.attr("title", "船长！要回它？");
+				$pic_div.attr("slboat_take_you", "false"); //标记无
+				//TODO:还原原来的标记？是否已描？
+			}
+			//制造文字标记
+			make_a_reson();
+		}); //点击a结束
+
+	});
+}
+/* 扫描所有选中的予以标记 */
+
+function make_a_reson() {
+	var take_amount = $(".photo-display-item[slboat_take_you=true]").length; //带走的总数量
+	$(".photo-display-item[slboat_take_you=true]").each(function(index) {
+		var $state = $(this).find(".take_state");
+		//标记选中
+		$state.text("[" + (index + 1) + "/" + take_amount + "]");
+		$state.css("color", "#FF8F00"); //设置alex的土黄色
+	});
+	//标记未选中的玩意
+	$(".photo-display-item[slboat_take_you=false]").each(function(index) {
+		var $state = $(this).find(".take_state");
+		//标记选中
+		$state.text("[-]");
+		$state.css("color", "grey"); //设置黄色
+	});
+}
+
+/* 清理所有选中的标记 */
+
+function clean_everything() {
+	$(".photo-display-item[slboat_take_you=true]").each(function(index) {
+		//用原始的方法来调用点击
+		$(this).find("a.photo-click").click();
+	});
+}
+
+/* 获得所有选中的ID 
+ * 返回数组串 [id1,id2,id3]
+ */
+
+function get_all_select() {
+	var idArry = []; //新的返回数组
+	var $pic_selct = $(".photo-display-item[slboat_take_you=true]"); //选中的图片
+	for (now = 0; now < $pic_selct.length; now++) {
+		idArry.push($pic_selct.eq(now).attr("data-photo-id"));
+	}
+	return idArry; //返回出去
+}
+
+/* 初始化热键绑定-选中按钮的 */
+
+function flickr_chk_hotkey_bind() {
+
+	$(document).bind("keydown", "c", clean_everything);
+	/* 绑定送出去哩 */
+	$(document).bind("keydown", "ctrl+/", send_to_orgin);
+	$(document).bind("keydown", "z", send_to_orgin); 
+}
+
+/* 发送到管理页面-哇喔！ */
+
+function send_to_orgin() {
+	var idArry = get_all_select(); //获得选中
+	if (idArry.length > 0) {
+		//告知要管理页面
+		//TODO:做点啥子？
+		chrome.extension.sendMessage({
+			command: "send_ids_to_orgin",
+			idstr: idArry.join(","), //合并起来 
+		});
+	}
+
 }

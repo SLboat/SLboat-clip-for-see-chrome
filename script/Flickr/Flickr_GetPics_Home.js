@@ -223,10 +223,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		//为更多图片牺牲自己
 		if (Enable_SetLotPicsDesc) {
 			if (am_i_index()) {
-				//获取所有的图片
-				Scan_All_Pics_For_Desc();
-				//快速制造一个标记区域
-				Flickr_pics_quick_mouse();
+				HOOK_FLICKR_PAGE(); //激活热键事件
 				//呼叫API换个图标
 				chrome.extension.sendMessage({
 					command: "flickr_note_icon",
@@ -285,7 +282,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 			add_pics_by_sandbox(request.idstr); //添加一些图片进去
 			//一些奇怪的提醒？
 			//alert("已注入图片！")
-		} else {					
+		} else {
 			//加载函数失败？不太可能的情况
 		}
 
