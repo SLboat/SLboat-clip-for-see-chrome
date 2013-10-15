@@ -1,6 +1,7 @@
 var Note = {}; //处理note的所有方法
 var close_timer_id; //关闭的定时器ID
 
+var opacity_had_desc = 0.55; //已抛锚的透明度
 /* 一切的开始的入口 
  * 确保只执行了一次
  */
@@ -205,7 +206,7 @@ Note = {
 		//一个悲剧的颜色-绿绿的
 		$(pics).find("span.photo_container").css("background-color", "#00FFAD");
 		//设置模糊
-		$(pics).find("[id][class*=img]").css("opacity", "0.15");
+		$(pics).find("[id][class*=img]").css("opacity", opacity_had_desc);
 		//设置标记
 		$(pics).find(".comment-count").text(donestr);
 		if (typeof(desc) == "string" && desc != "") {
@@ -262,18 +263,17 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		//一个悲剧的颜色-绿绿的
 		$(pics).find("span.photo_container").css("background-color", "#00FFAD");
 		//CSS的透明-这个还不错
-		$(pics).find("[id][class*=img]").css("opacity", "0.15");
+		$(pics).find("[id][class*=img]").css("opacity", opacity_had_desc);
 		//设置有标记
 		$(pics).find(".comment-count").text("抛锚");
 		$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
 	};
 	//制造变成灰色，不考虑返回
 	var public_me = function(pics) {
-
 		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已公开");
 
 		//设置一个背景色
-		$(pics).find("span.photo_container").css("background-color", "palegreen");
+		$(pics).find("span.photo_container").css("background-color", "salmon");
 		//模糊掉图片自己
 		$(pics).find("[id][class*=img]").css("opacity", "0.10");
 
@@ -295,6 +295,7 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		var id = $(this).attr("data-photo-id");
 		//临时备份图片
 		$img = $(this).find("[id][class*=img]");
+		//TODO:或许用[$(".photo-display-item img[id][class*=img]:not([src*='spaceball.gif'])")]
 		if ($img.prop("src").match("spaceball.gif")) {
 			return true; //继续下一个，不能返回fasle会死掉
 		}
@@ -306,14 +307,16 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 				if (desc_returun != "") {
 					//必要的话-糊掉-需要指向准确的对象
 					blur_me($pic, desc_returun);
-					check_me($pic); //标记检查
+					//check_me($pic); //标记检查
 				} else { //至少不是null吧
-					check_me($pic); //标记检查				
+					//check_me($pic); //描述的标记检查
 				}
 				//检查是否公开-处理公开问题-这里是那么优先
+				//公开后不再次检查，但是描述信息的还是检查...
 				if (res.photo.visibility.ispublic == 1) {
 					//检查公开部分
 					public_me($pic);
+					check_me($pic); //不再重复检查
 				}
 			} else {
 				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
