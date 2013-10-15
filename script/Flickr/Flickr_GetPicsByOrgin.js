@@ -7,6 +7,7 @@ var Have_setup_bundle = false; //是否已经注入绑定
 
 var Has_key_bundle = false; //esc键是否绑定成功
 
+var Flickr_Orgin_Has_Load = true;
 /* 扩展获得下一个节点的功能给jQuery
  * 这里用来提取文本节点
  * 但愿只有一个
@@ -545,9 +546,12 @@ function sandbox_setup() {
  */
 
 function add_pics_by_sandbox(picStr) {
-
-	//写入id文本
-	$("#id_to").val(picStr);
-	$("#sandbox_addpic")[0].click();
+	if (picStr.length > 0) {
+		//写入id文本
+		{
+			$("#id_to").val(picStr);
+		}
+		$("#sandbox_addpic")[0].click();
+	}
 
 }

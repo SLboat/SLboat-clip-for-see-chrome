@@ -453,6 +453,12 @@ function send_to_orgin() {
 		chrome.extension.sendMessage({
 			command: "send_ids_to_orgin",
 			idstr: idArry.join(","), //合并起来 
+		}, function(iswork) { //目前还毫无作用，还不如个绑定事件
+			if (iswork) {
+				//找到了管理页面，出去了
+			} else {
+				alert("船长！很遗憾！没有找到Flickr管理页面，这里的工作不适合！");
+			};
 		});
 	}
 

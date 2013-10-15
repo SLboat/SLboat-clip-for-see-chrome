@@ -33,7 +33,7 @@ function get_orgin_tabid(callback) {
 
 //发送给目标页面，设置flick返回的id
 
-function set_flick_orgin_ids(idstr) {
+function set_flick_orgin_ids(idstr, callback) {
 	var CONFIG_need_swith_to_tab = true; //是否需要切换到tab
 
 	get_orgin_tabid(function(tab_id) {
@@ -49,6 +49,9 @@ function set_flick_orgin_ids(idstr) {
 					active: true
 				});
 			}
+		} else {
+			//要想返回啥，只能发消息回去咯
+
 		} // <-- 返回结束
 	});
 }
