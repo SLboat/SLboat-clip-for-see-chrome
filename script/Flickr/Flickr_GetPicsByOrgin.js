@@ -70,6 +70,9 @@ $(document).ready(function() {
 	//TODO:这里看起来会出现问题
 	use_key_bundle(); //绑定寄出键
 	set_up_tag_hook(); //绑定tag对话框
+
+	sandbox_setup(); //初始化沙盒
+
 })
 
 /* 热键绑定，让事情变得简单一些-至少试图 
@@ -522,4 +525,29 @@ function press_esc_event() {
 	}
 
 	return false; //可伶的没有一个
+}
+
+/* 初始化沙盒玩意 */
+
+function sandbox_setup() {
+	/* 注入沙盒按钮 */
+	if ($("#id_to").length == 0) {
+		//检查事件细节
+		var chk_events = "if(_ge('id_to').value==''){return false;};_ge('tabl_mat_batch').mat_empty();_ge('tabl_mat_batch').mat_add_photos(_ge('id_to').value.split(','));"
+		//添加按钮div源码
+		var div_Add_id_batch = '<li id="Add_id_batch"> <a id="sandbox_addpic" onclick="' + chk_events + '">添加ID:</a><input type="text" id="id_to" style="margin-left: 5px;"></li>'
+		$("#candy_button_o_location").after(div_Add_id_batch); //绑定上去
+	}
+}
+
+/* 沙盒添加图片 
+ * 传入图片文本：[,]分割的字串
+ */
+
+function add_pics_by_sandbox(picStr) {
+
+	//写入id文本
+	$("#id_to").val(picStr);
+	$("#sandbox_addpic")[0].click();
+
 }

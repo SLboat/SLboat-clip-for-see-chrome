@@ -231,7 +231,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 				chrome.extension.sendMessage({
 					command: "flickr_note_icon",
 				});
-				
+
 				return true; //已经完成工作
 			}
 		}
@@ -280,7 +280,16 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		//送去检测真实tag
 		get_flickr_organize_tag(selctstr);
 		//不传回去了，去它的
-	} //else
+	} else if (request.method == "set_flick_ids") { //请求设置标签这里是
+		if (typeof(add_pics_by_sandbox) == "function") { //简单检查下存在工作函数
+			add_pics_by_sandbox(request.idstr); //添加一些图片进去
+			//返回失败？
+		} else {
+			//非管理页面
+		}
+
+
+	}
 
 });
 
@@ -512,6 +521,7 @@ function get_flickr_order_pos() {
 
 /* 检测是否在首页 */
 //TODO:引入escape？
+
 function am_i_index() {
 	var chk_flickr_all = window.location.href.match(/http:\/\/www\.flickr\.com\/photos\/slboat(.*)/);
 	if (chk_flickr_all) {
