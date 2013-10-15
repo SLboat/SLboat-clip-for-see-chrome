@@ -4,6 +4,35 @@
 
 var send_back_tabid = null; //送回来的tabid
 
+/* 检查是否存在目标id
+ * 存在的话调用callback(true)，否则callback(false)
+ */
+
+function chrome_check_tabid(tabid, callback) {
+	chrome.windows.getAll({
+		populate: true
+	}, function(wins) { // 开始遍历里面的每一个
+		var had_same = false; //一致的标记
+		wins.every(function(win) {
+			win.tabs.every(function(tab) {
+				if (tab.id == tabid) { //一样了
+					callback(true);
+					had_same = true;
+					return false; //成功了跳出
+				}
+				return true;
+			})
+			if (!had_same) return false; //如果已经获得，跳出
+			return true;
+		});
+		//最终完成-不存在窗口
+		if (!had_same) {
+			callback(false);
+		}
+	}) //<--getAll结束
+
+}
+
 /* 获得匹配的Flickr管理页标签 
  * 返回callback(id)
  * 没有的话返回id:0
@@ -43,41 +72,14 @@ function set_flick_orgin_ids(idstr, send_tab_id) {
 				chrome.tabs.update(tab_id, {
 					active: true
 				});
-			}
+			};
+			//图标变化
+			flickr_make_note_send_icon(); //图标设置
 		} else {
 			//要想返回啥，只能发消息回去咯
 
 		} // <-- 返回结束
 	});
-}
-
-/* 检查是否存在目标id
- * 存在的话调用callback(true)，否则callback(false)
- */
-
-function chrome_check_tabid(tabid, callback) {
-	chrome.windows.getAll({
-		populate: true
-	}, function(wins) { // 开始遍历里面的每一个
-		var had_same = false; //一致的标记
-		wins.every(function(win) {
-			win.tabs.every(function(tab) {
-				if (tab.id == tabid) { //一样了
-					callback(true);
-					had_same = true;
-					return false; //成功了跳出
-				}
-				return true;
-			})
-			if (!had_same) return false; //如果已经获得，跳出
-			return true;
-		});
-		//最终完成-不存在窗口
-		if (!had_same) {
-			callback(false);
-		}
-	}) //<--getAll结束
-
 }
 
 /* 返回来到的页面 */

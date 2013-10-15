@@ -31,7 +31,9 @@ var flickr_images_ink_done = "./img/" + flickr_images[flickr_images.length - 1];
 var flickr_images_api_wait = "./img/flickr_pen_api_wait.png"; //API_等待
 var flickr_images_api_done = "./img/flickr_pen_api_done.png"; //API_完成
 
-var flickr_images_note_me = "./img/Flickr/Flickr_Desc_39.png"
+var flickr_images_note_me = "./img/Flickr/Flickr_Desc_Note.png";
+var flickr_images_note_me_send = "./img/Flickr/Flickr_Desc_Note_Send.png"
+
 //默认墨水风格
 var ink_type = "ink";
 
@@ -412,6 +414,17 @@ function flickr_make_note_icon() {
 		path: flickr_images_note_me
 	});
 }
+/* 送出去的图标 */
+
+function flickr_make_note_send_icon() {
+	//先清理下，要清理吗？
+	clear_ink();
+	//播放等待图标
+	chrome.browserAction.setIcon({
+		//黄色初始化
+		path: flickr_images_note_me_send
+	});
+}
 
 //获得API的KEY
 
@@ -551,7 +564,9 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 	} else if (request.command == "flickr_note_icon") {
 		flickr_make_note_icon(); //啊哈制造icon
 	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
-		set_flick_orgin_ids(request.idstr, sender.tab.id); //送过去咯
+		if (request.idstr != "") { //检查空
+			set_flick_orgin_ids(request.idstr, sender.tab.id); //送过去咯
+		}
 	} else if (request.command == "back_to_index_page") { //返回发送来的页面
 		go_back_to_send_page();
 	} else { //如果啥都没有
