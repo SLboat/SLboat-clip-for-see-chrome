@@ -160,13 +160,17 @@ function use_key_bundle() {
 			//原生按钮尝试
 			$("#findr_submit").click();
 		})
+		/* 绑定按键 b */
+		$(document).bind("keydown", "b", function() {
+			i_wana_back_index();
+		});
 		/* 绑定左右的玩意 */
 		$(document).bind("keydown", "left", function() {
-			$("#candy_findr_prev")[0].click(); //看起来哦，只能dom方法
+			$("#findr_prev_solt")[0].click(); //看起来哦，只能dom方法
 		});
 
 		$(document).bind("keydown", "right", function() {
-			$("#candy_findr_beg")[0].click(); //看起来哦，只能dom方法
+			$("#findr_next_solt")[0].click(); //看起来哦，只能dom方法
 		});
 
 		//额外再次绑定添加标签按钮
@@ -544,10 +548,19 @@ function sandbox_setup() {
 	if ($("#id_to").length == 0) {
 		//检查事件细节
 		var chk_events = "if(_ge('id_to').value==''){return false;};_ge('tabl_mat_batch').mat_empty();_ge('tabl_mat_batch').mat_add_photos(_ge('id_to').value.split(','));"
+		//左右按钮
+		var double_a = '<a id="findr_prev_solt" onclick="_ge(\'findr\').findr_go_towards_the_beg();" style="display: none;"></a>';
+		double_a += '<a id="findr_next_solt" onclick="_ge(\'findr\').findr_go_towards_the_end();" style="display: none;;"></a>';
 		//添加按钮div源码
-		var div_Add_id_batch = '<li id="Add_id_batch"> <a id="sandbox_addpic" onclick="'
-		div_Add_id_batch += chk_events
-		div_Add_id_batch += '">添加ID:</a><input type="text" id="id_to" style="margin-left: 5px;"><span id="id_got_much" style="margin-left: 2px;"></li>'
+		var div_Add_id_batch = '<li id="Add_id_batch">'; //头部
+
+		div_Add_id_batch += '<a id="sandbox_addpic" onclick="' + chk_events + '">添加ID:</a>'; //按钮沙盒
+		div_Add_id_batch += '<input type="text" id="id_to" readonly style="margin-left: 5px;">'; //id输入框
+		div_Add_id_batch += '<span id="id_got_much" style="margin-left: 2px;">↑待送来</span>'; //获得了多少状态框
+		div_Add_id_batch += double_a; //加上双a
+
+		div_Add_id_batch += '</li>'; //尾巴
+
 		/* 开始绑定咯 */
 		$("#candy_button_o_location").after(div_Add_id_batch); //绑定上去
 	}
@@ -563,9 +576,32 @@ function add_pics_by_sandbox(picStr) {
 		{
 			$("#id_to").val(picStr);
 		}
+		var id_num = picStr.split(",").length;
 		//告知反馈
-		$("#id_got_much").text("←" + picStr.split(",").length + "个ID")
+		$("#id_got_much").text("←" + id_num + "个ID")
 		$("#sandbox_addpic")[0].click();
+
+		//设置的事情后检查是否一致
+		setTimeout(function() {
+			var really_id_num = $("#tabl_mat_batch .batch_photo_img_div").length - 1;
+			if (really_id_num != id_num) {
+				//显示不一致的情况
+				$("#id_got_much").text("X[" + id_num + "丢失" + (id_num - really_id_num) + "]");
+			} else {
+				$("#id_got_much").text("√[" + id_num + "全获得]");
+			}
+		}, 500)
+		//需要严重的反馈
 	}
+
+}
+
+/* 我想返回来的页面 */
+
+function i_wana_back_index() {
+	//请求返回
+	chrome.extension.sendMessage({
+		command: "back_to_index_page"
+	})
 
 }

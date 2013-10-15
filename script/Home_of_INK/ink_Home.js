@@ -351,45 +351,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 	lastTime = currentTime;
 });
 
-/* 处理得到的事件 */
-chrome.runtime.onMessage.addListener(function(request, sender,
-	sendResponse) {
-
-	// 从API回来的事情
-	if (request.command == "ink_api_start") {
-		flickr_api_start();
-	} else if (request.command == "flickr_api_animal") {
-		flickr_api_animal(); //把呼叫体传回去得了
-	} else if (request.command == "ink_api_finish") {
-		flick_api_end(request); //把呼叫体传回去得了
-	} else if (request.command == "ink_api_clean") {
-		clear_ink(); //把呼叫体传回去得了
-	} else if (request.command == "flickr_api_request") { //需要API
-		//TODO:效验页面是否可以发出请求？
-		sendResponse(get_api_key()); //传回返回的api
-	} else if (request.command == "flickr_note_icon") {
-		flickr_make_note_icon(); //啊哈制造icon
-	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
-		set_flick_orgin_ids(request.idstr); //送过去咯
-	} else { //如果啥都没有
-		//返回空包函数-看起来没啥必要
-		sendResponse({}); // snub them.
-	}
-});
-
-/* 每次启动的时候初始化 */
-chrome.runtime.onStartup.addListener(function() {
-	//关闭魔术图标
-	chrome.browserAction.setIcon({
-		path: ink_images_start
-	}); // 关闭墨水
-	//清理所有标记文字
-	clear_inkicon_text();
-	//自动设置背景透明色
-	init_inkicon_color();
-
-});
-
 /* Flickr API有关的处理在这里 */
 
 //开始API处理
@@ -569,3 +530,45 @@ function init_inkicon_color(str) {
 function escape4regexp(str) {
 	return new RegExp(str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
 }
+
+
+/* 处理得到的事件 */
+chrome.runtime.onMessage.addListener(function(request, sender,
+	sendResponse) {
+
+	// 从API回来的事情
+	if (request.command == "ink_api_start") {
+		flickr_api_start();
+	} else if (request.command == "flickr_api_animal") {
+		flickr_api_animal(); //把呼叫体传回去得了
+	} else if (request.command == "ink_api_finish") {
+		flick_api_end(request); //把呼叫体传回去得了
+	} else if (request.command == "ink_api_clean") {
+		clear_ink(); //把呼叫体传回去得了
+	} else if (request.command == "flickr_api_request") { //需要API
+		//TODO:效验页面是否可以发出请求？
+		sendResponse(get_api_key()); //传回返回的api
+	} else if (request.command == "flickr_note_icon") {
+		flickr_make_note_icon(); //啊哈制造icon
+	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
+		set_flick_orgin_ids(request.idstr, sender.tab.id); //送过去咯
+	} else if (request.command == "back_to_index_page") { //返回发送来的页面
+		go_back_to_send_page();
+	} else { //如果啥都没有
+		//返回空包函数-看起来没啥必要
+		sendResponse({}); // snub them.
+	}
+});
+
+/* 每次启动的时候初始化 */
+chrome.runtime.onStartup.addListener(function() {
+	//关闭魔术图标
+	chrome.browserAction.setIcon({
+		path: ink_images_start
+	}); // 关闭墨水
+	//清理所有标记文字
+	clear_inkicon_text();
+	//自动设置背景透明色
+	init_inkicon_color();
+
+});
