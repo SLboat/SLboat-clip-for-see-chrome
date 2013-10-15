@@ -15,6 +15,7 @@ function get_all_token() {
 }
 
 /* 我想要一份API信息，提交申请 */
+//TODO:防止重复申请？
 
 function i_request_for_API(callback) {
 	chrome.extension.sendMessage({
@@ -189,14 +190,69 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 
 	//最终可以呼叫对方来告诉对方已经完成，但是必须注意时间不能太长了
 }
-
-/* 写入单个图片的描述信息 
- * 需要id，需要标题title，需要描述desc
- * 回调函数负责回调返回内容: Way_Back(res){}
+/* 写入公开状态 
+ * 需要id
+ * 回调函数负责回调返回内容: callback(res){}
  * 哇喔，这里不就像进行了一个封装嘛
  */
 
-function call_flickr_api_setmete(photo_id, title, description, Way_Back) {
+function call_flickr_api_setpublic(photo_id, callback) {
+
+	if (photo_id == "") return false; //如果没有一点有用的东西，那则全部抛弃
+
+	/* 基础地址 */
+	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+
+	var Requst_url = "?method=" + "flickr.photos.setPerms"; //基础搭建，需要的方法
+	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
+	Requst_url += "&format=json&nojsoncallback=1"; //最后的一些玩意
+
+	/* 基本的密匙等信息 */
+	Requst_url += "&auth_token=" + flickr_api_key.auth_token
+
+	/* 组合最后的请求数据 */
+	//TODO:或许一个wrap玩意？wrap("id","sss"),像是php那个的
+	Requst_url += "&photo_id=" + photo_id; //图片ID
+
+	Requst_url += "&is_public=" + 1;
+	Requst_url += "&is_friend=" + 0;
+	Requst_url += "&is_family=" + 0;
+	/* 别的权限 */
+	Requst_url += "&perm_comment=" + 3;
+	Requst_url += "&perm_addmeta=" + 2;
+
+	//最后的签名
+	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url);
+	Requst_url = base_url + Requst_url;
+
+	/* 开始送入数据 */
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", Requst_url, true);
+
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var res = JSON.parse(xhr.responseText); //返回的json玩意
+			if (typeof(callback) == "function") { //如果有效函数传入
+				callback(res);
+			} else {
+				//console.log("放回来了", res)
+				if (res.stat != "ok") {
+					alert("船长，写入它的权限公开失败了，没有回调所以我来报告咯，返回的是：" + res.id + ":" + res.message); //一个该死的错误
+					//IDEA:或许该保存到剪贴板？
+				}
+			}
+		}
+	}
+	xhr.send();
+}
+
+/* 写入单个图片的描述信息 
+ * 需要id，需要标题title，需要描述desc
+ * 回调函数负责回调返回内容: callback(res){}
+ * 哇喔，这里不就像进行了一个封装嘛
+ */
+
+function call_flickr_api_setmete(photo_id, title, description, callback) {
 
 	if (photo_id == "" || description == "") return false; //如果没有一点有用的东西，那则全部抛弃
 
@@ -227,8 +283,8 @@ function call_flickr_api_setmete(photo_id, title, description, Way_Back) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			var res = JSON.parse(xhr.responseText); //返回的json玩意
-			if (typeof(Way_Back) == "function") { //如果有效函数传入
-				Way_Back(res);
+			if (typeof(callback) == "function") { //如果有效函数传入
+				callback(res);
 			} else {
 				//console.log("放回来了", res)
 				if (res.stat != "ok") {
@@ -291,6 +347,7 @@ function call_flickr_api_getinfo(photo_id, Take_Back) {
  * 有效的话是字符串，无效的话是""(不要null好了)
  */
 //TODO:或许待移除
+
 function call_flickr_api_for_desc(photo_id, Take_Desc) {
 	if (typeof(Take_Desc) != "function") {
 		console.log("船长，这家伙没有效的回调函数，而不是这个:", Take_Desc);

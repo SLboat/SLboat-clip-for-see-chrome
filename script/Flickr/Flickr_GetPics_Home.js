@@ -17,7 +17,12 @@ var Enable_SetLotPicsDesc = false; //是否已经开启了大量图片标记
 
 //得到Flickr的连接
 
-function get_flickr_link() { /* 自动获得，看起来很有需要 */
+function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
+	/* 处理请求来源 */
+	if (typeof(which_way) == "undefined") {
+		which_way = "old_way";
+	}
+
 	//获得标题，仅仅留来给自己用用，似乎放到全局变量也不错
 	var page_info = get_page_info();
 
@@ -142,7 +147,6 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 		}
 	}
 
-
 	if (!flag_light_box && catch_them.length == 0) { //如果还是啥也没有
 		//不属于标签页、不属于相册页
 		//尝试单页，灯箱页也会存在单页，这里单页做最后处理
@@ -209,6 +213,17 @@ function get_flickr_link() { /* 自动获得，看起来很有需要 */
 	}
 
 	flickr_return.txt = flickr_txt; //赋给最终的那玩意
+
+	//特别的返回需要？-目前的一个兼容补丁方案
+	if (which_way == "only_id") {
+		if (pic_num != 1) {
+			console.log("找到的太多了，不对劲，抛弃！")
+			return null;
+		}
+		return tyr_get_image_id(img_src); //试试运气
+	}
+
+	//正常的放回去
 	return flickr_return; //返回的是一个类呢
 
 	//交回给原来去处理
@@ -492,6 +507,21 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 
 	}
 	return txt_out; //输出本次临时的
+}
+
+/* 只是获得图片ID */
+
+function tyr_get_image_id(urlimg) {
+	//这是匹配模式工厂
+	var patern_url_id = /.+\/(.+?)_.+(?=_.+)?\./; //匹配的URL ID
+
+	//提取ID - 假设它为必须存在
+	if (urlimg.match(patern_url_id)) //是否有效匹配
+	{
+		return urlimg.match(patern_url_id)[1]; //获取初步匹配值
+	}
+
+	return null; //无效的情况
 }
 
 //渲染最终生成图片

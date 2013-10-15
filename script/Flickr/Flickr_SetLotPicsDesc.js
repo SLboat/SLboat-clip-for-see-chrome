@@ -5,6 +5,7 @@ var opacity_had_desc = 0.55; //已抛锚的透明度
 /* 一切的开始的入口 
  * 确保只执行了一次
  */
+Enable_SetLotPicsDesc = true; //默认标记，不等待
 
 function Flickr_Comment_Hook_Start() {
 	//如果不再页面，立即离开
@@ -13,6 +14,7 @@ function Flickr_Comment_Hook_Start() {
 	/* 在这里提前用到API-于是领取API回家 */
 	i_request_for_API(function() {
 		setTimeout(Scan_All_Pics_For_Desc(50), 2000); //两秒后开始。。好的
+		sync_selct.load(); //做点别的
 	});
 
 	//确保，确保，只干了一次
@@ -22,7 +24,6 @@ function Flickr_Comment_Hook_Start() {
 	if (is_debug_ink) {
 		console.log("已将航海见识墨水注入到评论框的按钮里了！");
 	}; //告知已载入
-	Enable_SetLotPicsDesc = true;
 
 	//快速点击区域启动，或许需要延时几秒？
 	Flickr_pics_quick_mouse();
@@ -36,6 +37,8 @@ function HOOK_FLICKR_PAGE() {
 	Flickr_pics_quick_mouse();
 	//注入图片可以检查
 	HOOK_FOR_PIC_CAN_CHECKED();
+	//载入保存的值？
+	sync_selct.load();
 }
 
 //TODO:如果hook失败，那么可以墨水按钮按下去的时候再次Hook，听起来如何
@@ -350,9 +353,6 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 /* 绑定注入图片点击钩子 */
 
 function HOOK_FOR_PIC_CAN_CHECKED() {
-	//选中的图片背景-ico by @alex
-	//TODO:导入到扩展内部
-	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
 	/* 搜寻所有有希望的图片 */
 	//TODO:HOOK钩子
 	$(".photo-display-item .photo-click[data-track] img[id][class*=img]:not([src*='spaceball.gif'])").each(function() {
@@ -360,6 +360,7 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		var $img = $(this); //捆定自己
 		var $img_a = $(this).parent(); //绑定操作对象
 		var $pic_div = $(this).parents(".photo-display-item"); //绑定对应图像框
+		var pic_id = $pic_div.attr("data-photo-id"); //图片ID
 		/* 清理自带点击 */
 		$img_a.attr("href", ""); //指向保持空就好了，保留鼠标图标
 		$img_a.removeAttr("data-track"); //自带的跟踪属性清理，防止冒泡
@@ -372,26 +373,43 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		/* 绑定新的点击事件 */
 		$img_a.click(function() {
 			/** 开始处理图片被点击 **/
-			//NOTE:这里存在闭包吗-是的！属于上一级
-			//困扰:闭包什么时候会失去呢？整个堆栈回来完毕后吗
-			if (typeof($pic_div.attr("slboat_take_you")) == "undefined" || $pic_div.attr("slboat_take_you") != "true") { //字符串对比?
-				$img_a.css("opacity", 0.4); //图片透明化，操作A的透明
-				$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
-				$img_a.attr("title", "船长！不要它？");
-				$pic_div.attr("slboat_take_you", "true"); //写入标记			
-			} else { //尽可能还原现场
-				$img_a.css("opacity", ""); //取消透明
-				$img_a.parent().css("background", ""); //取消背景
-				$img_a.attr("title", "船长！要回它？");
-				$pic_div.attr("slboat_take_you", "false"); //标记无
-				//TODO:还原原来的标记？是否已描？
-			}
-			//制造文字标记
-			make_a_reson();
+			switch_check(pic_id); //切换图片
+			//保存变量
+			sync_selct.save();
+
 		}); //点击a结束
 
 	});
 }
+
+function switch_check(img_id) {
+	//选中的图片背景-ico by @alex
+	//TODO:导入到扩展内部
+	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
+
+	$pic_div = $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
+	$img_a = $pic_div.find(".photo-click img")
+
+	/** 开始处理图片被点击 **/
+	//NOTE:这里存在闭包吗-是的！属于上一级
+	//困扰:闭包什么时候会失去呢？整个堆栈回来完毕后吗
+	if (typeof($pic_div.attr("slboat_take_you")) == "undefined" || $pic_div.attr("slboat_take_you") != "true") { //字符串对比?
+		$img_a.css("opacity", 0.4); //图片透明化，操作A的透明
+		$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
+		$img_a.attr("title", "船长！不要它？");
+		$pic_div.attr("slboat_take_you", "true"); //写入标记			
+	} else { //尽可能还原现场
+		$img_a.css("opacity", ""); //取消透明
+		$img_a.parent().css("background", ""); //取消背景
+		$img_a.attr("title", "船长！要回它？");
+		$pic_div.attr("slboat_take_you", "false"); //标记无
+		//TODO:还原原来的标记？是否已描？
+	}
+	//制造文字标记
+	make_a_reson();
+
+}
+
 /* 扫描所有选中的予以标记 */
 
 function make_a_reson() {
@@ -411,13 +429,60 @@ function make_a_reson() {
 	});
 }
 
+/* 同步选中内容 */
+sync_selct = {
+	/* 保存当前的选中 */
+	save: function() {
+		sessionStorage.slboat_flickr_sel = select_gen_str(); //置入
+	},
+	load: function() {
+		var get_save = sessionStorage.getItem("slboat_flickr_sel");
+		if (get_save) {
+			select_for_this(get_save);
+		}
+	}
+
+}
 /* 清理所有选中的标记 */
 
 function clean_everything() {
 	$(".photo-display-item[slboat_take_you=true]").each(function(index) {
 		//用原始的方法来调用点击
 		$(this).find("a.photo-click").click();
+		sync_selct.save(); //会不会太早了
 	});
+}
+
+/* 根据目标字串，选定图片 */
+
+function select_for_this(idstr) {
+	var faild_num = 0; //失败次数
+	var chk_first, chk_me; //检查者
+	if (typeof(idstr) != "string") return false; //失败
+	var idArry = idstr.split(",");
+	if (idArry.length > 0) { //如果一个都不配合你？
+		//开始重组对话框
+		idArry.every(function(id) {
+			$chk_first = $(".photo-display-item[data-photo-id=" + id + "]")
+			if ($chk_first.length > 0) {
+				var $chk_me = $chk_first.not("[slboat_take_you=true]"); //检查选中
+				if ($chk_me.length > 0) {
+					$chk_me.find("a.photo-click").click(); //制造点击
+				}
+			} else {
+				faild_num++;
+			}
+			return true;
+		});
+		//如果目标不存在？
+	}
+	if (faild_num > 0) console.log("载入ID失败了" + faild_num + "个");
+}
+
+/* 获得选中图片的字符串 */
+
+function select_gen_str() {
+	return get_all_select().join(",");
 }
 
 /* 获得所有选中的ID 
