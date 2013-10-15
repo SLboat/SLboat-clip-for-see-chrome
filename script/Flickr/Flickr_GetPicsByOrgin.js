@@ -171,7 +171,7 @@ function use_key_bundle() {
 function set_up_tag_hook() {
 	if (!Have_setup_bundle) {
 		//鼠标移动怎么样！
-		$("#batch_edit_pop").on("DOMSubtreeModified", "#batch_add_tags_form", function() {
+		$("#batch_edit_pop").on("DOMSubtreeModified", "#batch_add_tags_form,#batch_perms_form", function() {
 			//注销原始触发器-相比one的好处是不是处理完注销
 			$("body").off("DOMSubtreeModified", "#batch_add_tags_form");
 			//一次性事件注入
