@@ -130,7 +130,11 @@ function use_key_bundle() {
 			if (check_display($("#comm_div"))) {
 				return true; //只处理一层
 			}
-
+			/* 检查选中情况 */
+			if (!($("#is_public").prop("checked"))) {
+				$("#is_public").prop("checked", "true");
+				//LUCK:变更属性-幸好这里的onchange事件非必须
+			}
 			/* 激活事件 */
 			$("#candy_menu_o_perms a:eq(0)")[0].click(); //看起来哦，只能dom方法	
 

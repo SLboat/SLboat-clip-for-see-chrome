@@ -11,7 +11,7 @@ function Flickr_Comment_Hook_Start() {
 
 	/* 在这里提前用到API-于是领取API回家 */
 	i_request_for_API(function() {
-		Scan_All_Pics_For_Desc(50);
+		setTimeout(Scan_All_Pics_For_Desc(50), 2000); //两秒后开始。。好的
 	});
 
 	//确保，确保，只干了一次
@@ -179,30 +179,23 @@ Note = {
 
 	/* 获取页面的里的标题 */
 	//TODO:对于没标题的处理？
-
 	GetTitle: function() {
 		return $("#message").parents(".photo-display-item").find("div.title a").text();
 	},
-
 	/* 获取当前对应的ID */
-
 	GetID: function() {
 		//TODO:用隐藏的ID来蝴蝶？
 		return $("#message").parents(".photo-display-item").attr("data-photo-id");
 	},
-
 	/* 写入描述信息 */
 	SetDesc: function(desc) {
 		$("#message").val(desc);
 	},
-
 	/* 获得输入的描述信息 */
-
 	GetDesc: function() {
 		//切刀换行问题
 		return $.trim($("#message").val());
 	},
-
 	/* 设置已描的标记 */
 	SetDone: function(donestr, desc) {
 		var pics = $("#message").parents(".photo-display-item");
@@ -219,32 +212,23 @@ Note = {
 			$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
 		}
 	},
-
 	/* 设置状态的颜色 */
-
 	SetNoteClor: function(color) {
 		$("#Desc_info").css("color", color);
 	},
-
 	/* 写入状态信息 */
-
 	SetNote: function(state) {
 		//检查尾部字串
 		if (this.work_title_str.length > 0) {
 			state = state + this.work_title_str
 		}
 		$("#Desc_info").text(state);
-
 	},
-
 	/* 读取状态信息 */
-
 	GetNote: function(state) {
 		return $("#Desc_info").text();
 	},
-
 	/* 关闭状态框 */
-
 	CloseDiag: function() {
 		//需要消息框存在
 		if ($("#message").length > 0) {
