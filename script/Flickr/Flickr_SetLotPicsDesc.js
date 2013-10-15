@@ -307,17 +307,16 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 				if (desc_returun != "") {
 					//必要的话-糊掉-需要指向准确的对象
 					blur_me($pic, desc_returun);
-					//check_me($pic); //标记检查
-				} else { //至少不是null吧
-					//check_me($pic); //描述的标记检查
 				}
 				//检查是否公开-处理公开问题-这里是那么优先
 				//公开后不再次检查，但是描述信息的还是检查...
 				if (res.photo.visibility.ispublic == 1) {
 					//检查公开部分
 					public_me($pic);
-					check_me($pic); //不再重复检查
+					check_me($pic); //公开抛弃它
 				}
+				//无论如何都标记？为了当前的公开设置，这里暂时关闭
+				//check_me($pic); //不再重复检查
 			} else {
 				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
 			}
