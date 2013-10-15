@@ -160,11 +160,20 @@ function use_key_bundle() {
 			//原生按钮尝试
 			$("#findr_submit").click();
 		})
+		/* 绑定左右的玩意 */
+		$(document).bind("keydown", "left", function() {
+			$("#candy_findr_prev")[0].click(); //看起来哦，只能dom方法
+		});
+
+		$(document).bind("keydown", "right", function() {
+			$("#candy_findr_beg")[0].click(); //看起来哦，只能dom方法
+		});
+
 		//额外再次绑定添加标签按钮
+		//TODO:变成吸取选中？好像很无必要呢
 		$(document).bind("keydown", "ctrl+/", function() {
 			$("#candy_button_o_addtags a")[0].click(); //看起来哦，只能dom方法
 		});
-
 		//失效
 		Has_key_bundle = true;
 	}
@@ -536,7 +545,10 @@ function sandbox_setup() {
 		//检查事件细节
 		var chk_events = "if(_ge('id_to').value==''){return false;};_ge('tabl_mat_batch').mat_empty();_ge('tabl_mat_batch').mat_add_photos(_ge('id_to').value.split(','));"
 		//添加按钮div源码
-		var div_Add_id_batch = '<li id="Add_id_batch"> <a id="sandbox_addpic" onclick="' + chk_events + '">添加ID:</a><input type="text" id="id_to" style="margin-left: 5px;"></li>'
+		var div_Add_id_batch = '<li id="Add_id_batch"> <a id="sandbox_addpic" onclick="'
+		div_Add_id_batch += chk_events
+		div_Add_id_batch += '">添加ID:</a><input type="text" id="id_to" style="margin-left: 5px;"><span id="id_got_much" style="margin-left: 2px;"></li>'
+		/* 开始绑定咯 */
 		$("#candy_button_o_location").after(div_Add_id_batch); //绑定上去
 	}
 }
@@ -551,6 +563,8 @@ function add_pics_by_sandbox(picStr) {
 		{
 			$("#id_to").val(picStr);
 		}
+		//告知反馈
+		$("#id_got_much").text("←" + picStr.split(",").length + "个ID")
 		$("#sandbox_addpic")[0].click();
 	}
 

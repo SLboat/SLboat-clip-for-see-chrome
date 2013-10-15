@@ -370,7 +370,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 	} else if (request.command == "flickr_note_icon") {
 		flickr_make_note_icon(); //啊哈制造icon
 	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
-		set_flick_orgin_ids(request.idstr, sendResponse); //送过去咯
+		set_flick_orgin_ids(request.idstr); //送过去咯
 	} else { //如果啥都没有
 		//返回空包函数-看起来没啥必要
 		sendResponse({}); // snub them.
