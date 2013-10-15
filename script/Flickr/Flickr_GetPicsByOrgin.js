@@ -160,8 +160,8 @@ function use_key_bundle() {
 			//原生按钮尝试
 			$("#findr_submit").click();
 		})
-		/* 绑定按键 z */
-		$(document).bind("keydown", "z", function() {
+		/* 绑定按键 b */
+		$(document).bind("keydown", "b", function() {
 			i_wana_back_index();
 		});
 		/* 绑定左右的玩意 */
@@ -587,10 +587,8 @@ function add_pics_by_sandbox(picStr) {
 			if (really_id_num != id_num) {
 				//显示不一致的情况
 				$("#id_got_much").text("X[" + id_num + "丢失" + (id_num - really_id_num) + "]");
-				$("#id_got_much").css("color","red"); //意外红色
 			} else {
 				$("#id_got_much").text("√[" + id_num + "全获得]");
-				$("#id_got_much").css("color",""); //没事删除
 			}
 		}, 500)
 		//需要严重的反馈

@@ -75,7 +75,6 @@ function set_flick_orgin_ids(idstr, send_tab_id) {
 			};
 			//图标变化
 			flickr_make_note_send_icon(); //图标设置
-			set_inkicon_text(idstr.split(",").length); //设置个标记
 		} else {
 			//要想返回啥，只能发消息回去咯
 
