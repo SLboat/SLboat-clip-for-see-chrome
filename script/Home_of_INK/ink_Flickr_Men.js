@@ -34,6 +34,8 @@ function get_orgin_tabid(callback) {
 //发送给目标页面，设置flick返回的id
 
 function set_flick_orgin_ids(idstr) {
+	var CONFIG_need_swith_to_tab = true; //是否需要切换到tab
+
 	get_orgin_tabid(function(tab_id) {
 		//检查返回来的id如何
 		if (tab_id > 0) {
@@ -41,10 +43,12 @@ function set_flick_orgin_ids(idstr) {
 				method: "set_flick_orgin_ids",
 				idstr: idstr //传出字符串id
 			});
-			//未等待返回结果-直接的切过去！
-			chrome.tabs.update(tab_id, {
-				active: true
-			})
+			if (CONFIG_need_swith_to_tab) { //如果要切换的话
+				//未等待返回结果-直接的切过去！
+				chrome.tabs.update(tab_id, {
+					active: true
+				});
+			}
 		} // <-- 返回结束
 	});
 }
