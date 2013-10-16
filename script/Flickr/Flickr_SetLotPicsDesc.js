@@ -289,60 +289,108 @@ Note = {
 	},
 
 }
+/* 返回对象pic层 */
+
+function get_pics(img_id) {
+	return $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
+}
+
+/* 图片描述的方式们 
+ * 旨在试图对图片ID进行标记
+ * 包含模糊
+ */
+var pic_Desc = {
+
+	/* 模糊掉 */
+	blur_me: function(img_id, desc) { //制造犯迷糊
+		var blur_mush = 15; //糊掉的程度
+
+		$pics = get_pics(img_id);
+
+		if ($pics.length == 0) { //0==false?
+			return false; //失败了
+		}
+		//CSS的模糊-看起来太卡了 
+		//$(pics).css("-webkit-filter", "blur(" + blur_mush + "px)");
+
+		//写入一个文字
+		$pics.find(".play").css("top", "50%").css("font-size", "5em").text("已抛锚");
+
+		//一个悲剧的颜色-绿绿的
+		$pics.find("span.photo_container").css("background-color", "#00FFAD");
+		//CSS的透明-这个还不错
+		$pics.find("[id][class*=img]").css("opacity", opacity_had_desc);
+		//设置有标记
+		$pics.find(".comment-count").text("抛锚");
+		$pics.find(".comments-icon").attr("title", "描述信息:" + desc);
+		return true;
+	},
+	//制造变成灰色，不考虑返回
+	public_me: function(img_id) {
+
+		$pics = get_pics(img_id);
+		if ($pics.length == 0) { //0==false?
+			return false; //失败了
+		}
+
+		$pics.find(".play").css("top", "50%").css("font-size", "5em").text("已公开");
+
+		//设置一个背景色
+		$pics.find("span.photo_container").css("background-color", "salmon");
+		//模糊掉图片自己
+		$pics.find("[id][class*=img]").css("opacity", "0.10");
+		return true;
+	},
+	//标记啥都没有
+	nothing_me: function(img_id) {
+		//或许用this域?
+		$pics = get_pics(img_id);
+		if ($pics.length == 0) { //0==false?
+			return false; //失败了
+		};
+		$pics.find(".play").css({
+			"top": "90%", //靠下边
+			"font-size": "4em", //不算太大
+		}).text("待见识"); //待见识为文字内容
+
+		//啥也不做了
+		return true;
+
+	},
+	//标记自己为已检查
+	check_me: function(img_id) {
+		$pics = get_pics(img_id);
+		if ($pics.length == 0) { //0==false?
+			return false; //失败了
+		}
+		//最后的工作
+		$pics.attr("has_check", "true"); //标记已经检查
+	},
+};
 
 /* 遍历所有的图片，解决里面的是否有标记问题 */
 //TODO：检查tag来变色？
 //TODO：记录缓存，给后来调用？
 
 function Scan_All_Pics_For_Desc(max_per_time_work) {
-	var blur_mush = 15; //糊掉的程度
 
 	//指定最大数量-如果失败
 	if (typeof(max_per_time_work) != "number") {
 		max_per_time_work = 150; //一次最大处理的张数
 	}
 
-	//制造犯迷糊
-	var blur_me = function(pics, desc) {
-		//CSS的模糊-看起来太卡了 
-		//$(pics).css("-webkit-filter", "blur(" + blur_mush + "px)");
-
-		//写入一个文字
-		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已抛锚");
-
-		//一个悲剧的颜色-绿绿的
-		$(pics).find("span.photo_container").css("background-color", "#00FFAD");
-		//CSS的透明-这个还不错
-		$(pics).find("[id][class*=img]").css("opacity", opacity_had_desc);
-		//设置有标记
-		$(pics).find(".comment-count").text("抛锚");
-		$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
-	};
-	//制造变成灰色，不考虑返回
-	var public_me = function(pics) {
-		$(pics).find(".play").css("top", "50%").css("font-size", "5em").text("已公开");
-
-		//设置一个背景色
-		$(pics).find("span.photo_container").css("background-color", "salmon");
-		//模糊掉图片自己
-		$(pics).find("[id][class*=img]").css("opacity", "0.10");
-
-	}
-	//标记自己为已检查
-	var check_me = function(pics) {
-		$(pics).attr("has_check", "true"); //标记已经检查
-	}
 	//设置回调的回调函数来获得特别的玩意-看起来这里意外的变成闭包了
-	var back_the_desc = function(id, $pic, callback) {
-		call_flickr_api_getinfo(id, function(res) {
+	var back_the_desc = function(img_id, callback) {
+		call_flickr_api_getinfo(img_id, function(res) {
 			//再包装一层。。。看起来是从闭包里得到小局部函数啊
-			callback(res, $pic);
+			callback(res, img_id);
 		});
 	}
 	var i_count = 0; //计数器
 	//限制最大数，不检查已检查的
 	$(".photo-display-item:not([has_check])").each(function() { //遍历开始
-		var id = $(this).attr("data-photo-id");
+		//TODO:变更位imgid
+		var img_id = $(this).attr("data-photo-id");
 		//临时备份图片
 		$img = $(this).find("[id][class*=img]");
 		//TODO:或许用[$(".photo-display-item img[id][class*=img]:not([src*='spaceball.gif'])")]
@@ -350,23 +398,31 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 			return true; //继续下一个，不能返回fasle会死掉
 		}
 		//传入再传入。。。
-		back_the_desc(id, $(this), function(res, $pic) {
+		back_the_desc(img_id, function(res, img_id) {
 			if (res.stat == "ok") { //如果有效发挥
+				var have_nothing = true; // 它啥也没有
 				//获得描述文本				
 				var desc_returun = res.photo.description._content;
 				if (desc_returun != "") {
 					//必要的话-糊掉-需要指向准确的对象
-					blur_me($pic, desc_returun);
+					pic_Desc.blur_me(img_id, desc_returun);
+					have_nothing == false;
 				}
 				//检查是否公开-处理公开问题-这里是那么优先
 				//公开后不再次检查，但是描述信息的还是检查...
 				if (res.photo.visibility.ispublic == 1) {
 					//检查公开部分
-					public_me($pic);
-					check_me($pic); //公开抛弃它
+					pic_Desc.public_me(img_id);
+					have_nothing == false; //重复写?
+
+				}
+				if (have_nothing) {
+					//啥也没有
+					pic_Desc.nothing_me(img_id);
 				}
 				//无论如何都标记？为了当前的公开设置，这里暂时关闭
-				//check_me($pic); //不再重复检查
+				//避免重复,再次的话-全部重载
+				pic_Desc.check_me(img_id); //公开抛弃它
 			} else {
 				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
 			}
