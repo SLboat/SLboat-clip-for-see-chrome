@@ -413,7 +413,7 @@ function Scan_All_Pics_For_Desc(max_pics) {
 				console.log("船长!一次性API匹配了" + mathc_pic + "个请求");
 			}
 
-		} else { 
+		} else {
 			console.log("船长,大批量的API探寻器失败了:" + res.code + ":" + res.message)
 		}
 		Scan_All_Pics_For_Desc_By_PerScan(max_pics); //但愿还在?
@@ -501,8 +501,12 @@ function Scan_All_Pics_For_Desc_By_PerScan(max_pics) {
 function HOOK_FOR_PIC_CAN_CHECKED() {
 	/* 搜寻所有有希望的图片 */
 	//TODO:HOOK钩子
-	//如果需要去除小球加上 :not([src*='spaceball.gif'])
-	$(".photo-display-item .photo-click[data-track] img[id][class*=img]").each(function() {
+
+	/* 如果需要高限制可做: 
+	 * 1.一般图片都有id,除了少数: [id]
+	 * 2.如果需要去除小球加上 :not([src*='spaceball.gif'])
+	 */
+	$(".photo-display-item .photo-click[data-track] img[class*=img]").each(function() {
 		/* 初始化为这家伙 */
 		var $img = $(this); //捆定自己
 		var $img_a = $(this).parent(); //绑定操作对象
