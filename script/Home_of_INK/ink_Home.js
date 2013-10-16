@@ -514,8 +514,11 @@ function get_ink_for() {
 }
 
 //设置墨水文字
-
+//TODO:集合颜色处理?
 function set_inkicon_text(str) {
+	//目前看起来就放置在这里了-默认颜色,要想改必须之后再设置一次
+	init_inkicon_color(); //恢复默认颜色?
+
 	//todo:检查是否str为未定义，或者null啥子的
 	chrome.browserAction.setBadgeText({
 		text: str.toString()
