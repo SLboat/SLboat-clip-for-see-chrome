@@ -18,6 +18,7 @@ function Flickr_Comment_Hook_Start() {
 	});
 
 	//确保，确保，只干了一次
+	//看起来只能Hook修改事件。。
 	$("#photo-list-holder").off("DOMSubtreeModified");
 	$("#photo-list-holder").on("DOMSubtreeModified", "#comment-form", Flickr_pics_SetUP_hook);
 
@@ -506,10 +507,13 @@ function flickr_chk_hotkey_bind() {
 
 	$(document).bind("keydown", "c", clean_everything);
 	/* 绑定送出去哩 */
+
+	/** 绑定 ctrl+/ **/
 	$(document).bind("keydown", "ctrl+/", send_to_orgin);
+	/** 绑定 z */
 	$(document).bind("keydown", "z", send_to_orgin);
 
-	/* 再次刷新显示-q */
+	/* 再次刷新显示 -q */
 	$(document).bind("keydown", "q", HOOK_FLICKR_PAGE);
 	
 }
