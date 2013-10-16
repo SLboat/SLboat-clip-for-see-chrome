@@ -1,21 +1,20 @@
 var Note = {}; //处理note的所有方法
 var close_timer_id; //关闭的定时器ID
 
+var fire_again_timer_id; //再次注入的定时器id
+
 var opacity_had_desc = 0.55; //已抛锚的透明度
 /* 一切的开始的入口 
  * 确保只执行了一次
  */
 Enable_SetLotPicsDesc = true; //默认标记，不等待
 
-function Flickr_Comment_Hook_Start() {
+/* 在这里提前用到API-于是领取API回家 */
+i_request_for_API();
+
+function HOOK_FLICKR_COMMON_DIAG_ONCE() {
 	//如果不再页面，立即离开
 	if ($("#photo-list-holder").length == 0) return false;
-
-	/* 在这里提前用到API-于是领取API回家 */
-	i_request_for_API(function() {
-		setTimeout(Scan_All_Pics_For_Desc(50), 2000); //两秒后开始。。好的
-		sync_selct.load(); //做点别的
-	});
 
 	//确保，确保，只干了一次
 	//看起来只能Hook修改事件。。
@@ -31,9 +30,33 @@ function Flickr_Comment_Hook_Start() {
 
 }
 
+/* 仅绑定一次，绑定页面变化 */
+
+function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
+	//绑定再次开火的玩意
+	$("#view-holder").on("DOMNodeInserted", "div:not([id]):not([class])", function(e) {
+		//检查是否我们想要的
+		if ($(e.target).parent().prop("id") != "photo-list-holder") {
+			return false;
+		}
+		var CONIFG_wait_enought = 2000; //2秒？ <-- 在回调内，看起来不享受了
+		if (fire_again_timer_id > 0) {
+			clearTimeout(fire_again_timer_id); //取消上次的
+		}
+		fire_again_timer_id = setTimeout(function() {
+			console.log("见鬼的!根据船长指令!对方逃跑!再次开火!")
+			REDONE_ALL_PAGE(); //再次扫描
+			//缓存上次API？
+			fire_again_timer_id = 0; //可以再次开火
+		}, CONIFG_wait_enought);
+		return true; //worked!
+	}); // <--done for on
+
+}
+
 /* 当激活一次热键等情况下的处理 */
 
-function HOOK_FLICKR_PAGE() {
+function REDONE_ALL_PAGE() {
 	Scan_All_Pics_For_Desc(150); //最大扫描150张？
 	Flickr_pics_quick_mouse();
 	//注入图片可以检查
@@ -49,7 +72,10 @@ $(document).ready(function() {
 	//检查页面？
 	if ($("#photo-list-holder").length == 0) return false; //必须有列表的
 	//IDEA:或许等待对象移除后再次复活事件？
-	Flickr_Comment_Hook_Start();
+	HOOK_FLICKR_COMMON_DIAG_ONCE();
+	//绑定初始化事件绑定
+	HOOK_FLICKR_PAGE_HAS_CHANGE_START();
+
 	HOOK_FOR_PIC_CAN_CHECKED(); //再次的钩子-或许有优先级问题？背景问题？
 	flickr_chk_hotkey_bind(); /* 热键的绑定 */
 
@@ -505,7 +531,9 @@ function get_all_select() {
 
 function flickr_chk_hotkey_bind() {
 
+	/* 绑定清空 - c */
 	$(document).bind("keydown", "c", clean_everything);
+
 	/* 绑定送出去哩 */
 
 	/** 绑定 ctrl+/ **/
@@ -514,8 +542,8 @@ function flickr_chk_hotkey_bind() {
 	$(document).bind("keydown", "z", send_to_orgin);
 
 	/* 再次刷新显示 -q */
-	$(document).bind("keydown", "q", HOOK_FLICKR_PAGE);
-	
+	$(document).bind("keydown", "q", REDONE_ALL_PAGE);
+
 }
 
 /* 发送到管理页面-哇喔！ */

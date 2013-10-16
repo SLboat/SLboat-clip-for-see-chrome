@@ -238,7 +238,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		//为更多图片牺牲自己
 		if (Enable_SetLotPicsDesc) {
 			if (am_i_index()) {
-				HOOK_FLICKR_PAGE(); //激活热键事件
+				REDONE_ALL_PAGE(); //激活热键事件
 				//呼叫API换个图标
 				chrome.extension.sendMessage({
 					command: "flickr_note_icon",
