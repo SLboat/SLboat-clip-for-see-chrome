@@ -8,7 +8,7 @@ var hook_dom_div = $("#view-holder");
 /* 需要Hook的事件们 */
 /** 不需要的？注释掉 **/
 var hook_events = [
-	"DOMNodeInserted", //插入节点
+		"DOMNodeInserted", //插入节点
 	//"DOMSubtreeModified", //修改节点
 	//"DOMAttrModified", //属性修改
 	//"DOMNodeRemoved", //删除节点
@@ -30,14 +30,14 @@ hook_dom_div.off();
 
 /* 开始事件绑定们 */
 //空格分离时间
-hook_dom_div.on(hook_events.join(" "), function(e) {
+hook_dom_div.on(hook_events.join(" "), "", function(e) {
 	console_print_e(e); //输出日志反馈
 });
 
 /* 结论 
 * Hook页面变动事件
 
-$("#view-holder").on("DOMNodeInserted","div:not([id]):not([class])",function(){
+$("#view-holder").on("DOMNodeInserted","#photo-list-holder > div:not([id]):not([class])",function(e){
 	console.log("页面变动了")
 });
 

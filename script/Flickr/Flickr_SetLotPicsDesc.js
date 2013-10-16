@@ -1,7 +1,7 @@
 var Note = {}; //处理note的所有方法
 var close_timer_id; //关闭的定时器ID
 
-var fire_again_timer_id; //再次注入的定时器id
+var fire_again_timer_id; //再次开火的定时器id
 
 var opacity_had_desc = 0.55; //已抛锚的透明度
 /* 一切的开始的入口 
@@ -21,12 +21,12 @@ function HOOK_FLICKR_COMMON_DIAG_ONCE() {
 	$("#photo-list-holder").off("DOMSubtreeModified");
 	$("#photo-list-holder").on("DOMSubtreeModified", "#comment-form", Flickr_pics_SetUP_hook);
 
-	if (is_debug_ink) {
-		console.log("已将航海见识墨水注入到评论框的按钮里了！");
-	}; //告知已载入
+	fire_again_timer_id = setTimeout(function() {
+		Scan_All_Pics_For_Desc(50); //首次扫描，如果没有的话
+	}, 4000); //等待五秒没有的话开火
 
 	//快速点击区域启动，或许需要延时几秒？
-	Flickr_pics_quick_mouse();
+	HOOK_FOR_PIC_MOUSE_CLICK();
 
 }
 
@@ -37,10 +37,12 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 	$("#view-holder").on("DOMNodeInserted", "div:not([id]):not([class])", function(e) {
 		//检查是否我们想要的
 		if ($(e.target).parent().prop("id") != "photo-list-holder") {
+			//console.log("抛弃", e)
 			return false;
 		}
 		var CONIFG_wait_enought = 2000; //2秒？ <-- 在回调内，看起来不享受了
 		if (fire_again_timer_id > 0) {
+			console.log("开火调试信息：不对劲，清理掉")
 			clearTimeout(fire_again_timer_id); //取消上次的
 		}
 		fire_again_timer_id = setTimeout(function() {
@@ -58,7 +60,7 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 
 function REDONE_ALL_PAGE() {
 	Scan_All_Pics_For_Desc(150); //最大扫描150张？
-	Flickr_pics_quick_mouse();
+	HOOK_FOR_PIC_MOUSE_CLICK();
 	//注入图片可以检查
 	HOOK_FOR_PIC_CAN_CHECKED();
 	//载入保存的值？
@@ -77,6 +79,9 @@ $(document).ready(function() {
 	HOOK_FLICKR_PAGE_HAS_CHANGE_START();
 
 	HOOK_FOR_PIC_CAN_CHECKED(); //再次的钩子-或许有优先级问题？背景问题？
+
+	//立即载入设置
+	sync_selct.load();
 	flickr_chk_hotkey_bind(); /* 热键的绑定 */
 
 })
@@ -85,7 +90,7 @@ $(document).ready(function() {
 
 /* 绑定一个快速的钩子-快速的添加标记到里面 */
 
-function Flickr_pics_quick_mouse() {
+function HOOK_FOR_PIC_MOUSE_CLICK() {
 	var the_need_postion = ".meta .title,.meta .attribution-block"; //需要针对的区域
 
 	$(the_need_postion).unbind("click"); //解除绑定
@@ -396,7 +401,7 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		$img_a.attr("title", "船长！选了它？");
 		/* 注入一个div描述 */
 		if ($img_a.find("div.take_state").length == 0) {
-			$pic_div.find(".play").after('<div style="top: 10%; font-size: 3em;position: absolute;left: 0;right: 0;color: grey;" class="take_state">[-]</div>')
+			$pic_div.find(".play").after('<div style="top: 10%; font-size: 3em;position: absolute;left: 0;right: 0;color: #009C13;" class="take_state">[-]</div>')
 		}
 
 		/* 绑定新的点击事件 */
@@ -454,7 +459,7 @@ function make_a_reson() {
 		var $state = $(this).find(".take_state");
 		//标记选中
 		$state.text("[-]");
-		$state.css("color", "grey"); //设置黄色
+		$state.css("color", "#009C13"); //设置未选的黄色
 	});
 }
 
