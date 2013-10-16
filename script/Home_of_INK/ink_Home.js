@@ -525,16 +525,26 @@ function set_inkicon_text(str) {
 //清除墨水文字
 
 function clear_inkicon_text() {
+	init_inkicon_color(); //恢复默认颜色?
+
 	chrome.browserAction.setBadgeText({
 		text: ""
 	});
 }
 
-//设置透明一些的背景
+//默认-设置透明一些的背景
 
-function init_inkicon_color(str) {
+function init_inkicon_color() {
 	chrome.browserAction.setBadgeBackgroundColor({
 		color: [255, 0, 0, 200]
+	});
+}
+
+//设置特定的背景颜色
+
+function set_inkicon_color(color) {
+	chrome.browserAction.setBadgeBackgroundColor({
+		color: color
 	});
 }
 
@@ -569,6 +579,14 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		}
 	} else if (request.command == "back_to_index_page") { //返回发送来的页面
 		go_back_to_send_page();
+	} else if (request.command == "setBadgeText") { //设置标记文字
+		if (request.str != "") {
+			set_inkicon_text(request.str);
+			if (request.str.match("√")) { //如果是对的，换个颜色？
+				set_inkicon_color([0, 200, 0, 200]);
+			}
+		}
+
 	} else { //如果啥都没有
 		//返回空包函数-看起来没啥必要
 		sendResponse({}); // snub them.

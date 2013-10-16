@@ -389,7 +389,8 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 function HOOK_FOR_PIC_CAN_CHECKED() {
 	/* 搜寻所有有希望的图片 */
 	//TODO:HOOK钩子
-	$(".photo-display-item .photo-click[data-track] img[id][class*=img]:not([src*='spaceball.gif'])").each(function() {
+	//如果需要去除小球加上 :not([src*='spaceball.gif'])
+	$(".photo-display-item .photo-click[data-track] img[id][class*=img]").each(function() {
 		/* 初始化为这家伙 */
 		var $img = $(this); //捆定自己
 		var $img_a = $(this).parent(); //绑定操作对象

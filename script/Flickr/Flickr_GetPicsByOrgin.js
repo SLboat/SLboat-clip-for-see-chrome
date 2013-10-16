@@ -585,12 +585,21 @@ function add_pics_by_sandbox(picStr) {
 		setTimeout(function() {
 			var really_id_num = $("#tabl_mat_batch .batch_photo_img_div").length - 1;
 			if (really_id_num != id_num) {
+				var lost_number = id_num - really_id_num;
 				//显示不一致的情况
-				$("#id_got_much").text("X[" + id_num + "丢失" + (id_num - really_id_num) + "]");
-				$("#id_got_much").css("color","red"); //意外红色
+				$("#id_got_much").text("X[" + id_num + "丢失" + lost_number + "]");
+				$("#id_got_much").css("color", "red"); //意外红色
+				chrome.extension.sendMessage({
+					command: "setBadgeText",
+					str: "x-"+lost_number
+				})
 			} else {
 				$("#id_got_much").text("√[" + id_num + "全获得]");
-				$("#id_got_much").css("color",""); //没事删除
+				$("#id_got_much").css("color", ""); //没事删除
+				chrome.extension.sendMessage({
+					command: "setBadgeText",
+					str: "√-" + id_num
+				});
 			}
 		}, 500)
 		//需要严重的反馈
