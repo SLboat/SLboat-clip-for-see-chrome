@@ -74,9 +74,8 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
 			//获得完毕了
-			//pics_json=JSON.parse(xhr.responseText);//临时调试用，一个全局变量
-
-			get_json_pics(JSON.parse(xhr.responseText), search_tag, is_inOrganize); //传入到解析器里去
+			var res = JSON.parse(xhr.responseText);
+			get_json_pics(res, search_tag, is_inOrganize); //传入到解析器里去
 		}
 	}
 	xhr.send();
