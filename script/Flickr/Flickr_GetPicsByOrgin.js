@@ -74,7 +74,18 @@ $(document).ready(function() {
 
 	sandbox_setup(); //初始化沙盒
 
+	setTimeout(queryOrginWork, 1500); //1.5秒后去领取自己的工作
+
 })
+
+//查询自己的工作
+
+function queryOrginWork() {
+	//查询自己的工作
+	chrome.extension.sendMessage({
+		command: "queryOrginWork"
+	})
+}
 
 /* 热键绑定，让事情变得简单一些-至少试图 
 /* 确保页面完成后再做这个 */
@@ -591,7 +602,7 @@ function add_pics_by_sandbox(picStr) {
 				$("#id_got_much").css("color", "red"); //意外红色
 				chrome.extension.sendMessage({
 					command: "setBadgeText",
-					str: "x-"+lost_number
+					str: "x-" + lost_number
 				})
 			} else {
 				$("#id_got_much").text("√[" + id_num + "全获得]");

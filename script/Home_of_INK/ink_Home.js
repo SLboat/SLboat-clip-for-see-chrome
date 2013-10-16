@@ -587,6 +587,9 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 			}
 		}
 
+	} else if (request.command == "queryOrginWork") { //查询工作，多像短信息啊
+		queryOrginWork(sender.tab.id); //查询是否有要完成的工作
+
 	} else { //如果啥都没有
 		//返回空包函数-看起来没啥必要
 		sendResponse({}); // snub them.

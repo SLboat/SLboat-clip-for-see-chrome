@@ -2,6 +2,7 @@
  * 通常只是提示罢了
  */
 
+var stack_idstr = ""; //没送出的的idstr
 var send_back_tabid = null; //送回来的tabid
 
 /* 检查是否存在目标id
@@ -58,7 +59,9 @@ function get_orgin_tabid(callback) {
 function set_flick_orgin_ids(idstr, sender_tab) {
 	var CONFIG_need_swith_to_tab = true; //是否需要切换到tab
 
+	/* 留存将来用的玩意 */
 	send_back_tabid = sender_tab.id;
+	stack_idstr = idstr;
 
 	get_orgin_tabid(function(tab_id) { //这里应该有id了
 		//检查返回来的id如何
@@ -76,7 +79,9 @@ function set_flick_orgin_ids(idstr, sender_tab) {
 			//图标变化
 			flickr_make_note_send_icon(); //图标设置
 			set_inkicon_text("→" + idstr.split(",").length); //设置个标记
+			stack_idstr = ""; //清空记录栈哦
 		} else {
+			set_inkicon_text("↑-" + idstr.split(",").length); //显示一个待命上箭头
 			//要想返回啥，只能发消息回去咯
 			//<-- 客家人怎样过日子呢？不过这里显然要生产一个才是的好
 			chrome.tabs.create({
@@ -103,4 +108,16 @@ function go_back_to_send_page() {
 			}
 		});
 	}
+}
+
+/* 领取任务 */
+
+function queryOrginWork(tab_id) {
+	if (stack_idstr != "") {
+		chrome.tabs.sendMessage(tab_id, {
+			method: "set_flick_orgin_ids",
+			idstr: stack_idstr //传出字符串id
+		});
+	}
+
 }
