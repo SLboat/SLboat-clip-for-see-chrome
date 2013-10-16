@@ -364,5 +364,51 @@ function call_flickr_api_for_desc(photo_id, Take_Desc) {
 
 }
 
+/* 搜索特定隐私属性的的图片 
+ * 传入最大要求数量
+ * 返回 callback(res)
+ * res结构, res.stat:状态,res.photos:图片序列
+ */
+//TODO: 再拉回来标签?
+//TODO: 每页200,传入页面?
+function call_flickr_api_getnewphoto(max_pics, callback) {
+	var max_pics = max_pics || 400; //一次返回最多数量
+
+	if (!get_all_token()) {
+		//api失败退出
+		return false;
+	}
+
+	/* 基本常量 */
+	var per_page = max_pics; //一次返回最多数量 - 互相传值一下
+
+	/* 本次赋值 */
+	var user_id = "me"; //用户名编号，用来减少搜索范围，但是锁定用户对象
+
+	var base_url = "http://api.flickr.com/services/rest/";
+
+	var Requst_url = "?method=flickr.photos.search"; //基础搭建
+	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
+	Requst_url += "&user_id=" + user_id; //用户ID，减少数量
+	Requst_url += "&extras=description&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
+
+	//加个签名信息试试
+	Requst_url += "&auth_token=" + flickr_api_key.auth_token
+	//看起来还需要公共密匙用来计算MD5
+	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url); //算出来这该死的玩意
+
+	Requst_url = base_url + Requst_url; //组合成呼叫url
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", Requst_url, true);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			//获得完毕了
+			var res = JSON.parse(xhr.responseText);
+			callback(res); //传入到解析器里去
+		}
+	}
+	xhr.send();
+}
 
 /* 以下代码仅仅临时调试用 */

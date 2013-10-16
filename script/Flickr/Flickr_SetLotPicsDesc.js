@@ -5,7 +5,7 @@ var fire_again_timer_id; //再次开火的定时器id
 
 var opacity_had_desc = 0.55; //已抛锚的透明度
 
-Enable_SetLotPicsDesc = true; //默认标记，不等待
+Enable_SetLotPicsDesc = true; //默认标记,不等待
 
 /* 在这里提前用到API-于是领取API回家 */
 i_request_for_API();
@@ -15,24 +15,24 @@ i_request_for_API();
  */
 
 function HOOK_FLICKR_COMMON_DIAG_ONCE() {
-	//如果不再页面，立即离开
+	//如果不再页面,立即离开
 	if ($("#photo-list-holder").length == 0) return false;
 
-	//确保，确保，只干了一次
+	//确保,确保,只干了一次
 	//看起来只能Hook修改事件。。
 	$("#photo-list-holder").off("DOMSubtreeModified");
 	$("#photo-list-holder").on("DOMSubtreeModified", "#comment-form", Flickr_pics_SetUP_hook);
 
 	fire_again_timer_id = setTimeout(function() {
-		Scan_All_Pics_For_Desc(50); //首次扫描，如果没有的话
+		Scan_All_Pics_For_Desc(400); //首次扫描,如果没有的话
 	}, 4000); //等待五秒没有的话开火
 
-	//快速点击区域启动，或许需要延时几秒？
+	//快速点击区域启动,或许需要延时几秒？
 	HOOK_FOR_PIC_MOUSE_CLICK();
 
 }
 
-/* 仅绑定一次，绑定页面变化 */
+/* 仅绑定一次,绑定页面变化 */
 
 function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 	//绑定再次开火的玩意
@@ -42,9 +42,9 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 			//console.log("抛弃", e)
 			return false;
 		}
-		var CONIFG_wait_enought = 2000; //2秒？ <-- 在回调内，看起来不享受了
+		var CONIFG_wait_enought = 2000; //2秒？ <-- 在回调内,看起来不享受了
 		if (fire_again_timer_id > 0) {
-			console.log("开火调试信息：不对劲，清理掉")
+			console.log("开火调试信息:不对劲,清理掉")
 			clearTimeout(fire_again_timer_id); //取消上次的
 		}
 		fire_again_timer_id = setTimeout(function() {
@@ -61,7 +61,7 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 /* 当激活一次热键等情况下的处理 */
 
 function REDONE_ALL_PAGE() {
-	Scan_All_Pics_For_Desc(150); //最大扫描150张？
+	Scan_All_Pics_For_Desc(400); //最大扫描150张？
 	HOOK_FOR_PIC_MOUSE_CLICK();
 	//注入图片可以检查
 	HOOK_FOR_PIC_CAN_CHECKED();
@@ -69,9 +69,9 @@ function REDONE_ALL_PAGE() {
 	sync_selct.load();
 }
 
-//TODO:如果hook失败，那么可以墨水按钮按下去的时候再次Hook，听起来如何
-//CRAZY:或许给body一个hook，然后匹配两个hook是否一致？
-//NOW:使用photo-list-holder这里挂钩，看起来好多了！
+//TODO:如果hook失败,那么可以墨水按钮按下去的时候再次Hook,听起来如何
+//CRAZY:或许给body一个hook,然后匹配两个hook是否一致？
+//NOW:使用photo-list-holder这里挂钩,看起来好多了!
 $(document).ready(function() {
 	//检查页面？
 	if ($("#photo-list-holder").length == 0) return false; //必须有列表的
@@ -97,11 +97,11 @@ function HOOK_FOR_PIC_MOUSE_CLICK() {
 
 	$(the_need_postion).unbind("click"); //解除绑定
 
-	//绑定同级，不要绑定上级的没有事件的玩意，会一大堆冒泡的玩意
+	//绑定同级,不要绑定上级的没有事件的玩意,会一大堆冒泡的玩意
 	$(the_need_postion).click(function() {
 		$(this).parent().find(".comments-icon img").click();
 	})
-	return ($(the_need_postion).length / 2); //返回处理的数量，大概是一半
+	return ($(the_need_postion).length / 2); //返回处理的数量,大概是一半
 }
 
 /* 设置最基本的钩子们 */
@@ -111,15 +111,15 @@ function Flickr_pics_SetUP_hook() {
 	var title_state; //标题描述信息
 	var desc_orgin = ""; //读取到的描述信息
 
-	if ($(".comment-button-desc").length > 0) return false; //已经添加过了，再见
+	if ($(".comment-button-desc").length > 0) return false; //已经添加过了,再见
 
 	//TODO:用函数包装
 	Note.work_title_str = ""; //清空尾部字串
 
-	//取消之前的定时器，如果有的话
+	//取消之前的定时器,如果有的话
 	if (close_timer_id) clearTimeout(close_timer_id);
 
-	//新的状态框！互动的时代
+	//新的状态框!互动的时代
 	$(".add-comment-form").before($('<div style = "font-size:0.3em;margin-bottom: 5px;text-align: right;color: grey;" id = "Desc_info" > 装入显示装置... </div>'));
 	//重置默认提醒文字
 	$("textarea#message").prop("placeholder", "或许来点描述 - 航海见识墨水已替换留言部件");
@@ -139,28 +139,28 @@ function Flickr_pics_SetUP_hook() {
 	}
 	Note.SetNote("装载完毕!尝试拉取已有的描述信息...");
 
-	//试图拉取信息，这里的初始化还是灰色-note信息
+	//试图拉取信息,这里的初始化还是灰色-note信息
 	call_flickr_api_for_desc(id, function(desc_returun) {
 		desc_orgin = desc_returun;
 		if (desc_orgin == null) {
 			Note.SetNoteClor("red"); //报警颜色
-			Note.SetNote("该死的！船长！提取旧描述出现意外！");
+			Note.SetNote("该死的!船长!提取旧描述出现意外!");
 		} else if (desc_orgin != "") { //找到了原始信息
 			Note.SetNoteClor("blue"); //来电蓝色
 			if (Note.GetDesc() == "") {
-				Note.SetNote("啊哈！船长！提取回来了旧的描述见识！");
+				Note.SetNote("啊哈!船长!提取回来了旧的描述见识!");
 				//检查是否已经修改了-考虑到延时
 				Note.SetDesc(desc_orgin);
 			} else {
 				//糟糕了打架了
 				Note.SetNoteClor("red");
-				Note.SetNote("啊，这叫我咋办好！我提取回来了描述[" + desc_orgin + "]");
+				Note.SetNote("啊,这叫我咋办好!我提取回来了描述[" + desc_orgin + "]");
 			}
 			//变成修改描述
 			$(".comment-button-desc").val("修改描述");
 			Note.SetDone("有描", desc_orgin);
 		} else {
-			Note.SetNote("嘿！船长！检查完毕！这玩意还未描述呢！");
+			Note.SetNote("嘿!船长!检查完毕!这玩意还未描述呢!");
 		}
 	}); //处理完毕拉回信息
 
@@ -168,21 +168,21 @@ function Flickr_pics_SetUP_hook() {
 	$(".comment-button-desc").click(function() {
 		Note.SetNoteClor("grey"); //灰色开始
 		//console.log('hi,you press me'); //TEMP:临时的问号
-		Note.SetNote("是，船长，收到描述提交请求...");
+		Note.SetNote("是,船长,收到描述提交请求...");
 		//获取最新的标记
 		descnote = $.trim(Note.GetDesc());
 		//构建写入...
 		if (id != "" && descnote != "") {
-			Note.SetNote("吔吼！一切就绪，正在送往Flickr那家伙...")
+			Note.SetNote("吔吼!一切就绪,正在送往Flickr那家伙...")
 			call_flickr_api_setmete(id, title, descnote, function(res) {
 				if (res.stat == "ok") {
 					Note.SetNoteClor("blue"); //蓝色
-					Note.SetNote("太棒了！船长！一切都送出去了！" + Note.wait_for_close + "秒后将自动关闭这里...");
+					Note.SetNote("太棒了!船长!一切都送出去了!" + Note.wait_for_close + "秒后将自动关闭这里...");
 					Note.SetDone("已描", descnote); //设置描绘标记
 					close_timer_id = setTimeout(Note.CloseDiag, Note.wait_for_close * 1000); //等待几秒后完毕
 				} else {
 					Note.SetNoteClor("red"); //红色警告
-					Note.SetNote("见鬼的！船长！完蛋了！返回来：" + res.code + ":" + res.message)
+					Note.SetNote("见鬼的!船长!完蛋了!返回来:" + res.code + ":" + res.message)
 				}
 
 			})
@@ -190,14 +190,14 @@ function Flickr_pics_SetUP_hook() {
 		} else {
 			Note.SetNoteClor("red"); //红色警告
 			if (descnote == "") {
-				Note.SetNote("见鬼船长，咋门得点描述信息进去才送出去嘛");
+				Note.SetNote("见鬼船长,咋门得点描述信息进去才送出去嘛");
 			} else {
-				Note.SetNote("见鬼船长，有些玩意是空的...啥玩意估计是ID这玩意");
+				Note.SetNote("见鬼船长,有些玩意是空的...啥玩意估计是ID这玩意");
 			}
 		}
 
 	});
-	//绑定Ctrl+回车键，或许只是回车键好了？
+	//绑定Ctrl+回车键,或许只是回车键好了？
 	$(".comments-popover,#message").bind("keydown", "return", function() {
 
 		//提交出去内容
@@ -208,14 +208,14 @@ function Flickr_pics_SetUP_hook() {
 
 	//绑定ESC键为关闭
 	$(".comments-popover,#message").bind("keydown", "esc", function() {
-		if (Note.GetDesc() == "" || desc_orgin == Note.GetDesc()) { //如果没有修改，抛弃
+		if (Note.GetDesc() == "" || desc_orgin == Note.GetDesc()) { //如果没有修改,抛弃
 			//关闭处理
 			Note.CloseDiag();
 		} else {
 			Note.SetNoteClor("red"); //红色警告
-			//TODO:或许该有原始的话，就不为难这里了呢？
+			//TODO:或许该有原始的话,就不为难这里了呢？
 			//包含字符串
-			Note.SetNote("见鬼船长，Esc不能取消，有描述了呢！");
+			Note.SetNote("见鬼船长,Esc不能取消,有描述了呢!");
 			//抛弃事件
 			return false;
 		}
@@ -225,7 +225,7 @@ function Flickr_pics_SetUP_hook() {
 
 Note = {
 
-	wait_for_close: 1, //常量，等待几秒后自动关闭
+	wait_for_close: 1, //常量,等待几秒后自动关闭
 	work_title_str: "", //针对工作的家伙
 
 	/* 获取页面的里的标题 */
@@ -283,7 +283,7 @@ Note = {
 	CloseDiag: function() {
 		//需要消息框存在
 		if ($("#message").length > 0) {
-			//点击一个阴影对话框，应该能置于关闭
+			//点击一个阴影对话框,应该能置于关闭
 			$(".popover-shim").click();
 		}
 	},
@@ -293,6 +293,12 @@ Note = {
 
 function get_pics(img_id) {
 	return $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
+}
+
+/* 是否存在这个图片id */
+
+function chk_imgid(img_id) {
+	return (get_pics(img_id).length > 0);
 }
 
 /* 图片描述的方式们 
@@ -325,7 +331,7 @@ var pic_Desc = {
 		$pics.find(".comments-icon").attr("title", "描述信息:" + desc);
 		return true;
 	},
-	//制造变成灰色，不考虑返回
+	//制造变成灰色,不考虑返回
 	public_me: function(img_id) {
 
 		$pics = get_pics(img_id);
@@ -368,15 +374,63 @@ var pic_Desc = {
 	},
 };
 
-/* 遍历所有的图片，解决里面的是否有标记问题 */
-//TODO：检查tag来变色？
-//TODO：记录缓存，给后来调用？
+/* 读取最新的400张API图片来校验
+ * 这里的请求非常少,DOM操作比较多
+ * 第一步阶段
+ */
 
-function Scan_All_Pics_For_Desc(max_per_time_work) {
+function Scan_All_Pics_For_Desc(max_pics) {
+	call_flickr_api_getnewphoto(max_pics, function(res) {
+		if (res.stat = "ok") {
+			if (res.photos.total > 0) { //至少有一个
+				var mathc_pic = 0; //匹配了几个
+				//TODO 检查是否有photos
+				res.photos.photo.every(function(api_photo) { //开始遍历
+					//console.log(api_photo); //临时输出
+					/* 所有需要的取回来 */
+					img_id = api_photo.id; //图片ID
+					desc = api_photo.description._content; //描述
+					ispublic = api_photo.ispublic;
+					if (chk_imgid(img_id)) {
+						var have_nothing = true; //啥也没有
+						if (desc != "") { //设置消息
+							pic_Desc.blur_me(img_id, desc);
+							have_nothing = false;
+						};
+						if (ispublic == 1) {
+							pic_Desc.public_me(img_id);
+							have_nothing = false;
+						};
+						if (have_nothing) {
+							pic_Desc.nothing_me(img_id);
+						};
+
+						pic_Desc.check_me(img_id); //标记检查
+						mathc_pic++; //标记
+					}
+					return true;
+				}) // <--遍历每一个id结束
+				console.log("船长!一次性API匹配了" + mathc_pic + "个请求");
+			}
+
+		} else { 
+			console.log("船长,大批量的API探寻器失败了:" + res.code + ":" + res.message)
+		}
+		Scan_All_Pics_For_Desc_By_PerScan(max_pics); //但愿还在?
+	}) //<--API回家了
+}
+
+
+/* 遍历一切-原生扫描方式
+ * 每次扫描用一次api查询权限
+ */
+//TODO::合并,封装成帽子里
+
+function Scan_All_Pics_For_Desc_By_PerScan(max_pics) {
 
 	//指定最大数量-如果失败
-	if (typeof(max_per_time_work) != "number") {
-		max_per_time_work = 150; //一次最大处理的张数
+	if (typeof(max_pics) != "number") {
+		max_pics = 150; //一次最大处理的张数
 	}
 
 	//设置回调的回调函数来获得特别的玩意-看起来这里意外的变成闭包了
@@ -387,7 +441,7 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		});
 	}
 	var i_count = 0; //计数器
-	//限制最大数，不检查已检查的
+	//限制最大数,不检查已检查的
 	$(".photo-display-item:not([has_check])").each(function() { //遍历开始
 		//TODO:变更位imgid
 		var img_id = $(this).attr("data-photo-id");
@@ -395,7 +449,7 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 		$img = $(this).find("[id][class*=img]");
 		//TODO:或许用[$(".photo-display-item img[id][class*=img]:not([src*='spaceball.gif'])")]
 		if ($img.prop("src").match("spaceball.gif")) {
-			return true; //继续下一个，不能返回fasle会死掉
+			return true; //继续下一个,不能返回fasle会死掉
 		}
 		//传入再传入。。。
 		back_the_desc(img_id, function(res, img_id) {
@@ -406,37 +460,37 @@ function Scan_All_Pics_For_Desc(max_per_time_work) {
 				if (desc_returun != "") {
 					//必要的话-糊掉-需要指向准确的对象
 					pic_Desc.blur_me(img_id, desc_returun);
-					have_nothing == false;
+					have_nothing = false;
 				}
 				//检查是否公开-处理公开问题-这里是那么优先
-				//公开后不再次检查，但是描述信息的还是检查...
+				//公开后不再次检查,但是描述信息的还是检查...
 				if (res.photo.visibility.ispublic == 1) {
 					//检查公开部分
 					pic_Desc.public_me(img_id);
-					have_nothing == false; //重复写?
+					have_nothing = false; //重复写?
 
 				}
 				if (have_nothing) {
 					//啥也没有
 					pic_Desc.nothing_me(img_id);
 				}
-				//无论如何都标记？为了当前的公开设置，这里暂时关闭
+				//无论如何都标记？为了当前的公开设置,这里暂时关闭
 				//避免重复,再次的话-全部重载
 				pic_Desc.check_me(img_id); //公开抛弃它
 			} else {
-				console.log("试图寻找注释，失败了：" + res.code + ":" + res.message)
+				console.log("船长,试图寻找单个注释,失败了:" + res.code + ":" + res.message)
 			}
 
 		});
 		i_count++;
-		if (i_count > max_per_time_work) {
-			console.log("船长！超过了" + max_per_time_work + "张，根据说好的！老子不干了！")
+		if (i_count > max_pics) {
+			console.log("船长!超过了" + max_pics + "张,根据说好的!老子不干了!")
 			return false; //彻底终止循环
 		}
 	}); //遍历结束
 	//TODO:全局基数？
 	if (i_count > 0) {
-		console.log("使用了API完成了" + i_count + "个请求");
+		console.log("使用了单独API申请了" + i_count + "个请求");
 	}
 	//TODO:没有的话进行一个提醒
 }
@@ -455,9 +509,9 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		var $pic_div = $(this).parents(".photo-display-item"); //绑定对应图像框
 		var pic_id = $pic_div.attr("data-photo-id"); //图片ID
 		/* 清理自带点击 */
-		$img_a.attr("href", ""); //指向保持空就好了，保留鼠标图标
-		$img_a.removeAttr("data-track"); //自带的跟踪属性清理，防止冒泡
-		$img_a.attr("title", "船长！选了它？");
+		$img_a.attr("href", ""); //指向保持空就好了,保留鼠标图标
+		$img_a.removeAttr("data-track"); //自带的跟踪属性清理,防止冒泡
+		$img_a.attr("title", "船长!选了它？");
 		/* 注入一个div描述 */
 		if ($img_a.find("div.take_state").length == 0) {
 			$pic_div.find(".play").after('<div style="top: 10%; font-size: 3em;position: absolute;left: 0;right: 0;color: #009C13;" class="take_state">[-]</div>')
@@ -484,17 +538,17 @@ function switch_check(img_id) {
 	$img_a = $pic_div.find(".photo-click img")
 
 	/** 开始处理图片被点击 **/
-	//NOTE:这里存在闭包吗-是的！属于上一级
+	//NOTE:这里存在闭包吗-是的!属于上一级
 	//困扰:闭包什么时候会失去呢？整个堆栈回来完毕后吗
 	if (typeof($pic_div.attr("slboat_take_you")) == "undefined" || $pic_div.attr("slboat_take_you") != "true") { //字符串对比?
-		$img_a.css("opacity", 0.4); //图片透明化，操作A的透明
+		$img_a.css("opacity", 0.4); //图片透明化,操作A的透明
 		$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
-		$img_a.attr("title", "船长！不要它？");
+		$img_a.attr("title", "船长!不要它？");
 		$pic_div.attr("slboat_take_you", "true"); //写入标记			
 	} else { //尽可能还原现场
 		$img_a.css("opacity", ""); //取消透明
 		$img_a.parent().css("background", ""); //取消背景
-		$img_a.attr("title", "船长！要回它？");
+		$img_a.attr("title", "船长!要回它？");
 		$pic_div.attr("slboat_take_you", "false"); //标记无
 		//TODO:还原原来的标记？是否已描？
 	}
@@ -546,7 +600,7 @@ function clean_everything() {
 	});
 }
 
-/* 根据目标字串，选定图片 */
+/* 根据目标字串,选定图片 */
 
 function select_for_this(idstr) {
 	var faild_num = 0; //失败次数
@@ -610,7 +664,7 @@ function flickr_chk_hotkey_bind() {
 
 }
 
-/* 发送到管理页面-哇喔！ */
+/* 发送到管理页面-哇喔! */
 
 function send_to_orgin() {
 	var idArry = get_all_select(); //获得选中
@@ -620,11 +674,11 @@ function send_to_orgin() {
 		chrome.extension.sendMessage({
 			command: "send_ids_to_orgin",
 			idstr: idArry.join(","), //合并起来 
-		}, function(iswork) { //目前还毫无作用，还不如个绑定事件
+		}, function(iswork) { //目前还毫无作用,还不如个绑定事件
 			if (iswork) {
-				//找到了管理页面，出去了
+				//找到了管理页面,出去了
 			} else {
-				alert("船长！很遗憾！没有找到Flickr管理页面，这里的工作不适合！");
+				alert("船长!很遗憾!没有找到Flickr管理页面,这里的工作不适合!");
 			};
 		});
 	}

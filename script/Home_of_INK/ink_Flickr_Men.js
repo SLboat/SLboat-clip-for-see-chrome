@@ -3,7 +3,7 @@
  */
 
 var stack_idstr = ""; //没送出的的idstr
-var send_back_tabid = null; //送回来的tabid
+var send_back_tab = null; //送回来的tabid
 
 /* 检查是否存在目标id
  * 存在的话调用callback(true)，否则callback(false)
@@ -23,7 +23,7 @@ function chrome_check_tabid(tabid, callback) {
 				}
 				return true;
 			})
-			if (!had_same) return false; //如果已经获得，跳出
+			if (had_same) return false; //如果已经获得，跳出
 			return true;
 		});
 		//最终完成-不存在窗口
@@ -47,23 +47,23 @@ function get_orgin_tabid(callback) {
 		url: tab_match_patern
 	}, function(tab) {
 		if (tab.length > 0) { //如果存在tab
-			callback(tab[0].id); //取第一个
+			callback(tab[0].id, tab); //取第一个
 		} else
-			callback(0); //丢回个0
+			callback(0, tab); //丢回个0
 	})
 
 }
 
 //发送给目标页面，设置flick返回的id
 
-function set_flick_orgin_ids(idstr, sender_tab) {
+function set_flick_orgin_ids(idstr, sender) {
 	var CONFIG_need_swith_to_tab = true; //是否需要切换到tab
 
 	/* 留存将来用的玩意 */
-	send_back_tabid = sender_tab.id;
+	send_back_tab = sender;
 	stack_idstr = idstr;
 
-	get_orgin_tabid(function(tab_id) { //这里应该有id了
+	get_orgin_tabid(function(tab_id, tab) { //这里应该有id了
 		//检查返回来的id如何
 		if (tab_id > 0) {
 			chrome.tabs.sendMessage(tab_id, {
@@ -75,6 +75,13 @@ function set_flick_orgin_ids(idstr, sender_tab) {
 				chrome.tabs.update(tab_id, {
 					active: true
 				});
+				//检查是否同一个窗口
+				if (tab[0].windowId != sender.windowId) {
+					//再切换窗口一下好了
+					chrome.windows.update(tab[0].windowId, {
+						focused: true
+					});
+				}
 			};
 			//图标变化
 			flickr_make_note_send_icon(); //图标设置
@@ -86,7 +93,7 @@ function set_flick_orgin_ids(idstr, sender_tab) {
 			//<-- 客家人怎样过日子呢？不过这里显然要生产一个才是的好
 			chrome.tabs.create({
 				url: "http://www.flickr.com/photos/organize", //这里是object的一部分
-				index: sender_tab.index + 1, //只在右边
+				index: sender.index + 1, //只在右边
 				//active: false, //不激活?
 			});
 			//看起来创建后还不能做啥的呢
@@ -99,12 +106,18 @@ function set_flick_orgin_ids(idstr, sender_tab) {
 
 function go_back_to_send_page() {
 	//试试回去咯
-	if (send_back_tabid) {
-		chrome_check_tabid(send_back_tabid, function(has_id) {
+	if (send_back_tab) {
+		chrome_check_tabid(send_back_tab.id, function(has_id) {
 			if (has_id) { //如果存在id
-				chrome.tabs.update(send_back_tabid, {
+				chrome.tabs.update(send_back_tab.id, {
 					active: true
 				});
+				//窗口前置
+				chrome.windows.update(send_back_tab.windowId, {
+					focused: true
+				})
+			} else { //已经关掉了,死去了
+				send_back_tab = null; //清除
 			}
 		});
 	}
