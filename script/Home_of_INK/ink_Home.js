@@ -565,7 +565,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		flickr_make_note_icon(); //啊哈制造icon
 	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
 		if (request.idstr != "") { //检查空
-			set_flick_orgin_ids(request.idstr, sender.tab.id); //送过去咯
+			set_flick_orgin_ids(request.idstr, sender.tab); //送过去咯，包含(字串,标签)
 		}
 	} else if (request.command == "back_to_index_page") { //返回发送来的页面
 		go_back_to_send_page();

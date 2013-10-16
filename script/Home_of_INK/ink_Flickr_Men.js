@@ -55,12 +55,12 @@ function get_orgin_tabid(callback) {
 
 //发送给目标页面，设置flick返回的id
 
-function set_flick_orgin_ids(idstr, send_tab_id) {
+function set_flick_orgin_ids(idstr, sender_tab) {
 	var CONFIG_need_swith_to_tab = true; //是否需要切换到tab
 
-	send_back_tabid = send_tab_id;
+	send_back_tabid = sender_tab.id;
 
-	get_orgin_tabid(function(tab_id) {
+	get_orgin_tabid(function(tab_id) { //这里应该有id了
 		//检查返回来的id如何
 		if (tab_id > 0) {
 			chrome.tabs.sendMessage(tab_id, {
@@ -78,6 +78,13 @@ function set_flick_orgin_ids(idstr, send_tab_id) {
 			set_inkicon_text(idstr.split(",").length); //设置个标记
 		} else {
 			//要想返回啥，只能发消息回去咯
+			//<-- 客家人怎样过日子呢？不过这里显然要生产一个才是的好
+			chrome.tabs.create({
+				url: "http://www.flickr.com/photos/organize", //这里是object的一部分
+				index: sender_tab.index + 1, //只在右边
+				//active: false, //不激活?
+			});
+			//看起来创建后还不能做啥的呢
 
 		} // <-- 返回结束
 	});

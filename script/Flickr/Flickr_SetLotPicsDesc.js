@@ -45,6 +45,8 @@ function HOOK_FLICKR_PAGE() {
 //CRAZY:或许给body一个hook，然后匹配两个hook是否一致？
 //NOW:使用photo-list-holder这里挂钩，看起来好多了！
 $(document).ready(function() {
+	//检查页面？
+	if ($("#photo-list-holder").length == 0) return false; //必须有列表的
 	//IDEA:或许等待对象移除后再次复活事件？
 	Flickr_Comment_Hook_Start();
 	HOOK_FOR_PIC_CAN_CHECKED(); //再次的钩子-或许有优先级问题？背景问题？
@@ -506,6 +508,10 @@ function flickr_chk_hotkey_bind() {
 	/* 绑定送出去哩 */
 	$(document).bind("keydown", "ctrl+/", send_to_orgin);
 	$(document).bind("keydown", "z", send_to_orgin);
+
+	/* 再次刷新显示-q */
+	$(document).bind("keydown", "q", HOOK_FLICKR_PAGE);
+	
 }
 
 /* 发送到管理页面-哇喔！ */
