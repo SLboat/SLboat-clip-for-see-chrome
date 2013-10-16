@@ -4,13 +4,15 @@ var close_timer_id; //关闭的定时器ID
 var fire_again_timer_id; //再次开火的定时器id
 
 var opacity_had_desc = 0.55; //已抛锚的透明度
-/* 一切的开始的入口 
- * 确保只执行了一次
- */
+
 Enable_SetLotPicsDesc = true; //默认标记，不等待
 
 /* 在这里提前用到API-于是领取API回家 */
 i_request_for_API();
+
+/* 一切的开始的入口 
+ * 确保只执行了一次
+ */
 
 function HOOK_FLICKR_COMMON_DIAG_ONCE() {
 	//如果不再页面，立即离开
