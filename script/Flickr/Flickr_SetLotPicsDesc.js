@@ -416,7 +416,7 @@ function Scan_All_Pics_For_Desc(max_pics) {
 		} else {
 			console.log("船长,大批量的API探寻器失败了:" + res.code + ":" + res.message)
 		}
-		Scan_All_Pics_For_Desc_By_PerScan(max_pics); //但愿还在?
+		Scan_All_Pics_For_Desc_By_PerScan(150); //但愿还在?最大一次150
 	}) //<--API回家了
 }
 
@@ -448,7 +448,7 @@ function Scan_All_Pics_For_Desc_By_PerScan(max_pics) {
 		//临时备份图片
 		$img = $(this).find("[id][class*=img]");
 		//TODO:或许用[$(".photo-display-item img[id][class*=img]:not([src*='spaceball.gif'])")]
-		if ($img.prop("src").match("spaceball.gif")) {
+		if ($img.prop("src") && $img.prop("src").match("spaceball.gif")) {
 			return true; //继续下一个,不能返回fasle会死掉
 		}
 		//传入再传入。。。
