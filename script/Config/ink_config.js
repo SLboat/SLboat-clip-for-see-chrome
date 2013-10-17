@@ -83,19 +83,20 @@ $(document).ready(function() {
 			tips("抱歉，你没有输入一个mini-token呢，先进入认证页面吧！");
 			return false;
 		}
-		tips("正在为你获取...")
+		tips("船长..正在为你获取...")
 		//传给匿名函数，来得到一整个的访问，取得的是当页的
 		call_flickr_api_get_fulltoekn($("#api_key").val(), $("#secret_key").val(), $("#mini_token").val(), get_token_back);
 
 	});
 	//测试API按钮
 	$("#api_test").click(function() {
+		tips("船长..正在效验API是否有效....");
 		call_flickr_api_check_token($("#api_key").val(), $("#secret_key").val(), $("#mini_token").val(), $("#auth_token").val(), function(res) {
 			if (res.stat == "ok") {
 				//TODO:加全名?
-				tips("验证成功,权限:" + res.auth.perms._content + ",用户名:" + res.auth.user.username);
+				tips("船长,这玩意管用,权限:" + res.auth.perms._content + ",用户名:" + res.auth.user.username);
 			} else {
-				tips("遗憾验证失败: " + res.code + "-" + res.message)
+				tips("船长,这玩意不管用: " + res.code + "-" + res.message)
 			}
 		})
 
