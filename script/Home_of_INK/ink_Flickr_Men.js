@@ -134,3 +134,19 @@ function queryOrginWork(tab_id) {
 	}
 
 }
+
+/* 发送到首页的命令转发 */
+
+function sendMessage_to_Findex(request) {
+	if (send_back_tab) {
+		chrome_check_tabid(send_back_tab.id, function(has_id) {
+			//这里还有外面的包呢,哈
+			/* 转发的消息内容是 request本身 */
+			chrome.tabs.sendMessage(send_back_tab.id, {
+				method: "aMessage_form_Forgin",
+				message: request.message,
+			})
+
+		});
+	}
+}

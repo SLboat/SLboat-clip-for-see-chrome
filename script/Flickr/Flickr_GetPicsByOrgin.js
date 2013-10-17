@@ -51,12 +51,19 @@ function tag_press_done_bundle() {
 
 		/* 顺带的绑定留言框的 */
 		$("#batch_perms_form").submit(function() {
-			wait_tag_done(10); //依然等待几秒
+			wait_tag_done(10, function(res) {
+				if (res) sendMessage_to_Findex("ReScan")
+
+			}); //依然等待几秒
 		});
 
 		$("#batch_perms_form .butt").click(function() {
-			wait_tag_done(10); //依然等待几秒
-		})
+			wait_tag_done(10, function(res) {
+				if (res)
+					sendMessage_to_Findex("ReScan")
+			}); //依然等待几秒
+
+		});
 
 		Have_bundle_flag = true; //绑定标志锁死
 	} else {
@@ -153,8 +160,8 @@ function use_key_bundle() {
 			/* 激活事件 */
 			$("#candy_menu_o_perms a:eq(0)")[0].click(); //看起来哦，只能dom方法	
 
-			//目前是等待一秒五呢
-			setTimeout($("#batch_perms_form .Butt").click(), 1500);
+			//直接开始执行
+			$("#batch_perms_form .Butt").click()
 
 			return false; //不要本次事件
 		})
@@ -474,17 +481,20 @@ function make_tag_and_get() {
 		tags_for_work = $("#batch_add_tags").val();
 		if (tags_for_work.length == 0) {
 			return 1; //意外退出
-		} else
+		} else {
+			//开始等待10秒的工作，或许需要更多？
+			wait_tag_done(10, function(back) {
+				if (back) call_flickr_api_search(tags_for_work, true); //1秒后完成剩下的工作
 
-		//开始等待10秒的工作，或许需要更多？
-			wait_tag_done(10);
+			});
+		}
 	} else
 		return false;
 }
 
 /* 关闭公共对话框 */
 
-function wait_tag_done(timeout_time) {
+function wait_tag_done(timeout_time, callback) {
 	var work_start_time = new Date().getTime(); //开始工作的事件，毫秒
 	clearInterval(wait_id); //清理上次的id
 	//开始每500毫秒一次扫描对话框
@@ -495,13 +505,18 @@ function wait_tag_done(timeout_time) {
 			if (is_debug_tag_module) console.log("看起来任务完成了！") //标签模块的调试标记-输出日志
 			clearInterval(wait_id);
 			$("#comm_button_ok")[0].click(); //奇怪只能用html的方式
-			call_flickr_api_search(tags_for_work, true); //1秒后完成剩下的工作
-			//设置捕获事件。。。
+			//有必要的话回调
+			if (typeof(callback) == "function") {
+				callback(true);
+			}
 			return 0; //返回结束
 		}
 		if (new Date().getTime() - work_start_time > timeout_time * 1000) {
 			if (is_debug_tag_module) console.log("时间太长了，结束等待...超过了秒数：", timeout_time) //标签模块的调试标记-输出日志
 			clearInterval(wait_id);
+			if (typeof(callback) == "function") {
+				callback(false);
+			}
 			return 1; //意外
 		} else
 		if (is_debug_tag_module) console.log("继续等待对话框...") //标签模块的调试标记-输出日志
@@ -626,4 +641,13 @@ function i_wana_back_index() {
 		command: "back_to_index_page"
 	})
 
+}
+
+/* 发个消息给首页 */
+
+function sendMessage_to_Findex(message) {
+	chrome.extension.sendMessage({
+		command: "sendMessage_to_Findex",
+		message: message, //消息内容-目前没有参数,只有一个函数
+	})
 }

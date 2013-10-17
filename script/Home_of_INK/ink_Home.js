@@ -515,6 +515,7 @@ function get_ink_for() {
 
 //设置墨水文字
 //TODO:集合颜色处理?
+
 function set_inkicon_text(str) {
 	//目前看起来就放置在这里了-默认颜色,要想改必须之后再设置一次
 	init_inkicon_color(); //恢复默认颜色?
@@ -592,6 +593,9 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 
 	} else if (request.command == "queryOrginWork") { //查询工作，多像短信息啊
 		queryOrginWork(sender.tab.id); //查询是否有要完成的工作
+
+	} else if (request.command == "sendMessage_to_Findex") { //通知最近的首页一个消息
+		sendMessage_to_Findex(request);
 
 	} else { //如果啥都没有
 		//返回空包函数-看起来没啥必要

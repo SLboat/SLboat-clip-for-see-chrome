@@ -302,6 +302,10 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		}
 
 
+	} else if (request.method == "aMessage_form_Forgin") { //收到了一条来自管理页面的消息
+		/* 消息内容是 request.message */
+		aMessage_form_Forgin(request.message); //让下面的去处理
+		
 	}
 
 });

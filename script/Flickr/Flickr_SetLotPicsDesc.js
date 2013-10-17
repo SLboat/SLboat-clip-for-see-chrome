@@ -61,7 +61,7 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 /* 当激活一次热键等情况下的处理 */
 
 function REDONE_ALL_PAGE() {
-	Scan_All_Pics_For_Desc(400); //最大扫描150张？
+	Scan_All_Pics_For_Desc(300); //最大扫描150张？
 	HOOK_FOR_PIC_MOUSE_CLICK();
 	//注入图片可以检查
 	HOOK_FOR_PIC_CAN_CHECKED();
@@ -358,6 +358,16 @@ var pic_Desc = {
 			"top": "90%", //靠下边
 			"font-size": "4em", //不算太大
 		}).text("待见识"); //待见识为文字内容
+
+		//清理,清理
+		$pics.find(".comment-count").text("");
+		$pics.find(".comments-icon").attr("title", "");
+
+		//清空CSS
+		$pics.find("span.photo_container").css({
+			"background-color": "",
+			"opacity": ""
+		});
 
 		//啥也不做了
 		return true;
@@ -678,13 +688,16 @@ function send_to_orgin() {
 		chrome.extension.sendMessage({
 			command: "send_ids_to_orgin",
 			idstr: idArry.join(","), //合并起来 
-		}, function(iswork) { //目前还毫无作用,还不如个绑定事件
-			if (iswork) {
-				//找到了管理页面,出去了
-			} else {
-				alert("船长!很遗憾!没有找到Flickr管理页面,这里的工作不适合!");
-			};
 		});
 	}
 
+}
+
+/* 收到一条信息 */
+
+function aMessage_form_Forgin(message) {
+	//case 在这里看起来很美好
+	if (message == "ReScan") { //重新扫描,好的
+		REDONE_ALL_PAGE()
+	}
 }
