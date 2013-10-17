@@ -59,7 +59,7 @@ function get_api_sig(sSecretKey, sParameter) {
 
 /* 验证token是否工作 */
 
-function call_flickr_api_get_checktoekn(api_key, secret_key, mini_token, auth_token, callback) {
+function call_flickr_api_check_token(api_key, secret_key, mini_token, auth_token, callback) {
 
 	var base_url = "http://api.flickr.com/services/rest/";
 
@@ -71,7 +71,7 @@ function call_flickr_api_get_checktoekn(api_key, secret_key, mini_token, auth_to
 
 	Requst_url += "&api_sig=" + get_api_sig(secret_key, Requst_url); //算出来这该死的玩意
 	Requst_url = base_url + Requst_url; //组合成呼叫url
-	
+
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", Requst_url, true);
 	xhr.onreadystatechange = function() {
