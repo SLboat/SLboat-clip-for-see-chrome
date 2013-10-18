@@ -19,9 +19,10 @@ function get_all_token() {
 
 function i_request_for_API(callback) {
 	chrome.extension.sendMessage({
-		command: "flickr_api_request"
-	}, function(api) {
-		flickr_api_key = api; //赋予全局的API
+		command: "flickr_key_request"
+	}, function(request) {
+		flickr_api_key = request.api_token; //赋予全局的API
+		ink_option = request.ink_option; //墨水选项
 		//释放回调回去
 		if (typeof(callback) == "function") {
 			callback();
@@ -57,8 +58,8 @@ function get_api_sig_unpackUTF(sSecretKey, sParameter) {
 	var sSignature = sSecretKey; //初始化为签名开始
 	for (var i = 0, j = aParameter.length; i < j; i++) { //开始组合字符串
 		var sName = aParameter[i].split('=')[0];
-		var sValue = aParameter[i].split('=')[1];		
-		sValue = decodeURIComponent(sValue);// 防止出现UTF8的麻烦
+		var sValue = aParameter[i].split('=')[1];
+		sValue = decodeURIComponent(sValue); // 防止出现UTF8的麻烦
 		sSignature += sName + sValue;
 	};
 	return MD5(sSignature);

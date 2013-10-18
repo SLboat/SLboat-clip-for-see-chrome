@@ -430,14 +430,14 @@ function flickr_make_note_send_icon() {
 
 function get_api_key() {
 	// 赋值给它
-	var api_key = {
+	var api_token_key = {
 		api_key: localStorage.api_key || "",
 		secret_key: localStorage.secret_key || "",
 		auth_token: localStorage.auth_token || "",
 		user_name: localStorage.user_name || ""
 	};
 	// 放回去
-	return api_key;
+	return api_token_key;
 
 }
 
@@ -572,9 +572,15 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 		flick_api_end(request); //把呼叫体传回去得了
 	} else if (request.command == "ink_api_clean") {
 		clear_ink(); //把呼叫体传回去得了
-	} else if (request.command == "flickr_api_request") { //需要API
+	} else if (request.command == "flickr_key_request") { //需要API
 		//TODO:效验页面是否可以发出请求？
-		sendResponse(get_api_key()); //传回返回的api
+		sendResponse({
+			api_token: get_api_key(), //api_key
+			ink_option: { //墨水设置
+				ink_for: get_ink_for(),
+				flickr_order: localStorage.flickr_order || ""
+			}
+		}); //传回返回的api
 	} else if (request.command == "flickr_note_icon") {
 		flickr_make_note_icon(); //啊哈制造icon
 	} else if (request.command == "send_ids_to_orgin") { //发送ID给管理页面
