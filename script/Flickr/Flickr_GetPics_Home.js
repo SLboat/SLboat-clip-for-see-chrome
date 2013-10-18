@@ -106,7 +106,7 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 		catch_them.each(function() {
 			var str_alt = $(this)
 				.prop("alt") || null; //尝试获得替换文本
-			if ($(this).prop("src").match("images/spaceball.gif")) {
+			if (!($(this).prop("src")) || $(this).prop("src").match("images/spaceball.gif")) {
 				we_lost_them++; //记录发生了一次意外的丢失
 				return true; //跳出本次，看起来工作
 			}
