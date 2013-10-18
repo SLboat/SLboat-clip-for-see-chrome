@@ -29,6 +29,57 @@ function i_request_for_API(callback) {
 	});
 }
 
+//获得签名信息
+//主要有趣的是重新排序请求参数们
+//来自 http://josephj.com/prototype/JosephJiang/Presentation/OpenAPI_Workshop/flickr-auth-api.html
+
+function get_api_sig(sSecretKey, sParameter) {
+	sParameter = sParameter.replace('?', ''); //去除问号，不再需要
+	var aParameter = sParameter.split('&'); //切割一个个参数
+	aParameter.sort(); //神奇的排序，按字母排序
+	var sSignature = sSecretKey; //初始化为签名开始
+	for (var i = 0, j = aParameter.length; i < j; i++) { //开始组合字符串
+		var sName = aParameter[i].split('=')[0];
+		var sValue = aParameter[i].split('=')[1];
+		sSignature += sName + sValue;
+	};
+	return MD5(sSignature);
+};
+
+//获得签名信息-解包UTF8
+//主要有趣的是重新排序请求参数们
+//来自 http://josephj.com/prototype/JosephJiang/Presentation/OpenAPI_Workshop/flickr-auth-api.html
+
+function get_api_sig_unpackUTF(sSecretKey, sParameter) {
+	sParameter = sParameter.replace('?', ''); //去除问号，不再需要
+	var aParameter = sParameter.split('&'); //切割一个个参数
+	aParameter.sort(); //神奇的排序，按字母排序
+	var sSignature = sSecretKey; //初始化为签名开始
+	for (var i = 0, j = aParameter.length; i < j; i++) { //开始组合字符串
+		var sName = aParameter[i].split('=')[0];
+		var sValue = aParameter[i].split('=')[1];		
+		sValue = decodeURIComponent(sValue);// 防止出现UTF8的麻烦
+		sSignature += sName + sValue;
+	};
+	return MD5(sSignature);
+};
+
+/* 将参数部分都加成UTF8来传出 - 看起来还不工作
+ * 意即每一部分值进行utf8编码
+ * 对于传送中文这很有用
+ */
+
+function make_to_utf8(sParameter) {
+	var aParameter = sParameter.split('&'); //切割一个个参数
+	//aParameter.sort(); //神奇的排序,按字母排序,需要排序?
+	for (var i = 0, j = aParameter.length; i < j; i++) { //开始组合字符串
+		var varameter = aParameter[i].split('='); //切分
+		varameter[1] = encodeURIComponent(varameter[1]); //制造成utf8
+		aParameter[i] = varameter.join("="); //重组
+	};
+	return aParameter.join("&"); //组合回来
+};
+
 //传入搜索tag，传入页面信息，仅获取自己的
 //todo:用户名未来也加进去给予考虑
 //todo:api_key 尽快加入到考虑范围里，虽然这里也是作为app使用的。。。
@@ -81,22 +132,6 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	xhr.send();
 }
 
-//获得签名信息
-//主要有趣的是重新排序请求参数们
-//来自 http://josephj.com/prototype/JosephJiang/Presentation/OpenAPI_Workshop/flickr-auth-api.html
-
-function get_api_sig(sSecretKey, sParameter) {
-	sParameter = sParameter.replace('?', ''); //去除问号，不再需要
-	var aParameter = sParameter.split('&'); //切割一个个参数
-	aParameter.sort(); //神奇的排序，按字母排序
-	var sSignature = sSecretKey; //初始化为签名开始
-	for (var i = 0, j = aParameter.length; i < j; i++) { //开始组合字符串
-		var sName = aParameter[i].split('=')[0];
-		var sValue = aParameter[i].split('=')[1];
-		sSignature += sName + sValue;
-	};
-	return MD5(sSignature);
-};
 
 /* 获得JSON里面的图片玩意儿 */
 /* 思考它的异步性
@@ -267,16 +302,20 @@ function call_flickr_api_setmete(photo_id, title, description, callback) {
 
 	/* 组合最后的请求数据 */
 	//TODO:效验数据是否有效
-	Requst_url += "&description=" + description;
-	Requst_url += "&title=" + title;
+	Requst_url += "&description=" + encodeURIComponent(description);
+	Requst_url += "&title=" + encodeURIComponent(title);
 	Requst_url += "&photo_id=" + photo_id;
 
 	//最后的签名
-	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url);
+	Requst_url += "&api_sig=" + get_api_sig_unpackUTF(flickr_api_key.secret_key, Requst_url);
+
+	//Requst_url = make_to_utf8(Requst_url); //将值编码为utf8
+
 	Requst_url = base_url + Requst_url;
 
 	/* 开始送入数据 */
 	var xhr = new XMLHttpRequest();
+
 	xhr.open("POST", Requst_url, true);
 
 	xhr.onreadystatechange = function() {
@@ -371,6 +410,7 @@ function call_flickr_api_for_desc(photo_id, Take_Desc) {
  */
 //TODO: 再拉回来标签?
 //TODO: 每页200,传入页面?
+
 function call_flickr_api_getnewphoto(max_pics, callback) {
 	var max_pics = max_pics || 400; //一次返回最多数量
 
