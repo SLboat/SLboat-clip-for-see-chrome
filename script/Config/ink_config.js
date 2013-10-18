@@ -65,7 +65,11 @@ $(document).ready(function() {
 
 	$("#flickr_order").change(Save_Setting); //所有保存
 
-	$("#link_get_token").prop("href", $("#link_for_token").val()); //赋予链接
+	//打开指定页面
+	$(".link_get_token").click(function() {
+		window.open($("#link_for_token").val(), "_blank");
+	});
+
 	//绑定获得token的玩意
 	$("#get-token-button").click(function() {
 		if ($("#api_key").val().length == 0) //长度是0
@@ -101,6 +105,10 @@ $(document).ready(function() {
 		})
 
 	});
+
+	$(".borderBTM").click(function() {
+		$("#" + ($(this).attr("blink"))).fadeOut(200).fadeIn(200).fadeOut(200).fadeIn(200);
+	})
 })
 
 function get_token_back(Json_Token) {
