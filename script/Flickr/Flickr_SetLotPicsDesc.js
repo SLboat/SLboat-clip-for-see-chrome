@@ -701,3 +701,77 @@ function aMessage_form_Forgin(message) {
 		REDONE_ALL_PAGE()
 	}
 }
+
+
+/* 消息框操作的玩意 - 这里是提示框类
+ * init:初始化
+ * says:设置
+ * count:开始计数
+ * count_die:终止计数
+*/
+
+var tips = {
+	//初始化的提示源文本,@alex最早制造了它的原型,大约于13年年末的时候
+	tips_li: '<li style="font-size:2.5em;color:#F73DCA;position:absolute;top:32%;left:44%;font-weight:bold;"><span id="tips_top"></span><span id="tips_count" style="color: grey;">...1秒过去了</span></li>',
+	//这里应该很有意思的是,初始化的所有都会发生一次,除了函数-它只是赋值,而在通常的意义里赋值就是变量的初始化和生命周期了
+	timerID_Tips: 0, //tips的定时器id
+
+	/* 检查是否已经存在 */
+	hasinit: function() {
+		return $("#tips_top").length > 0;
+	},
+	/* 初始化 */
+	init: function(what) {
+		what = what || "船长,航海见识墨水已准备好"
+		if (!this.hasinit()) {
+			//将其插入上传后面
+			$(".gn-upload").after(this.tips_li);
+			this.says(what);
+			return true;
+		}
+		//设置一个全局的定时器
+		window.i_count_now = 0;
+		return false;
+	},
+	/* 谈论它 */
+	says: function(what) {
+		if (!this.hasinit()) {
+			console.log("嘿,你这家伙疯了吗?老子还没初始化呢!")
+			return false;
+		}
+		//改变后的内容不需要所有已存的计数器
+		this.count_die();
+		//这是-正事
+		$("#tips_top").text(what);
+		return true;
+	},
+	/* 计时谈话将在处理 */
+	count: function(what) {
+		if (this.timerID_Tips > 0) {
+			this.count_die(); //处死已存活的定时器
+		};
+		//若有赋值的话,让别人(says-嘴巴这家伙?)去办到
+		if (what && what != "") { //null undefined?->dead
+			this.says(waht);
+		}
+		//计数器的开始之旅
+		this.timerID_Tips = setInterval(function() {
+			//这里进入了一个新的变量域
+			if (window.i_count_now == 0) return false;
+			$("#tips_count").text("...有" + window.i_count_now + "秒了");
+			window.i_count_now++;
+		}, 1000)
+	},
+	/* 计数器器死了
+	 * 终于不再数了-这忙坏了的家伙
+	 */
+	count_die: function() {
+		if (this.timerID_Tips > 0) {
+			clearInterval(this.timerID_Tips);
+		};
+		//重置计数
+		window.i_count_now = 0;
+		//dom玩意强制重置
+		$("#tips_count").text(""); //清空计数器
+	}
+}
