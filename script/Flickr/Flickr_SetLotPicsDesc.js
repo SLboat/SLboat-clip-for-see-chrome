@@ -61,12 +61,15 @@ function HOOK_FLICKR_PAGE_HAS_CHANGE_START() {
 /* 当激活一次热键等情况下的处理 */
 
 function REDONE_ALL_PAGE() {
+	//tips.count("正在重载所有图片!");
+
 	Scan_All_Pics_For_Desc(300); //最大扫描150张？
 	HOOK_FOR_PIC_MOUSE_CLICK();
 	//注入图片可以检查
 	HOOK_FOR_PIC_CAN_CHECKED();
 	//载入保存的值？
 	sync_selct.load();
+	//tips.count_die(); //结束数数
 }
 
 //TODO:如果hook失败,那么可以墨水按钮按下去的时候再次Hook,听起来如何
@@ -85,6 +88,8 @@ $(document).ready(function() {
 	//立即载入设置
 	sync_selct.load();
 	flickr_chk_hotkey_bind(); /* 热键的绑定 */
+
+	tips.init(); //初始化提示框
 
 })
 
@@ -113,6 +118,7 @@ function Flickr_pics_SetUP_hook() {
 
 	if ($(".comment-button-desc").length > 0) return false; //已经添加过了,再见
 
+	tips.says("船长!评论已换上我们的人!")
 	//TODO:用函数包装
 	Note.work_title_str = ""; //清空尾部字串
 
@@ -223,7 +229,7 @@ function Flickr_pics_SetUP_hook() {
 
 } //结束了自己
 
-Note = {
+var Note = {
 
 	wait_for_close: 1, //常量,等待几秒后自动关闭
 	work_title_str: "", //针对工作的家伙
@@ -291,20 +297,20 @@ Note = {
 }
 /* 返回对象pic层 */
 
-function get_pics(img_id) {
-	return $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
-}
+	function get_pics(img_id) {
+		return $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
+	}
 
-/* 是否存在这个图片id */
+	/* 是否存在这个图片id */
 
-function chk_imgid(img_id) {
-	return (get_pics(img_id).length > 0);
-}
+	function chk_imgid(img_id) {
+		return (get_pics(img_id).length > 0);
+	}
 
-/* 图片描述的方式们 
- * 旨在试图对图片ID进行标记
- * 包含模糊
- */
+	/* 图片描述的方式们 
+	 * 旨在试图对图片ID进行标记
+	 * 包含模糊
+	 */
 var pic_Desc = {
 
 	/* 模糊掉 */
@@ -390,9 +396,11 @@ var pic_Desc = {
  */
 
 function Scan_All_Pics_For_Desc(max_pics) {
+	tips.count("开始扫描所有图片的状态")
 	call_flickr_api_getnewphoto(max_pics, function(res) {
 		if (res.stat = "ok") {
 			if (res.photos.total > 0) { //至少有一个
+				tips.justsays("服务器拉回来了" + res.photos.total + "个状态")
 				var mathc_pic = 0; //匹配了几个
 				//TODO 检查是否有photos
 				res.photos.photo.every(function(api_photo) { //开始遍历
@@ -420,12 +428,16 @@ function Scan_All_Pics_For_Desc(max_pics) {
 					}
 					return true;
 				}) // <--遍历每一个id结束
-				console.log("船长!一次性API匹配了" + mathc_pic + "个请求");
+				tips.justsays("共处理了" + mathc_pic + "个匹配的家伙")
+				tips.count_die();
+				//console.log("船长!一次性API匹配了" + mathc_pic + "个请求");
 			}
 
 		} else {
-			console.log("船长,大批量的API探寻器失败了:" + res.code + ":" + res.message)
+			tips.says("船长,试图大量探索失败了!")
+			//console.log("船长,大批量的API探寻器失败了:" + res.code + ":" + res.message)
 		}
+		//todo:检查所有?		
 		Scan_All_Pics_For_Desc_By_PerScan(150); //但愿还在?最大一次150
 	}) //<--API回家了
 }
@@ -534,7 +546,7 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		/* 绑定新的点击事件 */
 		$img_a.click(function() {
 			/** 开始处理图片被点击 **/
-			switch_check(pic_id); //切换图片
+			switch_check(pic_id, true); //切换图片
 			//保存变量
 			sync_selct.save();
 
@@ -543,7 +555,7 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 	});
 }
 
-function switch_check(img_id) {
+function switch_check(img_id, need_say) {
 	//选中的图片背景-ico by @alex
 	//TODO:导入到扩展内部
 	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
@@ -558,12 +570,18 @@ function switch_check(img_id) {
 		$img_a.css("opacity", 0.4); //图片透明化,操作A的透明
 		$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
 		$img_a.attr("title", "船长!不要它？");
-		$pic_div.attr("slboat_take_you", "true"); //写入标记			
-	} else { //尽可能还原现场
+		$pic_div.attr("slboat_take_you", "true"); //写入标记
+		if (need_say) {
+			tips.says("咋门又选择了一个家伙!");
+		}
+	} else { //取消选中-尽可能还原现场
 		$img_a.css("opacity", ""); //取消透明
 		$img_a.parent().css("background", ""); //取消背景
 		$img_a.attr("title", "船长!要回它？");
 		$pic_div.attr("slboat_take_you", "false"); //标记无
+		if (need_say) {
+			tips.says("咋门又清掉了一个家伙!");
+		}
 		//TODO:还原原来的标记？是否已描？
 	}
 	//制造文字标记
@@ -607,9 +625,10 @@ sync_selct = {
 /* 清理所有选中的标记 */
 
 function clean_everything() {
+	tips.says("船长!清除所有选中的家伙!");
 	$(".photo-display-item[slboat_take_you=true]").each(function(index) {
 		//用原始的方法来调用点击
-		$(this).find("a.photo-click").click();
+		switch_check($(this).attr("data-photo-id"));
 		sync_selct.save(); //会不会太早了
 	});
 }
@@ -628,7 +647,7 @@ function select_for_this(idstr) {
 			if ($chk_first.length > 0) {
 				var $chk_me = $chk_first.not("[slboat_take_you=true]"); //检查选中
 				if ($chk_me.length > 0) {
-					$chk_me.find("a.photo-click").click(); //制造点击
+					switch_check(id); //切换选择
 				}
 			} else {
 				faild_num++;
@@ -689,6 +708,7 @@ function send_to_orgin() {
 			command: "send_ids_to_orgin",
 			idstr: idArry.join(","), //合并起来 
 		});
+		tips.says("送出了" + idArry.length + "到管理的家伙!")
 	}
 
 }
@@ -698,7 +718,8 @@ function send_to_orgin() {
 function aMessage_form_Forgin(message) {
 	//case 在这里看起来很美好
 	if (message == "ReScan") { //重新扫描,好的
-		REDONE_ALL_PAGE()
+		REDONE_ALL_PAGE();
+
 	}
 }
 
@@ -708,11 +729,11 @@ function aMessage_form_Forgin(message) {
  * says:设置
  * count:开始计数
  * count_die:终止计数
-*/
+ */
 
 var tips = {
 	//初始化的提示源文本,@alex最早制造了它的原型,大约于13年年末的时候
-	tips_li: '<li style="font-size:2.5em;color:#F73DCA;position:absolute;top:32%;left:44%;font-weight:bold;"><span id="tips_top"></span><span id="tips_count" style="color: grey;">...1秒过去了</span></li>',
+	tips_li: '<li style="font-size:2em;color:rgba(137, 210, 233, 0.66);position:absolute;top:32%;left:44%;font-weight:bold;"><span id="tips_top"></span><span id="tips_count" style="color: grey;">...1秒过去了</span></li>',
 	//这里应该很有意思的是,初始化的所有都会发生一次,除了函数-它只是赋值,而在通常的意义里赋值就是变量的初始化和生命周期了
 	timerID_Tips: 0, //tips的定时器id
 
@@ -722,43 +743,49 @@ var tips = {
 	},
 	/* 初始化 */
 	init: function(what) {
-		what = what || "船长,航海见识墨水已准备好"
+		what = what || "船长,航海见识墨水待命!"
 		if (!this.hasinit()) {
+			//设置一个全局的定时器
+			window.i_count_now = 0;
 			//将其插入上传后面
 			$(".gn-upload").after(this.tips_li);
 			this.says(what);
 			return true;
 		}
-		//设置一个全局的定时器
-		window.i_count_now = 0;
 		return false;
 	},
 	/* 谈论它 */
 	says: function(what) {
-		if (!this.hasinit()) {
-			console.log("嘿,你这家伙疯了吗?老子还没初始化呢!")
-			return false;
-		}
+		if (!this.hasinit()) return false;
 		//改变后的内容不需要所有已存的计数器
 		this.count_die();
 		//这是-正事
 		$("#tips_top").text(what);
 		return true;
 	},
+	/* 只是谈论,不清理 */
+	justsays: function(what) {
+		if (!this.hasinit()) return false;
+		//这是-正事
+		$("#tips_top").text(what);
+		return true;
+	},
 	/* 计时谈话将在处理 */
 	count: function(what) {
+		if (!this.hasinit()) return false;
 		if (this.timerID_Tips > 0) {
 			this.count_die(); //处死已存活的定时器
 		};
 		//若有赋值的话,让别人(says-嘴巴这家伙?)去办到
 		if (what && what != "") { //null undefined?->dead
-			this.says(waht);
+			this.justsays(what);
 		}
 		//计数器的开始之旅
 		this.timerID_Tips = setInterval(function() {
 			//这里进入了一个新的变量域
-			if (window.i_count_now == 0) return false;
-			$("#tips_count").text("...有" + window.i_count_now + "秒了");
+			if (window.i_count_now > 0) {
+				$("#tips_count").text("...有" + window.i_count_now + "秒了");
+			}
 			window.i_count_now++;
 		}, 1000)
 	},
@@ -766,6 +793,7 @@ var tips = {
 	 * 终于不再数了-这忙坏了的家伙
 	 */
 	count_die: function() {
+		if (!this.hasinit()) return false;
 		if (this.timerID_Tips > 0) {
 			clearInterval(this.timerID_Tips);
 		};
