@@ -160,8 +160,15 @@ function use_key_bundle() {
 			/* 激活事件 */
 			$("#candy_menu_o_perms a:eq(0)")[0].click(); //看起来哦，只能dom方法	
 
+			/* 处理对话框 */
+			if ($("#candy_menu_o_perms").css("display") == "block") {
+				//取消掉
+				$("#candy_button_o_perms .left a")[0].click();
+				// $("#candy_menu_o_perms")[0].click(); //这个也能工作,这很奇怪,因为它是隐藏的
+			}
 			//直接开始执行
 			$("#batch_perms_form .Butt").click()
+			//todo:注入未来事件?
 
 			return false; //不要本次事件
 		})
