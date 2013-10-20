@@ -561,23 +561,25 @@ function switch_check(img_id, need_say) {
 	var css_img_checkd = "http://see.sl088.com/w/images/8/83/Img_check4flick.png";
 
 	$pic_div = $(".photo-display-item[data-photo-id=" + img_id + "]"); //对象层
-	$img_a = $pic_div.find(".photo-click img")
+	$img = $pic_div.find(".photo-click img")
 
 	/** 开始处理图片被点击 **/
 	//NOTE:这里存在闭包吗-是的!属于上一级
 	//困扰:闭包什么时候会失去呢？整个堆栈回来完毕后吗
 	if (typeof($pic_div.attr("slboat_take_you")) == "undefined" || $pic_div.attr("slboat_take_you") != "true") { //字符串对比?
-		$img_a.css("opacity", 0.4); //图片透明化,操作A的透明
-		$img_a.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
-		$img_a.attr("title", "船长!不要它？");
+		$img.css("opacity", 0.4); //图片透明化,操作A的透明
+		$img.parent().css("background", "url(\"" + css_img_checkd + "\") center no-repeat"); //背景打钩
+		$img.attr("title", "船长!不要它？");
 		$pic_div.attr("slboat_take_you", "true"); //写入标记
 		if (need_say) {
 			tips.says("咋门又选择了一个家伙!");
 		}
 	} else { //取消选中-尽可能还原现场
-		$img_a.css("opacity", ""); //取消透明
-		$img_a.parent().css("background", ""); //取消背景
-		$img_a.attr("title", "船长!要回它？");
+		$img.css("opacity", ""); //取消透明
+		//需要还原现场...		
+		$img.parent().css("background", ""); //取消背景
+		//todo:改成带有标签?
+		$img.attr("title", "船长!要回它？"); 
 		$pic_div.attr("slboat_take_you", "false"); //标记无
 		if (need_say) {
 			tips.says("咋门又清掉了一个家伙!");
