@@ -72,6 +72,23 @@ function REDONE_ALL_PAGE() {
 	//tips.count_die(); //结束数数
 }
 
+/* 让全部公开的消失掉咯 */
+
+function HIDDEN_ALL_PUBLIC() {
+	//切换,切换的发生,需要让切换的方式...
+	var hidden_guy = $(".play:contains('已公开')").parents(".photo-display-item:not([style*=display][style*=none])");
+
+	if (hidden_guy.length > 0) {
+		tips.says("隐藏公开玩意!")
+		/* 去除公开 */
+		$(".play:contains('已公开')").parents(".photo-display-item").css("display", "none")
+	} else {
+		tips.says("显示公开玩意!");
+		//需要确保一致的公开字符串哦
+		$(".play:contains('已公开')").parents(".photo-display-item").css("display", "")
+	}
+}
+
 //TODO:如果hook失败,那么可以墨水按钮按下去的时候再次Hook,听起来如何
 //CRAZY:或许给body一个hook,然后匹配两个hook是否一致？
 //NOW:使用photo-list-holder这里挂钩,看起来好多了!
@@ -579,7 +596,7 @@ function switch_check(img_id, need_say) {
 		//需要还原现场...		
 		$img.parent().css("background", ""); //取消背景
 		//todo:改成带有标签?
-		$img.attr("title", "船长!要回它？"); 
+		$img.attr("title", "船长!要回它？");
 		$pic_div.attr("slboat_take_you", "false"); //标记无
 		if (need_say) {
 			tips.says("咋门又清掉了一个家伙!");
@@ -696,6 +713,11 @@ function flickr_chk_hotkey_bind() {
 
 	/* 再次刷新显示 -q */
 	$(document).bind("keydown", "q", REDONE_ALL_PAGE);
+
+	/* hidden all public 
+	 * 看起来只隐藏了,不切换噢
+	 */
+	$(document).bind("keydown", "h", HIDDEN_ALL_PUBLIC)
 
 }
 
