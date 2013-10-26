@@ -248,8 +248,16 @@ function Flickr_pics_SetUP_hook() {
 		return false;
 	});
 
+	//确定绑定辅助键
+	var bind_shift_key;
+	if (navigator.platform == "MacIntel") {
+		bind_shift_key = "meta+"; //mac 使用command键
+	} else {
+		bind_shift_key = "ctrl+"; //mac 使用command键	
+	};
+
 	//游览之车开始了...前游览
-	$(".comments-popover,#message").bind("keydown", "ctrl+left", function() {
+	$(".comments-popover,#message").bind("keydown", bind_shift_key + "left", function() {
 		/* 域描述 
 		 * 在这里 $pic_div = $(this).parents(".photo-display-item") 是父级的对话框
 		 * $pic_div.find(".comments-icon img") 是父级别的点击对话框
@@ -276,7 +284,7 @@ function Flickr_pics_SetUP_hook() {
 		return false;
 	});
 	//后游览
-	$(".comments-popover,#message").bind("keydown", "ctrl+right", function() {
+	$(".comments-popover,#message").bind("keydown", bind_shift_key + "right", function() {
 		//找到父级图
 		var $pic_div = $(this).parents(".photo-display-item");
 		//找到自己的序号
