@@ -135,7 +135,7 @@ function Flickr_pics_SetUP_hook() {
 
 	if ($(".comment-button-desc").length > 0) return false; //已经添加过了,再见
 
-	tips.says("船长!评论已换上我们的人!")
+	tips.says("船长!描述框待命!")
 	//TODO:用函数包装
 	Note.work_title_str = ""; //清空尾部字串
 
@@ -186,23 +186,29 @@ function Flickr_pics_SetUP_hook() {
 			Note.SetNote("嘿!船长!检查完毕!这玩意还未描述呢!");
 		}
 	}); //处理完毕拉回信息
+	/* 发出描述信息 */
 
-	//确保按钮管用
-	$(".comment-button-desc").click(function() {
+	var diag_send_out_desc = function(callback) {
 		Note.SetNoteClor("grey"); //灰色开始
 		//console.log('hi,you press me'); //TEMP:临时的问号
 		Note.SetNote("是,船长,收到描述提交请求...");
 		//获取最新的标记
 		descnote = $.trim(Note.GetDesc());
 		//构建写入...
-		if (id != "" && descnote != "") {
+		//TODO:一样的话不写入
+		if (id != "" && descnote != "" && desc_orgin != Note.GetDesc()) {
 			Note.SetNote("吔吼!一切就绪,正在送往Flickr那家伙...")
 			call_flickr_api_setmete(id, title, descnote, function(res) {
 				if (res.stat == "ok") {
 					Note.SetNoteClor("blue"); //蓝色
 					Note.SetNote("太棒了!船长!一切都送出去了!" + Note.wait_for_close + "秒后将自动关闭这里...");
 					Note.SetDone("已描", descnote); //设置描绘标记
-					close_timer_id = setTimeout(Note.CloseDiag, Note.wait_for_close * 1000); //等待几秒后完毕
+					if (typeof(callback) == "function") {
+						callback(true); //如果是函数的话进行呼叫
+						return true; //强制离开?可以直接callback跑走吗?
+					}
+					close_timer_id = setTimeout(Note.CloseDiag, Note.wait_for_close * 1000); //等待几秒后完毕	
+
 				} else {
 					Note.SetNoteClor("red"); //红色警告
 					Note.SetNote("见鬼的!船长!完蛋了!返回来:" + res.code + ":" + res.message)
@@ -213,22 +219,81 @@ function Flickr_pics_SetUP_hook() {
 		} else {
 			Note.SetNoteClor("red"); //红色警告
 			if (descnote == "") {
+				if (typeof(callback) == "function") { //强制跑走
+					callback(false);
+					return false;
+				}
 				Note.SetNote("见鬼船长,咋门得点描述信息进去才送出去嘛");
+
+			} else if (desc_orgin == Note.GetDesc()) {
+				if (typeof(callback) == "function") { //强制跑走
+					callback(false);
+					return false;
+				}
+				Note.SetNote("hmmm,看起来这里没有变化嘛");
 			} else {
 				Note.SetNote("见鬼船长,有些玩意是空的...啥玩意估计是ID这玩意");
 			}
 		}
+	};
 
-	});
-	//绑定Ctrl+回车键,或许只是回车键好了？
+	//确保按钮管用
+	$(".comment-button-desc").click(diag_send_out_desc);
+
+	//绑定回车键,只是回车键好了
 	$(".comments-popover,#message").bind("keydown", "return", function() {
-
 		//提交出去内容
 		$(".comment-button-desc").click();
 		//抛弃本次事件-不要产生回车键
 		return false;
 	});
 
+	//游览之车开始了...前游览
+	$(".comments-popover,#message").bind("keydown", "ctrl+left", function() {
+		/* 域描述 
+		 * 在这里 $pic_div = $(this).parents(".photo-display-item") 是父级的对话框
+		 * $pic_div.find(".comments-icon img") 是父级别的点击对话框
+		 */
+
+		/* TODO:这里可以用active来见擦汗效验..参考这个
+		 * <a title="描述信息:战斗.." href="#" class="rapidnofollow comments-icon comments-inline-btn active" id="yui_3_11_0_4_1382767821199_969"><img class="spaceball" width="12" height="12" src="/images/spaceball.gif"><span class="comment-count count">有描</span></a>
+		 */
+		//找到父级图
+		var $pic_div = $(this).parents(".photo-display-item");
+		//找到自己的序号
+		var me_index = find_id_index($pic_div.prop("id"));
+		//设置回调送出内容
+		diag_send_out_desc(function() { //找寻自己的前一个序号,似乎去到下一个了
+			if (me_index > 0) { //如果至少存在的话
+				Note.SetNoteClor("grey"); //红色警告
+				Note.SetNote("现在向前面游览而去...");
+				tips.says("向前开动一海里!");
+				$(".photo-display-item").eq(me_index - 1).find(".comments-icon img").click();
+			} //TODO:提醒无法游览
+		});
+
+		//抛弃本次事件-不要产生回车键
+		return false;
+	});
+	//后游览
+	$(".comments-popover,#message").bind("keydown", "ctrl+right", function() {
+		//找到父级图
+		var $pic_div = $(this).parents(".photo-display-item");
+		//找到自己的序号
+		var me_index = find_id_index($pic_div.prop("id"));
+		//设置回调送出内容
+		diag_send_out_desc(function() { //找寻自己的前一个序号,似乎去到下一个了
+			if (me_index < $(".photo-display-item").length) { //如果至少存在的话
+				Note.SetNoteClor("grey"); //红色警告
+				Note.SetNote("现在向后面游览而去...");
+				tips.says("向后开动一海里!");
+				$(".photo-display-item").eq(me_index + 1).find(".comments-icon img").click();
+			}
+		});
+
+		//抛弃本次事件-不要产生回车键
+		return false;
+	});
 	//绑定ESC键为关闭
 	$(".comments-popover,#message").bind("keydown", "esc", function() {
 		if (Note.GetDesc() == "" || desc_orgin == Note.GetDesc()) { //如果没有修改,抛弃
@@ -809,7 +874,8 @@ var tips = {
 		this.timerID_Tips = setInterval(function() {
 			//这里进入了一个新的变量域
 			if (window.i_count_now > 0) {
-				$("#tips_count").text("...有" + window.i_count_now + "秒了");
+				//TODO:展示为0:0x?
+				$("#tips_count").text(":" + window.i_count_now + "秒");
 			}
 			window.i_count_now++;
 		}, 1000)
@@ -827,4 +893,16 @@ var tips = {
 		//dom玩意强制重置
 		$("#tips_count").text(""); //清空计数器
 	}
-}
+};
+
+/* 寻找下一个图片id */
+
+function find_id_index(id) {
+	$photos = $(".photo-display-item")
+	for (var i = 0; i < $photos.length; i++) {
+		if ($photos.eq(i).prop("id") == id) {
+			return i; //返回id
+		}
+	}
+	return null; //不存在
+};
