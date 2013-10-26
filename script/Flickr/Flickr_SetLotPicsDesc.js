@@ -413,11 +413,11 @@ var pic_Desc = {
  */
 
 function Scan_All_Pics_For_Desc(max_pics) {
-	tips.count("开始扫描所有图片的状态")
+	tips.count("扫描见识状态")
 	call_flickr_api_getnewphoto(max_pics, function(res) {
 		if (res.stat = "ok") {
 			if (res.photos.total > 0) { //至少有一个
-				tips.justsays("服务器拉回来了" + res.photos.total + "个状态")
+				tips.justsays("拉回了" + res.photos.total + "个状态")
 				var mathc_pic = 0; //匹配了几个
 				//TODO 检查是否有photos
 				res.photos.photo.every(function(api_photo) { //开始遍历
@@ -445,7 +445,8 @@ function Scan_All_Pics_For_Desc(max_pics) {
 					}
 					return true;
 				}) // <--遍历每一个id结束
-				tips.justsays("共处理了" + mathc_pic + "个匹配的家伙")
+				//todo:显示一次性共多少?检查完成了多少?
+				tips.justsays("共" + mathc_pic + "个被处理完")
 				tips.count_die();
 				//console.log("船长!一次性API匹配了" + mathc_pic + "个请求");
 			}
