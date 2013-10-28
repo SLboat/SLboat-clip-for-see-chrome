@@ -111,7 +111,7 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	var Requst_url = "?method=flickr.photos.search"; //基础搭建
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
 	Requst_url += "&user_id=" + user_id; //用户ID，减少数量
-	Requst_url += "&tags=" + search_tag; //搜索标签，将来要变成utf8的
+	Requst_url += "&tags=" + encodeURIComponent(search_tag); //搜索标签，将来要变成utf8的
 	
 	//强制逆序...这里或许可以取代后面的转录逆序
 	/* 一种后逆序的处理或许是 
@@ -124,7 +124,7 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	//加个签名信息试试
 	Requst_url += "&auth_token=" + flickr_api_key.auth_token
 	//看起来还需要公共密匙用来计算MD5
-	Requst_url += "&api_sig=" + get_api_sig(flickr_api_key.secret_key, Requst_url); //算出来这该死的玩意
+	Requst_url += "&api_sig=" + get_api_sig_unpackUTF(flickr_api_key.secret_key, Requst_url); //算出来这该死的玩意
 
 	Requst_url = base_url + Requst_url; //组合成呼叫url
 

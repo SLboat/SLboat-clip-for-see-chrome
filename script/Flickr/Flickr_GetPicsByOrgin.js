@@ -324,7 +324,7 @@ function get_in_tags(tags, selct_tag_str) {
 	var match_tag = null; //匹配的标记
 	var match_times = 0; //匹配次数
 	//清理空白格
-	selct_tag_str = $.trim(selct_tag_str);
+	selct_tag_str = escape_from_regexp($.trim(selct_tag_str));
 
 	if (selct_tag_str == "") {
 		return false; //直接完毕
@@ -658,3 +658,13 @@ function sendMessage_to_Findex(message) {
 		message: message, //消息内容-目前没有参数,只有一个函数
 	})
 }
+
+/* 模式子串逃跑函数
+  * 作用：让模式子串的样子串变得可以随意被search等强制模式的函数认识
+  * 试试看：escape_from_regexp("[s")
+  * 可用性："[sssa".search(escape_from_regexp("[ss"))
+  * 参考自 http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+  */
+escape_from_regexp = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+};
