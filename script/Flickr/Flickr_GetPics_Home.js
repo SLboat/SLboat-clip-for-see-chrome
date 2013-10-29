@@ -305,7 +305,7 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 	} else if (request.method == "aMessage_form_Forgin") { //收到了一条来自管理页面的消息
 		/* 消息内容是 request.message */
 		aMessage_form_Forgin(request.message); //让下面的去处理
-		
+
 	}
 
 });
@@ -453,7 +453,8 @@ function mov_flickr_url(org_url, org_link) {
 
 function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 	var txt_out = ""; //输出的临时变量
-	var null_str_alt = "SLboat Seeing..."; //null的替换标题文字
+	var null_str_alt = ""; //null的替换标题文字,赋空,而不是SLboat Seeing...
+	var str_alt_tag = ""; //最终标题
 
 	if (!no_url_work) //如果指定不处理，那就不处理了，转录图片大小
 	{
@@ -471,7 +472,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		if (typeof(desc) != "undefined" && desc != "") //有备注
 		{
 			descstr = ' desc=\"' + desc + '\" ';
-			desc_thing = "，带有描述信息: " + desc; //添加描述信息的标记在这里
+			desc_thing = ",包含描述: " + desc; //添加描述信息的标记在这里
 		}
 		//这是匹配模式工厂
 		var patern_url_id = /.+\/(.+?)_.+(?=_.+)?\./; //匹配的URL ID
@@ -486,6 +487,7 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		//检查是否没有标题信息
 		if (str_alt == null) {
 			str_alt = null_str_alt; //默认的标题信息
+			str_alt_tag = ''; //它的完整标签
 		} else { //有标题信息那就再写入一些
 			var match_alt_patern = /(.+)\..+/; //匹配文件切割的规则
 			var alt_name = " " + str_alt + ""; //默认的标题信息-原始
@@ -497,10 +499,11 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 				alt_name += "(全名:" + " " + str_alt + " " + ")"; //最终拼合，需要很多空格
 			}
 			//注释加上些标记，alt信息咯，切分后缀？
-			txt_out += "<!-- 来自图片文件:" + alt_name + " 的Flickr标记" + desc_thing + " -->"; //去掉分号，确保空格，检索的关键-这是英文
+			txt_out += "<!-- 图片标题: " + alt_name + " " + desc_thing + " -->"; //去掉分号，确保空格，检索的关键-这是英文
+			str_alt_tag = ' alt=\"' + str_alt + '\"'; //它的完整标签
 		}
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">，修理被引用问题，还是去空格的好
-		txt_out += '<flickr alt=\"' + str_alt + '\" id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '> '; //标记所有的一切
+		txt_out += '<flickr' + str_alt_tag + ' id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '> '; //标记所有的一切
 		//看看是否增加ID
 		if (flickr_id != null) //检测是否有ID，最好必须有个这样的玩意
 		{

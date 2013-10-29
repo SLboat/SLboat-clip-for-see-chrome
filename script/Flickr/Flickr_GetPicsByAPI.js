@@ -112,12 +112,16 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
 	Requst_url += "&user_id=" + user_id; //用户ID，减少数量
 	Requst_url += "&tags=" + encodeURIComponent(search_tag); //搜索标签，将来要变成utf8的
-	
+
 	//强制逆序...这里或许可以取代后面的转录逆序
 	/* 一种后逆序的处理或许是 
 	 * date.photos.photo.sort(function(a,b){return a.title > b.title ? -1 : 1;})
 	 */
-	Requst_url += "&sort=" + "date-taken-desc"; //根据拍摄时间逆序,不确定这会带来什么后果
+	if (get_flickr_order_pos()) { //逆序,通常与显示相反
+		Requst_url += "&sort=" + "date-taken-desc"; //根据拍摄时间逆序,不确定这会带来什么后果
+	} else { //顺序,与显示相反...显示新的在前面
+		Requst_url += "&sort=" + "date-taken-asc"; //根据拍摄时间逆序,不确定这会带来什么后果
+	}
 
 	Requst_url += "&extras=url_c,url_z,owner_name,description&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
 
@@ -193,7 +197,8 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		}
 		//遍历中的任何一项
 		imgcont = render_per_link(img_link, url_link, alt_str, true, desc); //出来一条了
-		txtcont = flickr_order_pics(txtcont, imgcont); //拼合-根据顺序
+		//txtcont = flickr_order_pics(txtcont, imgcont); //拼合-根据顺序
+		txtcont += imgcont; //在这里顺序已经交给api去做了
 	}
 	//管理页面后续
 	if (is_inOrganize) {
