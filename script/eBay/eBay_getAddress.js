@@ -183,6 +183,7 @@ Country_full = {
 	ZW: "Zimbabwe",
 	ZR: "Zaire",
 	ZM: "Zambia",
+	HR: "Croatia",
 }
 //国家代号对应中文
 var CountryCode_CN = {
@@ -368,7 +369,8 @@ var CountryCode_CN = {
 	YU: "南斯拉夫",
 	ZW: "津巴布韦",
 	ZR: "扎伊尔",
-	ZM: "赞比亚"
+	ZM: "赞比亚",
+	HR: "克罗地亚",
 };
 
 /* 这里试图获取eBay的地址信息 */
