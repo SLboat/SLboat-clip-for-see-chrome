@@ -71,7 +71,8 @@ function ref_name_str() {
 	var now = new Date();
 	var datastr = now.getFullYear().toString().slice(-2) + ("0" + (now.getMonth() + 1)).slice(-2) + ("0" + now.getDate()).slice(-2);
 	var timestr = ("0" + now.getHours()).slice(-2) + ("0" + now.getMinutes()).slice(-2) + ("0" + now.getSeconds()).slice(-2);
-	return "\"" + "Seeing@" + datastr + "_" + timestr + "\""
+	//最终渲染输出
+	return "\"" + "seeing@" + datastr + "_" + timestr + "\""
 }
 
 /* 反注释替换字符的怪异字符
