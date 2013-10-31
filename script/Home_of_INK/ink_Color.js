@@ -28,7 +28,8 @@ function ink_color(ink_box) {
 		{
 			return ink_box.text; //只返回一些玩意
 		}
-		// 没有回头的路，是的
+		//没有回头的路，是的
+		/* 注意!航海见识扩展按钮的源码非常依赖这里的一致化,所以改变务必注意它的影响 */
 		//处理标题加上标志 -- 这玩意是如此的简单
 		style_txt = "===%title%<sup> 沿途见识</sup><ref name=%refname%>[%url% %title%], 见识于" + get_time_str() + "</ref>===";
 		style_txt += "%br%"; //先换一行
@@ -72,7 +73,7 @@ function ref_name_str() {
 	var datastr = now.getFullYear().toString().slice(-2) + ("0" + (now.getMonth() + 1)).slice(-2) + ("0" + now.getDate()).slice(-2);
 	var timestr = ("0" + now.getHours()).slice(-2) + ("0" + now.getMinutes()).slice(-2) + ("0" + now.getSeconds()).slice(-2);
 	//最终渲染输出
-	return "\"" + "seeing@" + datastr + "_" + timestr + "\""
+	return "\"" + "seeing_" + datastr + "_" + timestr + "\""
 }
 
 /* 反注释替换字符的怪异字符
