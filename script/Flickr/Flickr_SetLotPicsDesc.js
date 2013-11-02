@@ -253,7 +253,7 @@ function Flickr_pics_SetUP_hook() {
 	if (navigator.platform == "MacIntel") {
 		bind_shift_key = "meta+"; //mac 使用command键
 	} else {
-		bind_shift_key = "ctrl+"; //mac 使用command键	
+		bind_shift_key = "ctrl+"; //win 使用ctrl键
 	};
 
 	//游览之车开始了...前游览
