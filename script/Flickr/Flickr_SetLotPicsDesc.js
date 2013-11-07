@@ -357,6 +357,7 @@ var Note = {
 		$(pics).find(".comment-count").text(donestr);
 		if (typeof(desc) == "string" && desc != "") {
 			$(pics).find(".comments-icon").attr("title", "描述信息:" + desc);
+			$(pics).find("#common_info").text(desc); //写入描述
 		}
 	},
 	/* 设置状态的颜色 */
@@ -425,6 +426,7 @@ var pic_Desc = {
 		//设置有标记
 		$pics.find(".comment-count").text("抛锚");
 		$pics.find(".comments-icon").attr("title", "描述信息:" + desc);
+		$pics.find("#common_info").text(desc); //写入描述
 		return true;
 	},
 	//制造变成灰色,不考虑返回
@@ -458,6 +460,7 @@ var pic_Desc = {
 		//清理,清理
 		$pics.find(".comment-count").text("");
 		$pics.find(".comments-icon").attr("title", "");
+		$pics.find("#common_info").text("未描述");
 
 		//清空CSS
 		$pics.find("span.photo_container").css({
@@ -630,9 +633,14 @@ function HOOK_FOR_PIC_CAN_CHECKED() {
 		$img_a.removeAttr("data-track"); //自带的跟踪属性清理,防止冒泡
 		$img_a.attr("title", "船长!选了它？");
 		/* 注入一个div描述 */
-		if ($img_a.find("div.take_state").length == 0) {
+		//TODO:用ID代替
+		if ($img_a.find("div.take_state").length === 0) {
 			$pic_div.find(".play").after('<div style="top: 10%; font-size: 3em;position: absolute;left: 0;right: 0;color: #009C13;" class="take_state">[-]</div>')
-		}
+		};
+		/* 注入一个具体描述内容 */
+		if ($img_a.find("div#common_show").length === 0) {
+			$pic_div.find(".play").after('<div id="common_show" style="position: absolute;bottom: 25%;right: 2%;color: yellow;font-size: 100%;">描述:<span id="common_info" style="border: 1px  rgb(0, 187, 112);border-bottom-style: dashed;border-right-style: dashed;">未发现</span></div>')
+		};
 
 		/* 绑定新的点击事件 */
 		$img_a.click(function() {
