@@ -2,7 +2,7 @@ var default_link_for_token = "http://www.flickr.com/auth-72157633098872233"; //A
 
 function init() {
 	//可以工作
-	Load_Setting()
+	Load_Setting();
 }
 
 //载入设置
