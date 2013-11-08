@@ -117,9 +117,9 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	/* 一种后逆序的处理或许是 
 	 * date.photos.photo.sort(function(a,b){return a.title > b.title ? -1 : 1;})
 	 */
-	if (get_flickr_order_pos()) { //逆序,通常与显示相反
+	if (!get_flickr_order_pos()) { //正序,从小到大
 		Requst_url += "&sort=" + "date-taken-desc"; //根据拍摄时间逆序,不确定这会带来什么后果
-	} else { //顺序,与显示相反...显示新的在前面
+	} else { //逆序,与显示相反...显示新的在前面
 		Requst_url += "&sort=" + "date-taken-asc"; //根据拍摄时间逆序,不确定这会带来什么后果
 	}
 
