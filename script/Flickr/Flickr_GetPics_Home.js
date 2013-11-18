@@ -339,7 +339,7 @@ function get_start_html(page_info) {
 	//最初标头
 	var str_start = "<!-- 来自：[" + page_info.txtTitle + "] -->\r\n";
 	//一个链接记录下来，缩进看起来是破坏了大空格
-	str_start += ":<!-- 来自链接：[" + page_info.txtUrl + "]) -->\r\n";
+	str_start += ":<!-- 来自链接：[" + page_info.txtUrl + "] -->\r\n";
 	if (need_div) //如果需要div
 	{
 		str_start += "<div id=\"slboat_flickr_pics\">"; //默认关闭div
