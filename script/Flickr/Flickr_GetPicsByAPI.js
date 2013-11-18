@@ -203,7 +203,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 	//管理页面后续
 	if (is_inOrganize) {
 		page_info = {
-			txtTitle: "来自管理页获取的标签：" + search_tag, //获取标题
+			txtTitle: "管理页获取的标签：" + search_tag, //获取标题
 			txtUrl: "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/tags/" + search_tag //获得URL
 		}
 		//如果是管理页面，告诉完成事情
