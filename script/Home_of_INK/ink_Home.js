@@ -172,14 +172,22 @@ function ink_add(ink, title, url, copy_type, tab) {
 			text: ink,
 			title: title,
 			url: url
-		});
+		}, "whiteink"); //默认的玩意哈!
 	} else if (ink_type == "ink_slboat") {
 		ink_box_Play(true); //播放动画由这里开始
 
 		//森亮号墨水，只有文本
 		result = ink;
-	}
-
+	} else if (ink_type == "ink_interwiki") { //公共的wiki页面
+		ink_box_Play(true); //播放动画由这里开始
+		
+		//格式化文本-得到最终玩意
+		result = ink_color({
+			text: ink,
+			title: title,
+			url: url,
+		}, "interwiki"); //渲染结束了,也..
+	};
 	//给本地保存一份，作用是啥子呢-将来注入墨水
 	localStorage.content = result;
 

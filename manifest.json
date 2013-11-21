@@ -9,7 +9,7 @@
 	},
 	"content_scripts": [{
 			"matches": ["http://*/*", "https://*/*"],
-			"exclude_globs": ["http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*", "http://vod.ebay.com/vod/FetchOrderDetails*"],
+			"exclude_globs": ["http://www.mediawiki.org/wiki/*", "http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*", "http://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/INK/INK_GetSel_Home.js"],
 			"run_at": "document_end"
 		}, {
@@ -34,6 +34,10 @@
 			"js": ["./script/INK/INK_Set.js"],
 			"run_at": "document_end"
 		}, {
+			"matches": ["http://www.mediawiki.org/wiki/*"],
+			"js": ["./script/Lib/jquery.min.js", "./script/INK/INK_GetSel4interWiki.js"],
+			"run_at": "document_end"
+		}, {
 			"matches": ["http://see.sl088.com/wiki/*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/INK/INK_GetSel4See.js"],
 			"run_at": "document_start"
@@ -41,7 +45,7 @@
 			"matches": ["http://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_GetAddress.js"],
 			"run_at": "document_start"
-		},{
+		}, {
 			"matches": ["http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_SetTrackNumber.js"],
 			"run_at": "document_end"
@@ -71,7 +75,7 @@
 	],
 	"homepage_url": "http://see.sl088.com",
 	"manifest_version": 2,
-	"version": "3.11.18",
+	"version": "3.11.21",
 	"minimum_chrome_version": "25",
 	"key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgo5I4RXgBsPcyrQXo+8Xig0apDkNSj9wRxRiVMfSabFYj1p/dZFLATuqM0VPflzLrC6Z+kzTHoJ2sdEeWovDDKhElpkok2u88MdXwEhxw/uCG247o3gh/uJwANWPlaX3YQYSvmG6WU3eDipLpD+Q0tfyxoEHto7czcZPlvppQbwIDAQAB"
 

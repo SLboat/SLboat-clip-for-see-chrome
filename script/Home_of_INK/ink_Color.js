@@ -5,9 +5,10 @@
 //--------------------------
 //传入了ink，title，url，在这里处理
 
-function ink_color(ink_box) {
+function ink_color(ink_box, type) {
 	var textout; //输出变量
 	var style_txt; //风格字串
+	type = type || "whiteink"; //默认是白色墨水:)
 
 	if (get_ink_for() == "alex") {
 		style_txt = "[color=grey]沿途见识：[/color]%br%";
@@ -31,7 +32,11 @@ function ink_color(ink_box) {
 		//没有回头的路，是的
 		/* 注意!航海见识扩展按钮的源码非常依赖这里的一致化,所以改变务必注意它的影响 */
 		//处理标题加上标志 -- 这玩意是如此的简单
-		style_txt = "===%title%<sup> 沿途见识</sup><ref name=%refname%>[%url% %title%], 见识于" + get_time_str() + "</ref>===";
+		if (type=="whiteink"){
+			style_txt = "===%title%<sup> 沿途见识</sup><ref name=%refname%>[%url% %title%], 见识于" + get_time_str() + "</ref>===";
+		}else if (type == "interwiki"){ //公共wiki
+			style_txt = "===%title%<sup> 沿途见识</sup><ref name=%refname%>[[%url%]], 见识于" + get_time_str() + "</ref>===";
+		};
 		style_txt += "%br%"; //先换一行
 		style_txt += "<poem>%br%%ink%%br%</poem>";
 		style_txt += "%br%"; //再一个换行
