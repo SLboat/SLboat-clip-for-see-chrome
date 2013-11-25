@@ -184,9 +184,6 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		var pics = pics_json.photos.photo[pics_check];
 		var img_link = pics.url_c || pics.url_z; //自动生成的图片链接，这里就先考虑c
 		var desc = "";
-		if (typeof(url_link) == "undefined") {
-			var img_link = pics.url_z; //没有大尺寸的时候，就用z好了
-		}
 		//只获取最后一次管它呢
 		picownername = pics.ownername.toLowerCase();
 		var url_link = "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/" + pics.id; //获得点击的连接，用户名和ID拼凑
