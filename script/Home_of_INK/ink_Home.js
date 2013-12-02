@@ -180,7 +180,7 @@ function ink_add(ink, title, url, copy_type, tab) {
 		result = ink;
 	} else if (ink_type == "ink_interwiki") { //公共的wiki页面
 		ink_box_Play(true); //播放动画由这里开始
-		
+
 		//格式化文本-得到最终玩意
 		result = ink_color({
 			text: ink,
@@ -477,6 +477,12 @@ function copy_text(text) {
 
 function get_ink() {
 	return document.getElementById('inkstand').value; //不需要使用jQuery
+}
+
+/* 送入墨水 */
+
+function set_ink(ink) {
+	document.getElementById('inkstand').value = ink; //不需要使用jQuery
 }
 
 /* 封装成一个墨水类？ */
