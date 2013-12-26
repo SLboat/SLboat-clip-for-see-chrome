@@ -17,6 +17,7 @@ chrome.runtime.onMessageExternal.addListener(
 			return false;
 		};
 		if (ask.want == "墨水瓶") { //需要放置墨水,好的
+			clear_ink(); //先清空墨水
 			ink_add(ask.ink, "", "", {
 				type: "ink_slboat"
 			});
