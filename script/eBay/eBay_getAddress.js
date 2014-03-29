@@ -12,6 +12,7 @@ Country_full = {
 	AU: "Australia",
 	AT: "Austria",
 	AZ: "Azerbaijan",
+	BA: "Bosnia and Herzegovina",
 	BS: "Bahamas",
 	BH: "Bahrain",
 	BD: "Bangladesh",
@@ -199,6 +200,7 @@ var CountryCode_CN = {
 	AU: "澳大利亚",
 	AT: "奥地利",
 	AZ: "阿塞拜疆",
+	BA: "波斯尼亚黑塞哥维那", //2014-1-5意外发现	
 	BS: "巴哈马",
 	BH: "巴林",
 	BD: "孟加拉国",
