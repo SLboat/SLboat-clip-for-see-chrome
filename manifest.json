@@ -9,24 +9,24 @@
 	},
 	"content_scripts": [{
 			"matches": ["http://*/*", "https://*/*"],
-			"exclude_globs": ["http://www.mediawiki.org/wiki/*", "http://www.flickr.com/*", "https://www.flickr.com/*", "http://see.sl088.com/wiki/*", "http://vod.ebay.com/vod/FetchOrderDetails*"],
+			"exclude_globs": ["*://www.mediawiki.org/wiki/*", "*://www.flickr.com/*",  "http://see.sl088.com/wiki/*", "*://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/INK/INK_GetSel_Home.js"],
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://developer.apple.com/*", "https://developer.apple.com/*"],
+			"matches": ["*://developer.apple.com/*"],
 			"js": ["./script/INK/INK_GetSel_Home.js"],
 			"all_frames": true,
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://www.flickr.com/*", "https://www.flickr.com/*"],
+			"matches": ["*://www.flickr.com/*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/Flickr/Flickr_GetPics_Home.js", "./script/Flickr/Flickr_GetPicsByAPI.js", "./script/Lib/webtoolkit.md5.js"],
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://www.flickr.com/photos/organize*"],
+			"matches": ["*://www.flickr.com/photos/organize*"],
 			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_GetPicsByOrgin.js"],
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://www.flickr.com/photos/slboat/*"],
+			"matches": ["*://www.flickr.com/photos/slboat/*"],
 			"js": ["./script/Lib/jquery.hotkeys.js", "./script/Flickr/Flickr_Set1PicDesc.js", "./script/Flickr/Flickr_SetLotPicsDesc.js"],
 			"run_at": "document_end"
 		}, {
@@ -34,7 +34,7 @@
 			"js": ["./script/INK/INK_Set.js"],
 			"run_at": "document_end"
 		}, {
-			"matches": ["http://www.mediawiki.org/wiki/*"],
+			"matches": ["*://www.mediawiki.org/wiki/*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/INK/INK_GetSel4interWiki.js"],
 			"run_at": "document_end"
 		}, {
@@ -42,11 +42,11 @@
 			"js": ["./script/Lib/jquery.min.js", "./script/INK/INK_GetSel4See.js"],
 			"run_at": "document_start"
 		}, {
-			"matches": ["http://vod.ebay.com/vod/FetchOrderDetails*"],
+			"matches": ["*://vod.ebay.com/vod/FetchOrderDetails*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_GetAddress.js"],
 			"run_at": "document_start"
 		}, {
-			"matches": ["http://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
+			"matches": ["*://payments.ebay.com/ws/eBayISAPI.dll?AddTrackingNumber*"],
 			"js": ["./script/Lib/jquery.min.js", "./script/eBay/eBay_SetTrackNumber.js"],
 			"run_at": "document_end"
 		}
