@@ -569,7 +569,7 @@ function get_flickr_order_pos() {
 //TODO:支持:http://www.flickr.com/photos/slboat/page1/
 
 function am_i_index() {
-	var chk_flickr_all = window.location.href.match(/http:\/\/www\.flickr\.com\/photos\/slboat(.*)/);
+	var chk_flickr_all = window.location.href.match(/https?:\/\/www\.flickr\.com\/photos\/slboat(.*)/);
 	if (chk_flickr_all) {
 		if (chk_flickr_all[1] == "" || chk_flickr_all[1] == "/" ||
 			chk_flickr_all[1].match(/^\/with\//) || chk_flickr_all[1].match(/^\/page\d/)) {
