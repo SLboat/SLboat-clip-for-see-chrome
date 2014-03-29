@@ -45,6 +45,11 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 
 	var tag = ""; //默认的标记获得物
 
+	/* 在单页的吸取里,如果吸取带有标题和结尾,那有时候太糟糕了
+	 * 那么这里就舍弃一些它的存在
+	 */
+	var is_pure_render = false; //纯粹的输出,不要头和尾巴,最初用在单页上
+
 	//获得标头
 	var str_start = get_start_html();
 
@@ -150,8 +155,7 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 	if (!flag_light_box && catch_them.length == 0) { //如果还是啥也没有
 		//不属于标签页、不属于相册页
 		//尝试单页，灯箱页也会存在单页，这里单页做最后处理
-		if ($(Ident_single_page)
-			.length > 0) //有至少一个单页标签，一般也只有一个
+		if ($(Ident_single_page).length > 0) //有至少一个单页标签，一般也只有一个
 		{
 			var img_src = $(Ident_single_page_info.small_box_pic)
 				.prop("src");
@@ -193,6 +197,8 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 			//最后渲染
 			txtcont = flickr_order_pics(txtcont, imgcont); //要处理后面那个
 			pic_num++; //递加图片数量1
+
+			is_pure_render = true; //纯粹的输出,不要太多该死的玩意儿
 		}
 	}
 
@@ -203,8 +209,12 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 
 	//如果得到了一些东西
 	if (txtcont != "") {
-		//拼合一切
-		flickr_txt = render_final_text(str_start, txtcont, str_end)
+		if (is_pure_render) { //只要的嵌套里面的!看起来一点也不会不合法
+			flickr_txt = txtcont; //只是内容罢了...
+		} else {
+			//拼合一切
+			flickr_txt = render_final_text(str_start, txtcont, str_end);
+		}
 	}
 
 	//返回一个调试信息
