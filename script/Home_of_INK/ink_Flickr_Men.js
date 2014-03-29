@@ -41,7 +41,7 @@ function chrome_check_tabid(tabid, callback) {
 
 function get_orgin_tabid(callback) {
 	//匹配的地址咯
-	var tab_match_patern = "http://www.flickr.com/photos/organize";
+	var tab_match_patern = "https://www.flickr.com/photos/organize";
 
 	chrome.tabs.query({
 		url: tab_match_patern
