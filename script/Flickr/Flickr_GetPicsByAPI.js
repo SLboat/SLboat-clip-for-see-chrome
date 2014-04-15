@@ -106,7 +106,7 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	/* 本次赋值 */
 	var user_id = "me"; //用户名编号，用来减少搜索范围，但是锁定用户对象
 	//var search_tag = "macbook"; //搜索标签内容
-	var base_url = "http://api.flickr.com/services/rest/";
+	var base_url = "https://api.flickr.com/services/rest/";
 
 	var Requst_url = "?method=flickr.photos.search"; //基础搭建
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
@@ -245,7 +245,7 @@ function call_flickr_api_setpublic(photo_id, callback) {
 	if (photo_id == "") return false; //如果没有一点有用的东西，那则全部抛弃
 
 	/* 基础地址 */
-	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+	var base_url = "https://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
 
 	var Requst_url = "?method=" + "flickr.photos.setPerms"; //基础搭建，需要的方法
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
@@ -301,7 +301,7 @@ function call_flickr_api_setmete(photo_id, title, description, callback) {
 	if (photo_id == "" || description == "") return false; //如果没有一点有用的东西，那则全部抛弃
 
 	/* 基础地址 */
-	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+	var base_url = "https://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
 
 	var Requst_url = "?method=flickr.photos.setMeta"; //基础搭建，需要的方法
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
@@ -359,7 +359,7 @@ function call_flickr_api_getinfo(photo_id, Take_Back) {
 		return false; //返回
 	}
 	/* 基础地址 */
-	var base_url = "http://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
+	var base_url = "https://api.flickr.com/services/rest/"; //TODO:移入公共的里面去
 
 	var Requst_url = "?method=flickr.photos.getInfo"; //基础搭建，需要的方法
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点
@@ -435,7 +435,7 @@ function call_flickr_api_getnewphoto(max_pics, callback) {
 	/* 本次赋值 */
 	var user_id = "me"; //用户名编号，用来减少搜索范围，但是锁定用户对象
 
-	var base_url = "http://api.flickr.com/services/rest/";
+	var base_url = "https://api.flickr.com/services/rest/";
 
 	var Requst_url = "?method=flickr.photos.search"; //基础搭建
 	Requst_url += "&api_key=" + flickr_api_key.api_key; //这样拼看起来好看点

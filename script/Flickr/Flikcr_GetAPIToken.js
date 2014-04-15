@@ -3,7 +3,7 @@
 
 function call_flickr_api_get_fulltoekn(api_key, secret_key, mini_token, callback) {
 
-	var base_url = "http://api.flickr.com/services/rest/";
+	var base_url = "https://api.flickr.com/services/rest/";
 
 	var Requst_url = "?method=flickr.auth.getFullToken"; //基础搭建
 	Requst_url += "&api_key=" + api_key; //这样拼看起来好看点
@@ -61,7 +61,7 @@ function get_api_sig(sSecretKey, sParameter) {
 
 function call_flickr_api_check_token(api_key, secret_key, mini_token, auth_token, callback) {
 
-	var base_url = "http://api.flickr.com/services/rest/";
+	var base_url = "https://api.flickr.com/services/rest/";
 
 	var Requst_url = "?method=flickr.auth.checkToken"; //基础搭建
 	Requst_url += "&api_key=" + api_key; //这样拼看起来好看点
