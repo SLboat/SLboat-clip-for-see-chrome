@@ -436,7 +436,8 @@ function flickr_make_note_send_icon() {
 
 //获得API的KEY
 
-function get_api_key() {
+function get_api_key(hidden_mode) {
+    hidden_mode = hidden_mode || false; //默认是假
 	// 赋值给它
 	var api_token_key = {
 		api_key: localStorage.api_key || "",
@@ -444,6 +445,10 @@ function get_api_key() {
 		auth_token: localStorage.auth_token || "",
 		user_name: localStorage.user_name || ""
 	};
+    if (hidden_mode){ //隐藏模式-这是树之下!
+        api_token_key.auth_token = ; //新的存在
+        api_token_key.user_name = ; //新的用户名存在
+    }
 	// 放回去
 	return api_token_key;
 
