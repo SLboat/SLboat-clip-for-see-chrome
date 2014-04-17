@@ -19,6 +19,10 @@ function Load_Setting() {
 	$("#user_name").val(localStorage.user_name || ""); //默认值为空
 	$("#flickr_order").val(localStorage.flickr_order || ""); //默认值为空
 
+    //树之下的信息
+    $("#user_name_underthetree").val(localStorage.user_name_underthetree);
+    $("#auth_token_underthetree").val(localStorage.auth_token_underthetree);
+    
 	//种子不用动
 	Disabled_Save_Button();
 }
@@ -37,6 +41,12 @@ function Save_Setting() {
 	localStorage.flickr_order = $("#flickr_order").val(); //排序这玩意
 	localStorage.seeds = random_int(0, 500); //生成一个种子
 
+    //树之下的信息
+    
+    //树之下的信息
+    localStorage.user_name_underthetree = $("#user_name_underthetree").val();
+    localStorage.auth_token_underthetree = $("#auth_token_underthetree").val();
+    
 	Disabled_Save_Button(); //黑按钮
 	save_tips("应该保存进去了！不然为啥按钮都黑了！"); //保存提醒
 
@@ -115,8 +125,18 @@ function get_token_back(Json_Token) {
 	console.log("获得了一些东西回来");
 	if (Json_Token.stat == "ok") {
 		tips("获得token成功!已填入授权密匙处，请记得保存！");
-		$("#auth_token").val(Json_Token.auth.token._content); //写入到token里去
-		$("#user_name").val(Json_Token.auth.user.username.toLowerCase());
+        
+        /* 根据树之下来自动获取 */
+        if (Json_Token.auth.user.username.toLowerCase() == "slboat under the tree"){
+            $("#auth_token_underthetree").val(Json_Token.auth.token._content); //写入到token里去
+            $("#user_name_underthetree").val(Json_Token.auth.user.username.toLowerCase());
+            
+        } else {
+            //这里是正常的森亮号
+            $("#auth_token").val(Json_Token.auth.token._content); //写入到token里去
+            $("#user_name").val(Json_Token.auth.user.username.toLowerCase());
+        };
+        
 	} else {
 		tips("尝试获取token失败，原因：" + Json_Token.message);
 	}

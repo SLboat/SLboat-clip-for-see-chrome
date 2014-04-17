@@ -316,7 +316,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 				chrome.tabs.sendMessage(tab.id, {
 					// 传递方法，传递api_key
 					method: "getMyeBaySelection",
-					flickr_api_key: get_api_key(),
+					flickr_api_key: get_api_key(tab.incognito),
 					//用于墨水的作用
 					ink_option: {
 						ink_for: get_ink_for(),
@@ -338,7 +338,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 				chrome.tabs.sendMessage(tab.id, {
 					// 传递方法，传递api_key
 					method: "getSelection",
-					flickr_api_key: get_api_key(),
+					flickr_api_key: get_api_key(tab.incognito),
 					//用于墨水的作用
 					ink_option: {
 						ink_for: get_ink_for(),
@@ -446,8 +446,8 @@ function get_api_key(hidden_mode) {
 		user_name: localStorage.user_name || ""
 	};
     if (hidden_mode){ //隐藏模式-这是树之下!
-        api_token_key.auth_token = ; //新的存在
-        api_token_key.user_name = ; //新的用户名存在
+        api_token_key.auth_token = localStorage.auth_token_underthetree; //新的存在
+        api_token_key.user_name = localStorage.user_name_underthetree; //新的用户名存在
     }
 	// 放回去
 	return api_token_key;
@@ -594,7 +594,8 @@ chrome.runtime.onMessage.addListener(function(request, sender,
 	} else if (request.command == "flickr_key_request") { //需要API
 		//TODO:效验页面是否可以发出请求？
 		sendResponse({
-			api_token: get_api_key(), //api_key
+            //TODO:这里没有做tab校验
+			api_token: get_api_key(false), //api_key,放弃模式使用
 			ink_option: { //墨水设置
 				ink_for: get_ink_for(),
 				flickr_order: localStorage.flickr_order || ""
