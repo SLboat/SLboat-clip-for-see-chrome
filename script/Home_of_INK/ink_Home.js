@@ -292,7 +292,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 			//播放释放动画
 			flickr_api_animal();
 			//播放API捕获动画-todo
-			setTimeout(function() { //为啥要设置超时呢，看起来是500毫秒后
+			setTimeout(function() { 
 				//播放动画啥子的。。。
 				chrome.tabs.sendMessage(tab.id, {
 					//告知要获得tag
@@ -308,7 +308,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 			}, 50); //等待页面间隔
 
 		} else if (tab.url.match(ebay_myebay_pater)) {
-			setTimeout(function() { //为啥要设置超时呢，看起来是500毫秒后
+			setTimeout(function() {
 				if (isInManage) return; //返回去啥子的。。难道在中间
 				//清空墨水
 				clear_ink();
@@ -330,7 +330,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 			}, 50); //等待页面间隔
 
 		} else { //正常的吸取墨水
-			setTimeout(function() { //为啥要设置超时呢，看起来是500毫秒后
+			setTimeout(function() {
 				if (isInManage) return; //返回去啥子的。。难道在中间
 				//清空墨水
 				clear_ink();
