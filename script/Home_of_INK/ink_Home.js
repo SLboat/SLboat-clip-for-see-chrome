@@ -298,7 +298,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 					//告知要获得tag
 					method: "get_flickr_organize_tag",
 					//传入原料API
-					flickr_api_key: get_api_key(), //API，这是需要的
+					flickr_api_key: get_api_key(tab.incognito), //API，这是需要的
 					//传入要求：墨水的作用
 					ink_option: {
 						ink_for: get_ink_for(),
