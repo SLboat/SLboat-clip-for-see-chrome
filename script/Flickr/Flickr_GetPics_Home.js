@@ -511,9 +511,16 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 			//注释加上些标记，alt信息咯，切分后缀？
 			txt_out += "<!-- 图片标题: " + alt_name + " " + desc_thing + " -->"; //去掉分号，确保空格，检索的关键-这是英文
 			str_alt_tag = ' alt=\"' + str_alt + '\"'; //它的完整标签
-		}
+		};
+        
+        //来自的用户名信息
+        //TODO:一个校验?
+        str_user_name = ' from=\"' + flickr_api_key.user_name + '\"'; //务必必须有用户名否则会很麻烦...
+        str_version_str = ' ver=\"101\"'; //版本标识,当前为固定的量101,包含一个from参数
+        
 		//todo: 是否前面传入个ID玩意，为了好看呢<flickr id="">，修理被引用问题，还是去空格的好
-		txt_out += '<flickr' + str_alt_tag + ' id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + '> '; //标记所有的一切
+		txt_out += '<flickr' + str_alt_tag + ' id=\"' + flickr_id + '\" link=\"' + urllink + '\" img=\"' + urlimg + '\"' + descstr + str_user_name + str_version_str + '> '; //标记所有的一切
+        
 		//看看是否增加ID
 		if (flickr_id != null) //检测是否有ID，最好必须有个这样的玩意
 		{
