@@ -492,6 +492,11 @@ function render_per_link(urlimg, urllink, str_alt, no_url_work, desc) {
 		{
 			flickr_id = urlimg.match(patern_url_id)[1]; //获取初步匹配值
 		}
+        
+        //对树之下的ID抛弃任何标题信息,这是上传工具的限制
+        if (flickr_api_key.user_name == "slboat under the tree"){
+            str_alt = null; //清空描述信息,对于树之下
+        }
 
 		//----后面部分-----
 		//检查是否没有标题信息
