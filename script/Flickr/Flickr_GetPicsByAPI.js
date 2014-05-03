@@ -172,7 +172,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		return false;
 	}
 
-	if (pics_json.photos.total == 0) { //判断是否0张照片
+	if (pics_json.photos.total == null || pics_json.photos.total == 0) { //判断是否0张照片
 		if (is_debug_ink) console.log("返回的内容没有一张图片呢")
 		return false;
 	}
