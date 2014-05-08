@@ -182,6 +182,8 @@ function use_key_bundle() {
 		$(document).bind("keydown", "p", function() {
 			//选择隐私
 			$("#findr_privacy_select").val("priv_5");
+			//试试加入了...按拍摄时间,但是这里未做校验
+			$("#findr_radio_taken").click();
 			//原生按钮尝试
 			$("#findr_submit").click();
 		})
