@@ -180,12 +180,18 @@ function use_key_bundle() {
 		})
 		/* 绑定按键 p */
 		$(document).bind("keydown", "p", function() {
+			//试试加入了...按拍摄时间,但是这里未做校验
 			//选择隐私
 			$("#findr_privacy_select").val("priv_5");
-			//试试加入了...按拍摄时间,但是这里未做校验
-			$("#findr_radio_taken").click();
 			//原生按钮尝试
 			$("#findr_submit").click();
+			//1.5秒后重置堆栈
+			//TODO:分开帐号进行
+			setTimeout(function() {
+				//按拍摄日期排序
+				$("#findr_radio_taken").click();
+			}, 1000);
+
 		})
 		/* 绑定按键 z */
 		$(document).bind("keydown", "z", function() {
@@ -583,7 +589,7 @@ function sandbox_setup() {
 	if ($("#id_to").length == 0) {
 		//检查事件细节
 		var chk_events = "if(_ge('id_to').value==''){return false;};_ge('tabl_mat_batch').mat_empty();_ge('tabl_mat_batch').mat_add_photos(_ge('id_to').value.split(','));"
-		//左右按钮
+			//左右按钮
 		var double_a = '<a id="findr_prev_solt" onclick="_ge(\'findr\').findr_go_towards_the_beg();" style="display: none;"></a>';
 		double_a += '<a id="findr_next_solt" onclick="_ge(\'findr\').findr_go_towards_the_end();" style="display: none;;"></a>';
 		//添加按钮div源码
@@ -662,11 +668,11 @@ function sendMessage_to_Findex(message) {
 }
 
 /* 模式子串逃跑函数
-  * 作用：让模式子串的样子串变得可以随意被search等强制模式的函数认识
-  * 试试看：escape_from_regexp("[s")
-  * 可用性："[sssa".search(escape_from_regexp("[ss"))
-  * 参考自 http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-  */
+ * 作用：让模式子串的样子串变得可以随意被search等强制模式的函数认识
+ * 试试看：escape_from_regexp("[s")
+ * 可用性："[sssa".search(escape_from_regexp("[ss"))
+ * 参考自 http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+ */
 escape_from_regexp = function(s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 };
