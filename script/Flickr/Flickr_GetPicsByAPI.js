@@ -122,8 +122,8 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	} else { //逆序,与显示相反...显示新的在前面
 		Requst_url += "&sort=" + "date-taken-asc"; //根据拍摄时间逆序,不确定这会带来什么后果
 	}
-
-	Requst_url += "&extras=url_c,url_z,owner_name,description&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
+	// 在这里owner_name是拥有者名称,是一个昵称的名称,不符合作为url的搭建者.
+	Requst_url += "&extras=url_c,url_z,path_alias,description&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
 
 	//加个签名信息试试
 	Requst_url += "&auth_token=" + flickr_api_key.auth_token
@@ -159,7 +159,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 
 	imgcont = ""; //单条图片内容
 	txtcont = ""; //初始化图片内容
-	picownername = ""; //图片所有者名称
+	pic_path_alias = ""; //图片地址的昵称部分
 
 	var page_info = null; //默认是空的玩意
 
@@ -185,8 +185,8 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 		var img_link = pics.url_c || pics.url_z; //自动生成的图片链接，这里就先考虑c
 		var desc = "";
 		//只获取最后一次管它呢
-		picownername = pics.ownername.toLowerCase();
-		var url_link = "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/" + pics.id; //获得点击的连接，用户名和ID拼凑
+		pic_path_alias = pics.pathalias;
+		var url_link = "http://www.flickr.com/photos/" + pic_path_alias + "/" + pics.id; //获得点击的连接，用户名和ID拼凑
 		var alt_str = pics.title || null; //获得标签作为alt
 		//提取备注信息
 		if (typeof(pics.description) != "undefined") {
@@ -201,7 +201,7 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 	if (is_inOrganize) {
 		page_info = {
 			txtTitle: "管理页获取的标签：" + search_tag, //获取标题
-			txtUrl: "http://www.flickr.com/photos/" + pics.ownername.toLowerCase() + "/tags/" + search_tag //获得URL
+			txtUrl: "http://www.flickr.com/photos/" + pics.pathalias + "/tags/" + search_tag //获得URL
 		}
 		//如果是管理页面，告诉完成事情
 		ink_organize_api_done(search_tag);
