@@ -113,8 +113,8 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	Requst_url += "&user_id=" + user_id; //用户ID，减少数量
 	Requst_url += "&tags=" + search_tag; //搜索标签，将来要变成utf8的
 
-	//强制逆序...这里或许可以取代后面的转录逆序
-	/* 一种后逆序的处理或许是 
+	//强制逆序...这里或许可以取代后面的转录逆序,
+	/* 一种后逆序的处理或许是 → 不够好,使用日期更好!
 	 * date.photos.photo.sort(function(a,b){return a.title > b.title ? -1 : 1;})
 	 */
 	if (!get_flickr_order_pos()) { //正序,从小到大
@@ -122,8 +122,9 @@ function call_flickr_api_search(search_tag, is_inOrganize) {
 	} else { //逆序,与显示相反...显示新的在前面
 		Requst_url += "&sort=" + "date-taken-asc"; //根据拍摄时间逆序,不确定这会带来什么后果
 	}
+
 	// 在这里owner_name是拥有者名称,是一个昵称的名称,不符合作为url的搭建者.
-	Requst_url += "&extras=url_c,url_z,path_alias,description&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
+	Requst_url += "&extras=url_c,url_z,path_alias,description,date_taken&per_page=" + per_page + "&format=json&nojsoncallback=1"; //最后的一些玩意
 
 	//加个签名信息试试
 	Requst_url += "&auth_token=" + flickr_api_key.auth_token
@@ -178,6 +179,11 @@ function get_json_pics(pics_json, search_tag, is_inOrganize) {
 	}
 
 	pic_num = pics_json.photos.total; //总共获得的图片，不用一张张去遍历数啦
+
+	// 进行强制排序..2014-8-12
+	pics_json.photos.photo.sort(function(p1, p2) {
+	  return new Date(p1.datetaken).getTime() - new Date(p2.datetaken).getTime();
+	});
 
 	//开始提取照片
 	for (var pics_check in pics_json.photos.photo) { //这遍历真是作用不大

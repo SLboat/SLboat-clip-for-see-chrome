@@ -55,22 +55,24 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 
 	/* 处理各种玩意的标记 */
 	/* 于目标HTML相关联代码 */
+	//几乎都不工作了,不能重用的代价
 	var Ident_tag_page = ".refinement b a[href*='m=tags']"; //标签页标记
 
 	var Ident_set_page = ".pc_s .pc_img"; //相册页标记 
 	var Ident_groups_page = ".pc_n .pc_img"; //群组页标记
 	var Ident_photostream_page = ".pc_ju .pc_img"; //照片流页标记-Photostream，新的相册看起来也在这里了，看起来旧时代离开了
-	var Ident_single_page = "#liquid-photo-buffer"; //单页标记，会优先得到buffer缓冲，很奇怪
+	var Ident_single_page = ".photo-well-scrappy-view"; //单页标记，会优先得到buffer缓冲，很奇怪
 	//灯箱页的东西们
 	var Ident_lightbox_div = ".position[style*='visibility: visible']";
 	//单页的标题和描述
 	var Ident_single_page_info = {
-		small_box_pic: "div#context-photos-stream li[data-context-position='0'] img", //这恐怕是唯一不是[_h]的图片了
-		title_div: "#title_div", //标题div
-		desc_div: "#description_div", //描述div
-		desc_div_inEDIT: "#description_div textarea", //在编辑模式下的描述DIV
+		big_pic_src: ".photo-well-media-scrappy-view .main-photo", //新一代的图片就是这样的
+		title_div: ".photo-title", //标题div
+		desc_div: ".photo-desc p", //描述div
+		//下面的准确获得是:$(".edit-photo-desc").val()
+		desc_div_inEDIT: ".edit-photo-desc", //在编辑模式下的描述DIV
 		class_none: "insitu-hint", //没有文字的class，默认提醒标记
-		text_none: "按一下這裡以增加" //没有文字的开头提醒字符，第一个算起
+		text_none: "新增標題" //没有文字的开头提醒字符，第一个算起
 	}; /* 标记处理完毕 */
 
 	//NOTEICE: 这里目前仅仅作为一个标签的标记的检测
@@ -157,7 +159,7 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 		//尝试单页，灯箱页也会存在单页，这里单页做最后处理
 		if ($(Ident_single_page).length > 0) //有至少一个单页标签，一般也只有一个
 		{
-			var img_src = $(Ident_single_page_info.small_box_pic)
+			var img_src = $(Ident_single_page_info.big_pic_src)
 				.prop("src");
 			if (typeof(img_src) == "undefined" || img_src.length == 0) {
 				return ""; //返回一些破玩意回去

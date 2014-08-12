@@ -43,7 +43,6 @@ function Save_Setting() {
 
     //树之下的信息
     
-    //树之下的信息
     localStorage.user_name_underthetree = $("#user_name_underthetree").val();
     localStorage.auth_token_underthetree = $("#auth_token_underthetree").val();
     
