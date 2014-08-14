@@ -7,7 +7,7 @@ var flikcr_organize_tag = false; //是否是管理页面的api_tag模式
 
 var ink_option = {
 	ink_for: "slboat",
-	flickr_order: "pos"
+	flickr_order: "hand"
 }; //墨水选项
 
 //内部交互函数
@@ -575,7 +575,7 @@ function isAlex() {
 //获得排序选项，这些真该直接丢在object里，是否是正序的
 
 function get_flickr_order_pos() {
-	return ink_option.flickr_order == "pos";
+	return (ink_option.flickr_order == "pos" || ink_option.flickr_order == "hand");
 }
 
 /* 检测是否在首页 */
