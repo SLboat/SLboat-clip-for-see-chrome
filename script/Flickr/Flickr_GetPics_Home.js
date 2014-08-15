@@ -173,7 +173,7 @@ function get_flickr_link(which_way) { /* 自动获得，看起来很有需要 */
 				.search(Ident_single_page_info.text_none) != 0) {
 				//有标题文字
 				str_alt = $(Ident_single_page_info.title_div)
-					.text();
+					.text().trim();
 			}
 			//获得描述信息
 			var str_desc = ""; //空字串
