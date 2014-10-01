@@ -404,12 +404,15 @@ function ebay_GetAddress() {
 	var address, phone; //最终的地址构成部分
 	var code, code_full; //临时的code
 	var info_add; //最终的地址
+
+	var selectAddress = "address:not(.ng-hide)"; //jquery选中地址的玩意
+
 	//第一部分，只是地址信息
 	address = ""; //初始化？
 	if (ext_note) address += "[Address]"; //初始化字串，不要的选择？
 
-	//过滤大空格，再次过滤多换行
-	address += $("#shippingAddress").text().replace(/	/g, "").replace(/\n\n/g, "\n");
+	//过滤大空格，过滤小空格, 再次过滤多换行
+	address += $(selectAddress).text().replace(/	/g, "").replace(/  /g,"").replace(/\n\n/g, "\n");
 
 	/* 处理国家缩写名 */
 	code = str_getLastline(address);
@@ -417,13 +420,13 @@ function ebay_GetAddress() {
 		code_full = eBay_TranCountryCode(code);
 		if (code_full) { //考虑到空字串为假，这里很可能是可靠的
 			code_new = code + " [" + code_full + "]"; //新的编号
-			$("#shippingAddress").html($("#shippingAddress").html().replace("	" + code + "\n", "	" + code_new + "\n"));
+			$(selectAddress).html($(selectAddress).html().replace("		" + code + "\n", "	" + code_new + "\n"));
 			//替换自己的地址
 			address = address.replace("\n" + code + "\n", "\n" + code_new + "\n")
 		}
 	}
 	/* 电话信息处理 */
-	//构建电话信息的
+	//构建电话信息的-不再需要用到了...
 	phone = $("#shippingAddressPhoneNum").text(); //进行两次替换-由于两种不同的空格头长度
 	if (phone.trim() == "Phone number") //检查只有电话号码字样
 	{
