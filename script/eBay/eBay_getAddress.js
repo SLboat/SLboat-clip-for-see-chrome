@@ -405,14 +405,14 @@ function ebay_GetAddress() {
 	var code, code_full; //临时的code
 	var info_add; //最终的地址
 
-	var selectAddress = "address:not(.ng-hide)"; //jquery选中地址的玩意
-
 	//第一部分，只是地址信息
 	address = ""; //初始化？
 	if (ext_note) address += "[Address]"; //初始化字串，不要的选择？
 
+	$divAddress = $("#shippingAddressCountry").parent();
+
 	//过滤大空格，过滤小空格, 再次过滤多换行
-	address += $(selectAddress).text().replace(/	/g, "").replace(/  /g,"").replace(/\n\n/g, "\n");
+	address += $divAddress.text().replace(/	/g, "").replace(/  /g,"").replace(/\n\n/g, "\n");
 
 	/* 处理国家缩写名 */
 	code = str_getLastline(address);
@@ -420,7 +420,7 @@ function ebay_GetAddress() {
 		code_full = eBay_TranCountryCode(code);
 		if (code_full) { //考虑到空字串为假，这里很可能是可靠的
 			code_new = code + " [" + code_full + "]"; //新的编号
-			$(selectAddress).html($(selectAddress).html().replace("		" + code + "\n", "	" + code_new + "\n"));
+			$divAddress.html($divAddress.html().replace("		" + code + "\n", "	" + code_new + "\n"));
 			//替换自己的地址
 			address = address.replace("\n" + code + "\n", "\n" + code_new + "\n")
 		}
