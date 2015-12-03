@@ -26,7 +26,8 @@ function ink_all_text() {
 function ink_get_editor() {
 	//写全局变量
 	if (typeof(mw_editor) == "undefined") {
-		return document.getElementById('wpTextbox1');
+		mw_editor = document.getElementById('wpTextbox1'); //保存
+		return mw_editor;
 	} else
 		return mw_editor; //返回缓存的玩意
 }
@@ -37,8 +38,8 @@ function ink_is_in_newline() {
 	if (ink_before_text().length == 0) {
 		return true; //第一个，通过
 	}
-	return ink_before_text()[ink_before_text().length - 1].search(/[\r\n]/) > -1;
-
+	var bt = ink_before_text();
+	return bt[bt.length - 1].search(/[\r\n]/) > -1;
 }
 
 //开始摆弄墨水，逻辑简单化，这里只处理普通墨水，其他的自己折腾去
@@ -46,7 +47,7 @@ function ink_go(ink, ink_type) {
 	var js_tag = /==见识==/; //搜索见识的模式，将来废除
 	var js_i8ln_tag = /=={{int:见识}}==/; //i8ln的tag方式
 	var footer_tag = /{{脚注}}/; //搜索脚注的模式
-	var br = "\r\n"; //换行标记
+	var br = "\n"; //换行标记
 
 	var curr_pos = 0; //光标坐标
 	var js_str = br + "=={{int:见识}}==" + br;
@@ -129,7 +130,15 @@ function ink_inject(ink, curr_pos, need_select) {
 		tagClose += ' ';
 	}
 
-	editor.value = ink_before_text() + ink + selText + tagClose + ink_after_text();
+	editor.focus();
+	//var allText = ink_before_text() + ink + selText + tagClose + ink_after_text();
+	//editor.value = "";
+	if (selText) document.execCommand('delete');
+	document.execCommand('insertText', false, ink + selText + tagClose);
+
+	//旧方法兼容
+	// editor.value = ink_before_text() + ink + selText + tagClose + ink_after_text();
+
 	if (need_select) {
 		editor.selectionStart = startPos;
 		editor.selectionEnd = mousePos; //选中整个加入的长度

@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.method == "getSelection") {
         var titlestr = (document.title == "") ? "{{int:无标题见识}}" : document.title; //检测是否为空一起都在这里
 		var copystr = window.getSelection().toString();
-		var slboat_title = $("#firstHeading span").text(); //截取一部分标题，别的方式可能是-获得标题
+		var slboat_title = $("#firstHeading").text(); //截取一部分标题，别的方式可能是-获得标题
 		if (slboat_title=="")
 		{
 			return false;//结束
